@@ -237,7 +237,6 @@ class SkppController extends Controller
             DB::commit();
 
             return response()->json(['status' => 'success', 'message' => 'Tambah SKPP berhasil', 'id_skpp' => Helper::encodex($skpp->id_skpp)]); 
-
         } catch (\Exception $e) {
             DB::rollback();
 
