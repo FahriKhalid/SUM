@@ -41,12 +41,9 @@ class AuthController extends Controller
  
         Auth::attempt($data);
  
-        if (Auth::check()) { 
-            //Login Success 
+        if (Auth::check()) {  
             return response()->json(['status' => 'success', 'message' => 'Autentifikasi berhasil']); 
- 
-        } else { // false
- 
+        } else { 
             return response()->json(['status' => 'error', 'message' => 'Email atau password anda salah']); 
         }
     }
