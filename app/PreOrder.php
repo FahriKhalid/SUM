@@ -57,7 +57,7 @@ class PreOrder extends Model
 
     public function Status()
     {
-        return $this->belongsTo(STatus::class,'id_status','id_status')->withDefault();   
+        return $this->belongsTo(Status::class,'id_status','id_status')->withDefault();   
     }
 
     public function Lampiran()

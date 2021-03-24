@@ -26,12 +26,12 @@ class LogPenjualan extends Model
  
     public function StatusBefore()
     {
-        return $this->belongsTo(STatus::class,'id_status','id_status')->withDefault();   
+        return $this->belongsTo(Status::class,'id_status','id_status')->withDefault();   
     }
 
     public function StatusTo()
     {
-        return $this->belongsTo(STatus::class,'id_status','id_status')->withDefault();   
+        return $this->belongsTo(Status::class,'id_status','id_status')->withDefault();   
     }
 
     public function SKPP()
