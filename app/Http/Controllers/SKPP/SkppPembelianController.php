@@ -15,7 +15,7 @@ use App\Mail\SendEmail;
 use App\Pembayaran;
 use App\PreOrder;
 use App\Customer;
-use App\lampiran;
+use App\Lampiran;
 use App\produk;
 use App\SKPP;
 use App\Atm;

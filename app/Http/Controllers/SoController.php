@@ -12,7 +12,7 @@ use App\produk;
 use App\SKPP;
 use App\Barang;
 use App\SO;
-use App\lampiran;
+use App\Lampiran;
 use Validator;
 use Auth;
 use Helper;
