@@ -22,8 +22,8 @@
                 <div id="collapseTwo" class="collapse {{ Helper::menu_expand() != "yes" ? (in_array(Request::segment(1), ['skpp','pembayaran','salesorder']) ? 'show' : '') : '' }}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded"> 
                         <a class="collapse-item {{ in_array(Request::segment(1), ['skpp','pembayaran','salesorder']) ? 'active' : '' }}" href="{{url('penjualan/skpp')}}">SKPP</a>
-                        <a class="collapse-item" href="{{url('faktur_penjualan')}}">Faktur Penjualan</a>
-                        <a class="collapse-item" href="{{url('surat_jalan')}}">Surat jalan</a>
+                        {{-- <a class="collapse-item" href="{{url('faktur_penjualan')}}">Faktur Penjualan</a>
+                        <a class="collapse-item" href="{{url('surat_jalan')}}">Surat jalan</a> --}}
                     </div>
                 </div>
             </li>
