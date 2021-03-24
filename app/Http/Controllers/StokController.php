@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
+use App\VwStok;
 use App\Stok;
 use Validator;
 use Helper;
@@ -21,7 +22,30 @@ class StokController extends Controller
      */
     public function index()
     {
-        //
+        return view('stok_gudang.index');
+    }
+
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function data(VwStok $VwStok, Request $request)
+    { 
+        $data = $VwStok->query();
+
+        return Datatables::of($data)
+        ->addIndexColumn()
+        ->addColumn('is_aktif', function($data){ 
+
+            if($data->is_aktif == 1){
+                return '<span class="badge badge-success">Aktif</span>';
+            }else{
+                return '<span class="badge badge-danger">Tidak aktif</span>';
+            }
+ 
+        })->rawColumns(['is_aktif'])->make(true);
     }
 
     /**

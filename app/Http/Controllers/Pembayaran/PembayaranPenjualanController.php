@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables; 
 use Illuminate\Support\Str; 
+use App\Services\SkppService;
 use App\Services\BarangService;
 use App\Services\PembayaranService;
 use App\Pembayaran; 
@@ -17,11 +18,16 @@ use Helper;
 
 class PembayaranPenjualanController extends Controller
 {
-    protected $BarangService, $PembayaranService;
+    protected $BarangService, $PembayaranService, $SkppService;
 
-    public function __construct(BarangService $BarangService, PembayaranService $PembayaranService){ 
+    public function __construct(
+        BarangService $BarangService, 
+        PembayaranService $PembayaranService,
+        SkppService $SkppService
+    ){ 
         $this->BarangService = $BarangService;
         $this->PembayaranService = $PembayaranService;
+        $this->SkppService = $SkppService;
     }
 
     /**
@@ -103,7 +109,10 @@ class PembayaranPenjualanController extends Controller
         $info["kategori"] = "penjualan";
         $info["skpp"] = SKPP::with('Customer','Status')->findOrFail($id_skpp); 
         $info["pembayaran"] = Pembayaran::with('CreatedBy')->where("id_skpp", $id_skpp)->get();
-        $info["piutang"] = $this->PembayaranService->sisaHutang($info["kategori"], $id_skpp);   
+        $info["piutang"] = $this->PembayaranService->sisaHutang($info["kategori"], $id_skpp);  
+        
+        //$info["total_pembayaran"] = $this->SkppService->totalPembayaranSkppPembelianIncludePPN($id_skpp, null);
+         
         return view('pembayaran.penjualan.show', compact('info', 'id')); 
     }
 

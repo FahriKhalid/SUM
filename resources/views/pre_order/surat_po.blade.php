@@ -162,39 +162,27 @@
 			<table class="ml-3 mt-20 table">
 				<thead>
 					<tr>
-						<th align="center">JENIS PRODUK</th>
-						<th align="center">INCOTERM</th> 
-						<th align="center">KUANTUM</th>
-						<th align="center">HARGA + PPN</th>
+						<th align="center">Jenis Pupuk</th>
+						<th align="center">Harga per ton Include PPN</th>
+						<th align="center">Kuantum</th>
+						<th align="center">Incoterm</th> 
 					</tr>
 				</thead>
 				<tbody>
 					@php($total = 0)
-					@foreach($info["po"] as $po)
-					{{-- @php($total += $po->nilai) --}}
-					<?php 
-					$nilai = $po->nilai;
-					$ppn = $nilai * 0.1;
-					$nilai = $nilai + $ppn;
-					$total += $nilai;
+					@foreach($info["po"] as $po) 
+					<?php  
+					$ppn_harga = $po->harga_jual * 0.1;
+					$harga = $po->harga_jual + $ppn_harga
 					?>
 					<tr>
 						<td align="center">{{ $po->Produk->nama }}</td> 
-						<td align="center">{{ $po->incoterm }}</td> 
+						<td align="center">{{ Helper::currency(Helper::toFixed($harga, 2)) }}</td>
 						<td align="center">{{ $po->kuantitas }} MT</td> 
-						{{-- <td align="center">{{ Helper::currency($po->nilai) }}</td> --}} 
-						<td align="center">{{ Helper::currency(Helper::toFixed($nilai, 2)) }}</td>
+						<td align="center">{{ $po->incoterm }}</td>  
 					</tr> 
 					@endforeach
-				</tbody>
-				<tfoot>
-					<tr>
-						<td class="border-none"></td> 
-						<td class="border-none"></td> 
-						<td align="center"><b>TOTAL</b></td>
-						<td align="center">{{ Helper::currency(Helper::toFixed($total, 2)) }}</td>
-					</tr>
-				</tfoot>
+				</tbody> 
 			</table>
  
 

@@ -7,9 +7,9 @@
 				<th width="300px">Kuantitas</th> 
 				<th width="200px">Harga Beli</th>
 				<th width="200px">Nilai</th>
-				{{-- <th width="1px">
+				<th width="1px">
 					<button type="button" class="btn btn-success btn-sm" onclick="reset_table_po()"><i class="fa fa-sync"></i></button>
-				</th> --}}
+				</th>
 			</tr>
 		</thead>	
 		<tbody id="tbody-po"> 
@@ -65,9 +65,9 @@
                         <input type="text" readonly="" value="{{ Helper::currency($barang->nilai) }}" class="form-control nilai align-right" name="nilai[]">
                     </div>
 				</td> 
-				{{-- <td class="p-1">
+				<td>
 					<button type="button" class="btn btn-danger btn-sm remove-row-po"><i class="fa fa-minus"></i></button>
-				</td> --}}
+				</td>
 			</tr> 
 			@endforeach
 		</tbody>

@@ -91,6 +91,7 @@ class PreOrderController extends Controller
         })->addColumn('pembayaran', function($data){ 
             
             $skpp = $data->SKPP->no_skpp;
+            
             if($skpp != '-')
             {
                 $pembayaran = $this->PembayaranService->sisaHutang("pembelian", $data->SKPP->id_skpp);   
@@ -458,15 +459,11 @@ class PreOrderController extends Controller
         $id = Helper::decodex($id); 
 
         $info["pre_order"]          = PreOrder::with('CreatedBy','Produsen','Status')->findOrFail($id);
-
         $info["po"]                 = Barang::with('Produk')->where("id_pre_order", $id)->get();
-
         $info["lampiran"]           = Lampiran::where("id_pre_order", $id)->get();
-
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
 
         $pdf = PDF::loadview('pre_order.surat_po', compact('info')); 
-
         return $pdf->setPaper('a4')->stream(); 
     }
 }

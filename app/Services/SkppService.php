@@ -4,11 +4,14 @@ namespace App\Services;
 use App\Services\StokService; 
 use App\LogPenjualan;
 use App\Pembayaran;
+use App\Lampiran;
 use App\PreOrder;
 use App\Barang;
 use App\SKPP;
 use Helper;
 use Auth;
+use PDF;
+use DB;
 
 class SkppService 
 {
@@ -51,16 +54,18 @@ class SkppService
 		]);
 	}
 
-	public function totalPembayaranSkppPembelian($id)
+	public function totalPembayaranSkppPembelianIncludePPN($id_skpp = null, $id_pre_order = null)
 	{
-		$data = PreOrder::with("Barang")->findOrFail($id);
+		if($id_skpp != null){
+			$data = SKPP::with("Barang")->findOrFail($id_skpp);
+		}else if($id_pre_order != null){
+			$data = PreOrder::with("Barang")->findOrFail($id_pre_order);
+		}
 
 		$total = 0;
-		foreach ($data->Barang as $value) {
-			$nilai = $value->nilai;
-			$ppn = $nilai * 0.1;
-			$nilai = $nilai + $ppn;
-			$total += $nilai;
+		foreach ($data->Barang as $value) {  
+			$harga = Helper::PPN($value->harga_jual) * $value->kuantitas;
+			$total += $harga;
 		}
 
 		return $total;
@@ -82,6 +87,16 @@ class SkppService
 		foreach ($barang as $value) {
 			$this->StokService->addStok($value->id_produk, $value->kuantitas);
 		}
+	}
+
+	public function suratSKPP($id)
+	{
+        $info["skpp"]               = SKPP::with('CreatedBy','Customer','Status','ATM')->findOrFail($id);
+        $info["po"]                 = Barang::with('Produk')->where("id_skpp", $id)->get();
+        $info["lampiran"]           = Lampiran::where("id_skpp", $id)->get();
+        $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
+        $pdf = PDF::loadview('skpp.penjualan.surat_skpp', compact('info')); 
+        return $pdf;
 	}
  
 }

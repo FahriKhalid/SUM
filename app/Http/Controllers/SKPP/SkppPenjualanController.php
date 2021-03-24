@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables; 
 use App\Services\LogTransaksiService;
+use App\Services\PembayaranService;
 use App\Services\LampiranService;
 use App\Services\BarangService;
 use App\Services\StokService;
@@ -27,16 +28,18 @@ use DB;
 
 class SkppPenjualanController extends Controller
 {
-    protected $LogTransaksiService, $LampiranService, $BarangService, $SkppService, $StokService;
+    protected $LogTransaksiService, $PembayaranService, $LampiranService, $BarangService, $SkppService, $StokService;
     protected $draft, $confirm, $approve, $unapprove;
 
     public function __construct(
         LogTransaksiService $LogTransaksiService,
+        PembayaranService $PembayaranService,
         LampiranService $LampiranService, 
         BarangService $BarangService, 
         SkppService $SkppService,
         StokService $StokService){
         $this->LogTransaksiService = $LogTransaksiService;
+        $this->PembayaranService = $PembayaranService;
         $this->LampiranService = $LampiranService;
         $this->BarangService = $BarangService;
         $this->SkppService = $SkppService;
@@ -54,13 +57,16 @@ class SkppPenjualanController extends Controller
      */
     public function index()
     {
+        
         return view('skpp.penjualan.index');
     }
 
 
     public function data(SKPP $SKPP, Request $request)
     {
-        $data = $SKPP->query()->with('CreatedBy','Customer','Status','Pembayaran')->where("kategori", "penjualan")->orderBy("no_skpp", "desc");
+        $data = $SKPP->query()->with('CreatedBy','Customer','Status','Pembayaran')
+                    ->where("kategori", "penjualan")
+                    ->orderBy("no_skpp", "desc");
 
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){ 
 
@@ -96,15 +102,21 @@ class SkppPenjualanController extends Controller
 
             return $data->Status->status;
             
+        })->addColumn('terakhir_pembayaran', function($data){ 
+
+            return $data->terakhir_pembayaran;
+            
         })->addColumn('pembayaran', function($data){ 
 
-            if ($data->Pembayaran == null) {
+            if ($data->Pembayaran->sisa_hutang == null) {
                 return 'Belum dibayar';
-            } elseif($data->Pembayaran != null && $data->Pembayaran->sisa_hutang > 0){
+            } elseif($data->Pembayaran->sisa_hutang != null && $data->Pembayaran->sisa_hutang > 0){
                 return 'Belum lunas';
-            } elseif($data->Pembayaran != null && $data->Pembayaran->sisa_hutang == 00.0) {
+            } elseif($data->Pembayaran->sisa_hutang != null && $data->Pembayaran->sisa_hutang == 00.0) {
                 return 'Lunas';
             } 
+
+
             
         })->addColumn('created_by', function($data){ 
 
@@ -198,6 +210,7 @@ class SkppPenjualanController extends Controller
             $total_pembayaran = 0;
             for ($j=0; $j < count($request->nilai); $j++) { 
                 $total_pembayaran += Helper::decimal($request->nilai[$j]);
+                //$total_pembayaran += Helper::PPN(Helper::decimal($request->harga_jual[$j])) * $request->kuantitas[$j];
             }
 
             // insert SKPP
@@ -371,7 +384,7 @@ class SkppPenjualanController extends Controller
 
             $rules = array_merge($rules, $rule_new_produk); 
             $messages = array_merge($messages, $messages_new_produk);
-        } 
+        }  
             
         if($request->is_lampiran == 1)
         {
@@ -443,11 +456,11 @@ class SkppPenjualanController extends Controller
             }
 
             // delete all attachment
-            if(!$request->has('is_lampiran'))
+            if($request->lampiran != 1)
             {
                 $this->LampiranService->destroy($id, "skpp");
             }
-            else
+            else if($request->lampiran == 1)
             {
                 // update attachment
                 if($request->has('nama_file')){ 
@@ -499,19 +512,8 @@ class SkppPenjualanController extends Controller
     }
 
     public function preview($id)
-    {
-        $id = Helper::decodex($id);
-
-        $info["skpp"]               = SKPP::with('CreatedBy','Customer','Status','ATM')->findOrFail($id);
-
-        $info["po"]                 = Barang::with('Produk')->where("id_skpp", $id)->get();
-
-        $info["lampiran"]           = Lampiran::where("id_skpp", $id)->get();
-
-        $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
-
-        $pdf = PDF::loadview('skpp.penjualan.surat_skpp', compact('info')); 
-
+    { 
+        $pdf = $this->SkppService->suratSKPP(Helper::decodex($id));
         return $pdf->setPaper('a4')->stream(); 
     }
 
@@ -575,16 +577,16 @@ class SkppPenjualanController extends Controller
         $id_skpp = Helper::decodex($id); 
         DB::beginTransaction();
         try {
-            $update = SKPP::with('Customer')->findOrFail($id_skpp);
-            $this->SkppService->LogPenjulalan($id_skpp, $update->id_status, $this->approve, "SKPP di approve");
-            $update->id_status = $this->approve;
-            $update->catatan_revisi = null;
-            $update->save(); 
+            $skpp = SKPP::with('Customer')->findOrFail($id_skpp);
+            $this->SkppService->LogPenjulalan($id_skpp, $skpp->id_status, $this->approve, "SKPP di approve");
+            $skpp->id_status = $this->approve;
+            $skpp->catatan_revisi = null;
+            $skpp->save(); 
 
             $this->SkppService->minusStok($id_skpp);
 
             if($request->is_send_email && $request->is_send_email == 1){
-               $this->send_email($update);
+               $this->send_email($skpp);
             }
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Approve SKPP berhasil']); 
@@ -628,13 +630,10 @@ class SkppPenjualanController extends Controller
             // $to_email =  $skpp->Customer->email;
             // $data = array('name'=> "SKPP", "body" => "A test mail");
 
-            Mail::to("fahri.halid@gmail.com")->send(new SendEmail());
-             
-            if (Mail::failures()) {
-                return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$to_email.' tidak berhasil']); 
-            }else{
-                return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$to_email.' berhasil']); 
-            }
+            Mail::to($skpp->Customer->email)->send(new SendEmail("SKPP", $skpp->id_skpp)); 
+           
+            return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$to_email.' tidak berhasil']); 
+            
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
         }

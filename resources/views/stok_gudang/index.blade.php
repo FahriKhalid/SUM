@@ -1,6 +1,6 @@
 @extends('layout.index')
 
-@section('title', 'SUM - SKPP')
+@section('title', 'SUM - User')
 
 @section('css')
 	<link rel="stylesheet" type="text/css" href="{{asset('vendor/datatables/dataTables.bootstrap4.min.css')}}"> 
@@ -8,44 +8,30 @@
  
 @section('content')
  
- 
-<div class="container-fluid mt-4">
-	<div class="row">
-        <div class="col-md-12 d-flex justify-content-between">
-        	<h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-bullseye"></i> SKPP</h6>   
-        </div>  
-    </div> 
-	
-	<div class="card mt-3">
-		<div class="card-body">
-			<a href="{{ url('penjualan/skpp/create') }}" class="btn btn-success mb-3"><i class="fa fa-plus"></i> Tambah</a>
-			<div class="table-responsive">
-                <table class="table table-bordered" id="tabel-skpp" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th width="1px">No</th>
-                            <th>Nomor SKPP</th>  
-                            <th>Customer</th>
-                            <th>Status</th>
-                            <th>Terakhir pembayaran</th> 
-                            <th>Pembayaran</th>
-                            <th>Created by</th>
-                            <th width="130px">Created at</th>
-                            <th width="70px">Aksi</th>
-                        </tr>
-                    </thead> 
-                </table>
-            </div>
-
-            <div>
-				<div class="legend bg-warning"></div> Jatuh tempo kurang dari 10 hari
-			</div>
-			<div>
-				<div class="legend bg-red"></div> Jatuh tempo
+	<div class="container-fluid mt-4">
+		<div class="row">
+	        <div class="col-md-12 d-flex justify-content-between">
+	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-fw fa-boxes"></i> Stok Gudang</h6>   
+	        </div>  
+	    </div>
+		<div class="card mt-3">
+			<div class="card-body">
+				<div class="table-responsive">
+                    <table class="table table-bordered" id="tabel-stok" style="width:100%">
+                        <thead>
+                            <tr>
+                            	<th width="1px">No</th> 
+                                <th>Nama</th>  
+                                <th>Spesifikasi</th> 
+                                <th>Jumlah</th>
+                                <th width="70px">Status</th>
+                            </tr>
+                        </thead> 
+                    </table>
+                </div>
 			</div>
 		</div>
 	</div>
-</div>
 
 @endsection
 
@@ -61,10 +47,21 @@
 
 	function show_modal(){
 		add = true;
-		$("#title-modal-form-skpp").html("Form tambah skpp");
-		$("#form-skpp")[0].reset();
-		$("#modal-form-skpp").modal("show");
+		$("#title-modal-form-user").html("Form tambah user");
+		$("#form-user")[0].reset();
+		$("#form-password").removeClass("d-none");
+		$("#checkbox-password").addClass("d-none");
+		$("#change-password").prop("checked", false);
+		$("#modal-form-user").modal("show");
 	}
+
+	$("body").delegate("#change-password", "click", function(){
+		if($(this).is(":checked")){
+            $("#form-password").removeClass("d-none"); 
+        }else{
+            $("#form-password").addClass("d-none");
+        }
+	})
 
 	/*
     |--------------------------------------------------------------------------
@@ -72,19 +69,30 @@
     |--------------------------------------------------------------------------
     */ 
 
-	var data_table = [
-        {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false}, 
-        {data: 'no_skpp',     name: 'no_skpp'},
-        {data: 'customer',    name: 'customer'}, 
-        {data: 'status',      name: 'status'},
-        {data: 'terakhir_pembayaran',  name: 'terakhir_pembayaran'}, 
-        {data: 'pembayaran',  name: 'pembayaran'}, 
-        {data: 'created_by',  name: 'created_by'},
-        {data: 'created_at',  name: 'created_at'}, 
-        {data: 'action',      name: 'action', orderable: false,},
+	var columns = [  
+		{data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false}, 
+        {data: 'nama',	      name: 'nama'},
+        {data: 'spesifikasi', name: 'spesifikasi'}, 
+        {data: 'jumlah',	  name: 'jumlah'},
+        {data: 'is_aktif',    name: 'is_aktif'},   
     ];
-    
-    var table_pengguna = table('#tabel-skpp', '{{url('penjualan/skpp/data')}}', data_table);
+
+     $('#tabel-stok').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url : '{{url('stok/data')}}'
+        },
+        columns: columns,
+        responsive: true,
+        colReorder: true, 
+        columnDefs:[{
+        	targets: 3, render: function(data){
+		      	return data + ' MT';
+		    }
+		}], 
+    }); 
+ 
 
 
     /*
@@ -93,14 +101,14 @@
     |--------------------------------------------------------------------------
     */ 
 
-	$(document).on("submit", "#form-skpp", function(e){
+	$(document).on("submit", "#form-user", function(e){
 		e.preventDefault();
 
 		if (add === true) {
-			var url = '{{ url('penjualan/skpp/store') }}';
+			var url = '{{ url('user/store') }}';
 		} else {
 			var id = $("input[name=id]").val();
-			var url = '{{ url('penjualan/skpp/update') }}/'+id;
+			var url = '{{ url('user/update') }}/'+id;
 		}
 
 		$.ajax({
@@ -120,8 +128,8 @@
                		} 
                 } else {
                		toastr.success(resp.message, { "closeButton": true }); 
-               		refresh_table("#tabel-skpp");
-               		$("#modal-form-skpp").modal("hide"); 
+               		refresh_table("#tabel-stok");
+               		$("#modal-form-user").modal("hide"); 
                 }
 				
                 loader(".modal-content", false);
@@ -146,19 +154,25 @@
     	var id = $(this).attr("did");
 
     	$.ajax({
-			url : '{{url('penjualan/skpp/show')}}/'+id, 
+			url : '{{url('user/show')}}/'+id, 
 			type: 'GET',
 			data : { id : id }, 
 			dataType : "json",
 			beforeSend : function(){
 				add = false;
-				$("#title-modal-form-skpp").html("Form edit skpp");
-				$("#modal-form-skpp").modal("show");
+				$("#title-modal-form-user").html("Form edit user");
+				$("#modal-form-user").modal("show");
+				$("#form-password").addClass("d-none");
+				$("#checkbox-password").removeClass("d-none");
+				$("#change-password").prop("checked", false);
                 loader(".modal-content", true);
 			},
 			success : function(resp){
-				$("input[name=id]").val(resp.id_skpp);
-               	$("input[name=nama_skpp]").val(resp.nama); 
+				$("input[name=id]").val(resp.id_user);
+               	$("input[name=nama]").val(resp.nama); 
+               	$("input[name=email]").val(resp.email); 
+               	$("select[name=role]").val(resp.id_role); 
+               	$("input[name=username]").val(resp.username);
                	$("input[type=radio][name=status][value="+resp.is_aktif+"]").prop("checked", true);
                 loader(".modal-content", false);
 			},
@@ -196,7 +210,7 @@
 	        { 
 	            if (resp.status == 'success') {
 	                toastr.success(resp.message, { "closeButton": true });    
-	                refresh_table("#tabel-skpp");
+	                refresh_table("#tabel-stok");
 	                $("#modal-konfirmasi-hapus").modal("hide");
 	            } else {
 	                toastr.error(resp.message, { "closeButton": true });

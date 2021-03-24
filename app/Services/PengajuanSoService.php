@@ -4,8 +4,9 @@ namespace App\Services;
 use App\BarangPengajuanSo;
 use App\PengajuanSo; 
 use App\Barang;
-use Auth;
+use Exception;
 use Helper;
+use Auth;
 
 class PengajuanSoService 
 {
@@ -36,4 +37,5 @@ class PengajuanSoService
 
         return $sisa;
     }
+ 
 }

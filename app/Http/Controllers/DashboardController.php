@@ -3,9 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\DashboardService;
+use Helper;
+use Auth;
+use DB;
 
 class DashboardController extends Controller
 {
+    protected $DashboardService;
+
+    public function __construct(DashboardService $DashboardService){
+        $this->DashboardService = $DashboardService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +23,15 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('dashboard.index');
+        $info["total_penjualan"] = $this->DashboardService->totalPenjualan();
+        $info["total_pembelian"] = $this->DashboardService->totalPembelian();
+        $info["penjualan"] = $this->DashboardService->penjualan();
+        $info["pembelian"] = $this->DashboardService->pembelian();
+        $info["total_hutang"] = $this->DashboardService->totalHutang();
+        $info["total_piutang"] = $this->DashboardService->totalPiutang();
+        $info["tren"] = $this->DashboardService->dataTrenPenjualanPembelian();
+
+        return view('dashboard.index', compact("info"));
     }
 
     /**
@@ -80,5 +98,19 @@ class DashboardController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function filter(Request $request)
+    {
+        $penjualan = $this->DashboardService->penjualan($request->start, $request->end);
+        $pembelian = $this->DashboardService->pembelian($request->start, $request->end);
+        $data_tren = $this->DashboardService->dataTrenPenjualanPembelian($request->start, $request->end);
+        
+        return response()->json([
+            "penjualan" => Helper::currency($penjualan),
+            "pembelian" => Helper::currency($pembelian),
+            "tren_penjualan" => $data_tren["penjualan"],
+            "tren_pembelian" => $data_tren["pembelian"],
+        ]);
     }
 }

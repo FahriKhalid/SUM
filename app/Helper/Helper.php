@@ -251,6 +251,12 @@ class Helper {
       
     	return $res; 
     } 
+
+    public static function PPN($harga){
+    	$ppn_harga = $harga * 0.1;
+		$harga = $harga + $ppn_harga;
+		return $harga;
+    }
 }
 
 

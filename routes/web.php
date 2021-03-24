@@ -22,7 +22,12 @@ Route::group(['middleware' => ['guest']], function ()
 
 Route::group(['middleware' => ['auth']], function ()
 { 
-	Route::get('dashboard', 'DashboardController@index')->name('dashboard'); 
+    Route::group(['prefix' => 'dashboard'], function(){
+        Route::get('/', 'DashboardController@index')->name('dashboard'); 
+        Route::post('filter', 'DashboardController@filter'); 
+    });
+
+	
  
     Route::group(['prefix' => 'penjualan'], function(){
         Route::group(['prefix' => 'skpp'], function(){
@@ -172,6 +177,8 @@ Route::group(['middleware' => ['auth']], function ()
  
 
     Route::group(['prefix' => 'stok'], function() {   
+        Route::get('/', 'StokController@index'); 
+        Route::get('data', 'StokController@data'); 
         Route::get('jumlah_stok/{id}', 'StokController@jumlah_stok'); 
     });
 

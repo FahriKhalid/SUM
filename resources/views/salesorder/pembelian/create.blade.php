@@ -164,7 +164,7 @@
 					</div>
 					@if($info["skpp"]->total_pembayaran != $info["piutang"])
 					@csrf
-					<input type="hidden" name="id_skpp" value="{{ $id }}">
+					<input type="hidden" name="id_skpp" value="{{ Helper::encodex($info["skpp"]->id_skpp) }}">
 					<button class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> 
 					@endif
 				</div>

@@ -19,14 +19,14 @@
             <a href="{{ url("penjualan/skpp") }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
         </div>  
     </div>  
-    @if(PembayaranService::isLunas("penjualan", Helper::decodex($id)))
+    @if(PembayaranService::isBayar("penjualan", Helper::decodex($id)))
     <div class="alert alert-warning mt-3">
     	<h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Warning</h4>
-        Pembayaran belum lunas. Tidak dapat menambahkan data sales order!
+        Pembayaran belum ada. Tidak dapat menambahkan data sales order!
     </div>
     @endif
 	<div class="card mt-3 ">
-		@if(!PembayaranService::isLunas("penjualan", Helper::decodex($id)))
+		@if(!PembayaranService::isBayar("penjualan", Helper::decodex($id)))
 		<div class="card-body alert-info">
 			<table class="table table-borderless table-sm">
 				<thead>
@@ -50,7 +50,7 @@
 		</div>
 		@endif
 		<div class="card-body bg-white"> 
-			@if(!PembayaranService::isLunas("penjualan", Helper::decodex($id)))
+			@if(!PembayaranService::isBayar("penjualan", Helper::decodex($id)))
 			<a class="btn btn-success" href="{{ url('penjualan/salesorder/'.$id.'/create') }}"><i class="fa fa-plus"></i> Tambah</a>
 			@endif
 

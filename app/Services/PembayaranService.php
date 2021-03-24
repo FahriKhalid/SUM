@@ -13,7 +13,8 @@ class PembayaranService
 {  
 	public static function sisaHutang($kategori, $id)
 	{
-		$hutang = Pembayaran::where("id_skpp", $id)->latest()->first(); 		 
+		$hutang = Pembayaran::where("id_skpp", $id)->latest()->first(); 	
+        
 		if($hutang){
 			return $hutang->sisa_hutang;
 		}else{ 
@@ -22,7 +23,8 @@ class PembayaranService
 		}
 	} 
 
-	public static function isLunas($kategori, $id){
+	public static function isLunas($kategori, $id)
+    {
 		$sisa_hutang = self::sisaHutang($kategori, $id);
 
 		if($sisa_hutang == "0.00"){
@@ -31,6 +33,17 @@ class PembayaranService
 			return true;
 		}
 	}
+
+    public static function isBayar($kategori, $id)
+    {
+        $skpp = SKPP::with("Pembayaran")->findOrFail($id);
+
+        if ($skpp->Pembayaran->sisa_hutang == null) {
+            return true;
+        } elseif($skpp->Pembayaran->sisa_hutang != null && $skpp->Pembayaran->sisa_hutang > 0){
+            return false;
+        } 
+    }
 
 	public function lastRecord($id)
 	{

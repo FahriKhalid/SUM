@@ -43,7 +43,7 @@
  
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="{{url('stok')}}">
                     <i class="fas fa-fw fa-boxes"></i>
                     <span>Stok gudang</span></a>
             </li>

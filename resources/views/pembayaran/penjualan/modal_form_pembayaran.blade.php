@@ -32,7 +32,7 @@
                     <div class="row d-none" id="form-parsial">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Total yang harus dibayar </label>
+                                <label>Total pembayaran</label>
                                 <div class="input-group"> 
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>

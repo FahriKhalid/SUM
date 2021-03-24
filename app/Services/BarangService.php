@@ -59,14 +59,22 @@ class BarangService
         if ($kategori == "penjualan"){
             $total = Barang::where("id_skpp", $id)->sum('nilai');
         } else {
-            $total = SKPP::where("id_skpp", $id)->first();
+            $total = SKPP::where("id_skpp", $id)->first();  
             if($total){
                 $total = $total->total_pembayaran;
             } else {
                 $total = 0;
             }
             
-        } 
+        }
+
+        // $total = SKPP::where("id_skpp", $id)->first();   
+
+        // if($total){
+        //     $total = $total->total_pembayaran;
+        // } else {
+        //     $total = 0;
+        // } 
         
         return $total;
     }

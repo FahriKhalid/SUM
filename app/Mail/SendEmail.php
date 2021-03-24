@@ -6,19 +6,25 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Services\SkppService;
+use App\SKPP;
 
 class SendEmail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels; 
+    
+    public $id_skpp, $subject;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+
+    public function __construct($subject, $id_skpp)
     {
-        //
+        $this->id_skpp = $id_skpp;
+        $this->subject = $subject;
     }
 
     /**
@@ -26,13 +32,14 @@ class SendEmail extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build(SkppService $SkppService)
     { 
-        return $this->from('setiagung0120@gmail.com')
-                   ->view('email.email_template')
-                   ->with([ 
-                        'nama' => 'Pahri Khalid',
-                        'website' => 'www.setiagung.com',
-                    ]);
+
+        $pdf = $SkppService->suratSKPP($this->id_skpp); 
+
+        return $this->from('SETIAGUNG USAHA MANDIRI')
+                    ->subject($this->subject)
+                    ->view('email.email_template') 
+                    ->attachData($pdf->output(), 'skpp-'.date('dmY').'.pdf');
     }
 }

@@ -24,7 +24,7 @@
     <div class="row">
         <div class="col-md-12 d-flex justify-content-between">
         	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-wallet"></i> Pembayaran</h6>
-            <a href="{{ url("skpp") }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
+            <a href="{{ url("penjualan/skpp") }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
         </div>  
     </div>  
  
@@ -134,7 +134,7 @@
 
 		if($("#form-is-parsial").is(":checked")){
 			var jumlah_pembayaran = $("input[name=jumlah_pembayaran]").val();
-			var piutang = {{  $info["piutang"] }};
+			var piutang = {{  $info["piutang"] == null ? 0 : $info["piutang"] }};
 	 
 			if(piutang <= convertNumeric(jumlah_pembayaran)){
 				alert('Jumlah pembayaran harus lebih kecil dari total yang harus dibayar');

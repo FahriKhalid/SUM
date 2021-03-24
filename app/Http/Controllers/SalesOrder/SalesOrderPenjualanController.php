@@ -43,8 +43,8 @@ class SalesOrderPenjualanController extends Controller
 
         $info["po"] = Barang::where("id_skpp", $id_skpp)->get();
 
-        $info["so"] = SO::where("id_skpp", $id_skpp)->get(); 
-
+        $info["so"] = SO::where("id_skpp", $id_skpp)->get();  
+        
         return view('salesorder.penjualan.index', compact('info', 'id'));
     }
 

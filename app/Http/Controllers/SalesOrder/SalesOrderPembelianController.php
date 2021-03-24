@@ -5,11 +5,13 @@ namespace App\Http\Controllers\SalesOrder;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables; 
+use App\Services\SalesOrderPembelianService;
 use App\Services\LogTransaksiService;
 use App\Services\PembayaranService;
 use App\Services\StokService;
 use App\Services\SkppService;
 use App\Services\SoService;
+use App\Http\Requests\StoreSalesOrderPembelian;
 use App\BarangPengajuanSo;
 use App\PengajuanSo;
 use App\Customer;
@@ -30,15 +32,17 @@ use DB;
 
 class SalesOrderPembelianController extends Controller
 {
-    protected $LogTransaksiService, $PembayaranService, $StokService, $SoService, $SkppService; 
+    protected $SalesOrderPembelianService, $LogTransaksiService, $PembayaranService, $StokService, $SoService, $SkppService; 
 
     public function __construct(
+        SalesOrderPembelianService $SalesOrderPembelianService,
         LogTransaksiService $LogTransaksiService,
         PembayaranService $PembayaranService, 
         StokService $StokService,
         SoService $SoService, 
         SkppService $SkppService)
     {
+        $this->SalesOrderPembelianService = $SalesOrderPembelianService;
         $this->LogTransaksiService = $LogTransaksiService;
         $this->PembayaranService = $PembayaranService;
         $this->StokService = $StokService;
@@ -93,8 +97,8 @@ class SalesOrderPembelianController extends Controller
             return $data->no_so;
         })->addColumn('kuantitas', function($data){ 
             return $data->totalKuantitasPO().' MT';
-        })->addColumn('status', function($data){ 
-            return $data->Status->status;
+        })->addColumn('no_skpp', function($data){ 
+            return $data->SKPP->no_skpp;
         })->addColumn('created_by', function($data){ 
             return $data->CreatedBy->nama;
         })->rawColumns(['action','check'])->make(true);
@@ -111,21 +115,14 @@ class SalesOrderPembelianController extends Controller
         $id_pre_order = Helper::decodex($id);  
 
         $info["skpp"] = SKPP::selectRaw("*, left(no_skpp, 4) as no_dokumen")->where("id_pre_order", $id_pre_order)->first(); 
-
         $info["piutang"] = $this->PembayaranService->sisaHutang("pembelian", $info["skpp"]->id_skpp); 
-
         $info["no_so"] = $this->SoService->lastKodeSo();
- 
         $info["customer"] = Customer::where("is_aktif", 1)->get();
-        
         $info["po"] = Barang::with('Produk')->where("id_pre_order", $id_pre_order)->get(); 
-
         $info["supir"] = Supir::where("is_aktif", 1)->get(); 
-
         $info["status"] = Status::whereIn("status", ["Draft", "Final"])->orderBy("id_status")->get();  
-
-        $info["pengajuan_so"] = PengajuanSo::where("id_pre_order", $id_pre_order)->get();  
-
+        $info["pengajuan_so"] = PengajuanSo::where("id_pre_order", $id_pre_order)->doesnthave("SO")->get();  
+        
         return view('salesorder.pembelian.create', compact('id','info'));
     }
 
@@ -160,17 +157,17 @@ class SalesOrderPembelianController extends Controller
             'tujuan.required'       => 'Tujuan wajib diisi', 
             'id_barang.required'    => 'Produk wajib diisi', 
             'kuantitas.required'    => 'kuantitas wajib diisi',
-            'kuantitas.*.min'          => 'Kuantitas tidak boleh 0',
-            'file.required'      => 'File sales order wajib diisi',
-            'file.max'           => 'Ukuran file sales order terlalu besar. Maks 2 Mb',
-            'file.mimes'         => 'Ekstensi file sales order tidak valid'
+            'kuantitas.*.min'       => 'Kuantitas tidak boleh 0',
+            'file.required'         => 'File sales order wajib diisi',
+            'file.max'              => 'Ukuran file sales order terlalu besar. Maks 2 Mb',
+            'file.mimes'            => 'Ekstensi file sales order tidak valid'
 
         ];
 
-        if($request->is_pengajuan_so == 1){
+        if($request->is_pengajuan_so == 1)
+        {
             $new_rule = ["id_pengajuan_so" => "required"];
-            $new_message = ["id_pengajuan_so.required" => "Nomor pengajuan so wajib dipilih"];
-            
+            $new_message = ["id_pengajuan_so.required" => "Nomor pengajuan so wajib dipilih"];    
             $rules = array_merge($new_rule, $rules);
             $messages = array_merge($new_message, $messages);   
         }
@@ -183,60 +180,25 @@ class SalesOrderPembelianController extends Controller
  
         
         DB::beginTransaction();
-        try {
- 
-            // insert SO
+        try { 
             $so = new SO();
             $so->id_skpp = Helper::decodex($request->id_skpp);
             $so->no_so = $request->nomor_so;  
             $so->id_status = $request->status;
             $so->created_by = Auth::user()->id_user;
+
             // upload file SO
             $namafile = Helper::RemoveSpecialChar($request->nomor_so).'.'.$request->file->getClientOriginalExtension();
-            $so->file = $namafile;
             $request->file->move('file_so', $namafile);
-            $so->save();
- 
-            $data_sopo = [];
+            $so->file = $namafile;
+
             if ($request->is_pengajuan_so == 1) {
-                $id_pengajuan_so = Helper::decodex($request->id_pengajuan_so);
-                $barang_pengajuan_so = BarangPengajuanSo::where("id_pengajuan_so", $id_pengajuan_so)->get();
-
-                foreach ($barang_pengajuan_so as $value) 
-                {
-                    $this->SoService->validateMaxKuantitasPO($value->id_barang, $value->kuantitas);
-                    $this->StokService->add($value->id_produk, $value->kuantitas);
-                    $this->LogTransaksiService->storePembelian($id_pre_order, $value->id_produk, $value->id_barang, $value->kuantitas);
-
-                    $data_sopo[] = [
-                        "id_barang" => $value->id_barang,
-                        "id_so" => $so->id_so,
-                        "kuantitas" => $value->kuantitas,
-                        "created_by" => Auth::user()->id_user
-                    ];
-                }
-            } else {
-                for ($i=0; $i < count($request->id_barang) ; $i++) 
-                { 
-                    if($request->kuantitas[$i] != 0)
-                    { 
-                        $id_barang = Helper::decodex($request->id_barang[$i]);
-                        $id_produk = Helper::decodex($request->id_produk[$i]);
-
-                        $this->SoService->validateMaxKuantitasPO($id_barang, $request->kuantitas[$i]);
-                        $this->StokService->add(Helper::decodex($request->id_produk[$i]), $request->kuantitas[$i]);
-                        $this->LogTransaksiService->storePembelian($id_pre_order, $id_produk, $id_barang, $request->kuantitas[$i]);
-
-                        $data_sopo[] = [
-                            "id_barang" => $id_barang,
-                            "id_so" => $so->id_so,
-                            "kuantitas" => $request->kuantitas[$i],
-                            "created_by" => Auth::user()->id_user
-                        ];
-                    } 
-                }
+                $so->id_pengajuan_so = Helper::decodex($request->id_pengajuan_so);
             }
-            SOPO::insert($data_sopo); 
+
+            $so->save();
+                
+            $this->SalesOrderPembelianService->storeSOPO($request, $id_pre_order, $so);
 
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Tambah sales order berhasil']); 
@@ -257,9 +219,7 @@ class SalesOrderPembelianController extends Controller
     public function show($id)
     { 
         $id_pre_order = Helper::decodex($id);  
-
         $info["skpp"] = SKPP::where("id_pre_order", $id_pre_order)->first(); 
-
         return view('salesorder.pembelian.show', compact('id', 'info'));
     }
 

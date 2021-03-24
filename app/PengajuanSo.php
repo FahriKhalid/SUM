@@ -53,4 +53,8 @@ class PengajuanSo extends Model
     {
         return $this->hasMany(BarangPengajuanSo::class,'id_pengajuan_so','id_pengajuan_so');   
     }
+
+    public function SO(){
+        return $this->hasOne(SO::class, 'id_pengajuan_so', 'id_pengajuan_so')->withDefault();
+    }
 }

@@ -39,8 +39,8 @@
 					<tr>
 						<th width="1px">No</th>
 						<th>Nomor SO</th> 
+						<th>Nomor SKPP</th>
 						<th>Total Kuantitas</th> 
-						<th>Status</th>
 						<th>Created by</th> 
 						<th>Created at</th> 
 						<th width="70px">Aksi</th>
@@ -70,8 +70,8 @@
 	var data_table = [
         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false}, 
         {data: 'no_so',       name: 'no_so'}, 
+        {data: 'no_skpp',  	  name: 'no_skpp'},   
         {data: 'kuantitas',   name: 'kuantitas'},   
-        {data: 'status',  	  name: 'status'},   
         {data: 'created_by',  name: 'created_by'}, 
         {data: 'created_at',  name: 'created_at'}, 
         {data: 'action',      name: 'action', orderable: false,},
@@ -102,7 +102,7 @@
 			dataType : "json", 
 			beforeSend: function(resp){
 				$("#stok-minus").prop("checked", false);
-				$("#table-show-produk").removeClass("d-none");
+				$("#table-show-produk").addClass("d-none"); 
 				parent.find("#form-hapus-so_pembelian").attr("action", url_delete); 
     			parent.modal("show");
 			},

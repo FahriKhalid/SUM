@@ -33,7 +33,8 @@ class SkppPembelianController extends Controller
 
     public function __construct(
         PembayaranService $PembayaranService,
-        SkppService $SkppService){  
+        SkppService $SkppService
+    ){  
         $this->PembayaranService = $PembayaranService;
         $this->SkppService = $SkppService;
     }
@@ -120,15 +121,15 @@ class SkppPembelianController extends Controller
     public function show($id)
     {
         $id_pre_order = Helper::decodex($id);  
-        $info["total_pembayaran"] = $this->SkppService->totalPembayaranSkppPembelian($id_pre_order);
-    
+        $info["total_pembayaran"] = $this->SkppService->totalPembayaranSkppPembelianIncludePPN(null, $id_pre_order);
+        
         $info["skpp"] = SKPP::with('PreOrder')->where("id_pre_order", $id_pre_order)->first();
         if($info["skpp"])
         {
             $info["pembayaran"] = Pembayaran::with('CreatedBy')->where("id_skpp", $info["skpp"]->id_skpp)->get(); 
             $info["last_record"] = $this->PembayaranService->lastRecord($info["skpp"]->id_skpp);
             $info["piutang"] = $this->PembayaranService->sisaHutang("pembelian", $info["skpp"]->id_skpp);  
-        }
+        } 
 
         return view("skpp.pembelian.show", compact("info", "id"));
     }
