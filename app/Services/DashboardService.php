@@ -27,14 +27,14 @@ class DashboardService
 	public function totalPiutang()
 	{
 		return Pembayaran::whereHas("SKPP", function($query){
-			$query->where("kategori", "penjualan");
+			$query->where("kategori", "pembelian");
 		})->sum("sisa_hutang"); 
 	}
 
 	public function totalHutang()
 	{
 		return Pembayaran::whereHas("SKPP", function($query){
-			$query->where("kategori", "pembelian");
+			$query->where("kategori", "penjualan");
 		})->sum("sisa_hutang"); 
 	}
 
@@ -59,7 +59,7 @@ class DashboardService
 			$from = Carbon::now()->startOfMonth();
 			$to = Carbon::now()->endOfMonth();
 		}
-
+		
 		return Pembayaran::whereHas("SKPP", function($query){
 			$query->where("kategori", "pembelian");
 		})

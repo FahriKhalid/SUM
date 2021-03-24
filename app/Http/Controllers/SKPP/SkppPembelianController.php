@@ -186,10 +186,9 @@ class SkppPembelianController extends Controller
             return response()->json(['status' => 'error_validate', 'message' => $validator->errors()->all()]); 
         }  
 
-
         try {
             $data = SKPP::findOrFail($id);
-            $this->SkppService->validateUpdateHarga($data, Helper::decimal($request->total_pembayaran));
+            //$this->SkppService->validateUpdateHarga($data, Helper::decimal($request->total_pembayaran));
 
             $data->id_pre_order = Helper::decodex($request->id_pre_order); 
             $data->no_skpp = $request->no_skpp;  
@@ -206,7 +205,7 @@ class SkppPembelianController extends Controller
             $data->save();
             return response()->json(['status' => 'success', 'message' => 'Update SKPP berhasil']);
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
+            return response()->json(['status' => 'error', 'message' => $e->getMessage().' - '.$e->getLine()]); 
         }
     }
 
