@@ -16,7 +16,7 @@ use App\Services\SkppService;
 use App\Mail\SendEmail;
 use App\Customer;
 use App\Lampiran;
-use App\produk;
+use App\Produk;
 use App\SKPP;
 use App\Atm;
 use App\Barang;

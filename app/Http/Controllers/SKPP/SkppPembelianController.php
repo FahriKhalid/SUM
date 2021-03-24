@@ -16,7 +16,7 @@ use App\Pembayaran;
 use App\PreOrder;
 use App\Customer;
 use App\Lampiran;
-use App\produk;
+use App\Produk;
 use App\SKPP;
 use App\Atm;
 use App\Barang;

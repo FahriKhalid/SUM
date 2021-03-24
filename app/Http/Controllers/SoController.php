@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Mail;
 use Yajra\Datatables\Datatables; 
 use App\Services\LampiranService; 
 use App\Customer;
-use App\produk;
+use App\Produk;
 use App\SKPP;
 use App\Barang;
 use App\SO;
