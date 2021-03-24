@@ -65,7 +65,7 @@
 				<tr>
 					<th>Customer</th>
 					<th>:</th>
-					<td>{{ $info["skpp"]->Customer->perusahaan == null ? '' : $info["skpp"]->Customer->perusahaan .' -'}} {{ $info["skpp"]->Customer->nama }} (<a href="#">detail</a>)</td>
+					<td>{{ $info["skpp"]->Customer->perusahaan == null ? '' : $info["skpp"]->Customer->perusahaan .' -'}} {{ $info["skpp"]->Customer->nama }} </td>
 				</tr>
 				<tr>
 					<th>Syarat penyerahan</th>
