@@ -33,7 +33,7 @@ class StokController extends Controller
      */
     public function data(VwStok $VwStok, Request $request)
     { 
-        $data = $VwStok->query();
+        $data = DB::table("vw_stok")->get();
 
         return Datatables::of($data)
         ->addIndexColumn()
