@@ -268,7 +268,9 @@ Route::group(['middleware' => ['auth']], function ()
         Route::get('set', 'CookieController@set'); 
         Route::get('unset', 'CookieController@unset');
     });
- 
+    
+    Route::get('profil', 'AuthController@profil');
+    Route::post('profil/update/{id}', 'AuthController@updateProfil');
     Route::get('logout', 'AuthController@logout');
 
 });

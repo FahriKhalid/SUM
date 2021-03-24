@@ -54,13 +54,19 @@
 		$("#modal-form-user").modal("show");
 	}
 
+	/*
+    |--------------------------------------------------------------------------
+    | show hode form password
+    |--------------------------------------------------------------------------
+    */
+    
 	$("body").delegate("#change-password", "click", function(){
 		if($(this).is(":checked")){
             $("#form-password").removeClass("d-none"); 
         }else{
             $("#form-password").addClass("d-none");
         }
-	})
+	});
 
 	/*
     |--------------------------------------------------------------------------

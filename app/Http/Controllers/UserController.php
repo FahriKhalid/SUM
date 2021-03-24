@@ -7,8 +7,8 @@ use Yajra\Datatables\Datatables;
 use App\User;
 use App\Role;
 use Validator;
-use Auth;
 use Helper;
+use Auth;
 
 class UserController extends Controller
 {
