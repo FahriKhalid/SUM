@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
+use App\Produsen;
 use App\Gudang;
 use Validator;
 use Helper;
@@ -18,7 +19,8 @@ class GudangController extends Controller
      */
     public function index()
     {
-        return view('gudang.index');
+        $info["produsen"] = Produsen::get();
+        return view('gudang.index', compact("info"));
     }
 
     /**
@@ -73,15 +75,17 @@ class GudangController extends Controller
     public function store(Request $request)
     {
         $rules = [ 
-            'nama'          => 'required',   
-            'alamat'         => 'required',  
-            'status'        => 'required'
+            'nama'      => 'required',   
+            'alamat'    => 'required',  
+            'status'    => 'required',
+            'produsen'  => 'required'
         ];
  
         $messages = [ 
             'nama.required'         => 'Nama gudang wajib diisi',
             'alamat.required'       => 'Alamat wajib diisi', 
             'status.required'       => 'Status gudang wajib diisi', 
+            'produsen.required'     => 'Produsen wajib diisi', 
         ];
  
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -93,6 +97,7 @@ class GudangController extends Controller
         try {
             $data = new Gudang();
             $data->nama = $request->nama; 
+            $data->id_produsen = $request->produsen; 
             $data->alamat = $request->alamat;
             $data->is_aktif = $request->status;
             $data->created_by = Auth::user()->id_user;
@@ -137,15 +142,17 @@ class GudangController extends Controller
     public function update(Request $request, $id)
     {
         $rules = [ 
-            'nama'          => 'required',   
-            'alamat'        => 'required',  
-            'status'        => 'required'
+            'nama'      => 'required',   
+            'alamat'    => 'required',  
+            'status'    => 'required',
+            'produsen'  => 'required'
         ];
  
         $messages = [ 
-            'nama.required'         => 'Nama gudang wajib diisi', 
+            'nama.required'         => 'Nama gudang wajib diisi',
             'alamat.required'       => 'Alamat wajib diisi', 
             'status.required'       => 'Status gudang wajib diisi', 
+            'produsen.required'     => 'Produsen wajib diisi',  
         ];
  
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -157,6 +164,7 @@ class GudangController extends Controller
         try {
             $data = Gudang::findOrFail(Helper::decodex($id));
             $data->nama = $request->nama; 
+            $data->id_produsen = $request->produsen; 
             $data->alamat = $request->alamat;
             $data->is_aktif = $request->status;
             $data->updated_by = Auth::user()->id_user;

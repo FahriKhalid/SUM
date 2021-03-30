@@ -157,8 +157,8 @@ $(".select2").select2({
 |--------------------------------------------------------------------------
 */ 
 
-function convertNumeric($number){
-    var string = $number.split('.').join("");
+function convertNumeric(number){
+    var string = number.split('.').join("");
     return parseFloat(string.split(',').join("."));
 }
 
@@ -273,3 +273,48 @@ function cookie(url){
 */
 
 $('[data-toggle="tooltip"]').tooltip()
+
+
+/*
+|--------------------------------------------------------------------------
+| Function send email
+|--------------------------------------------------------------------------
+*/
+
+function show_form_email(keterangan, url)
+{
+    $("#modal-send-email").modal("show"); 
+    let parent = $("#form-send-email")
+    parent.find("input[name=url]").val(url);
+    parent.find("#keterangan-email").html(keterangan);
+}
+
+$(document).on("submit", "#form-send-email", function(e){
+    e.preventDefault();
+    let url = $(this).find("input[name=url]").val();
+    $.ajax({
+        url : url,
+        type : "POST",
+        data : new FormData(this),
+        contentType : false,
+        processData : false,
+        dataType : "json",
+        beforeSend : function(){
+            loader(".modal-content", true);
+        },
+        success : function(resp){
+            if (resp.status == "error"){
+                toastr.error(resp.message,{ "closeButton": true });
+            } else {
+                toastr.success(resp.message, { "closeButton": true });  
+                $("#modal-send-email").modal("hide"); 
+            } 
+
+            loader(".modal-content", false);
+        },
+        error : function(jqXHR, exception){
+            errorHandling(jqXHR.status, exception);
+            loader(".modal-content", false);
+        }
+    })
+});

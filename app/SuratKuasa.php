@@ -62,4 +62,14 @@ class SuratKuasa extends Model
     {
         return $this->belongsTo(Gudang::class,'id_gudang','id_gudang')->withDefault();
     } 
+
+    public function SKSO()
+    {
+        return $this->hasMany(SKSO::class,'id_sk','id_sk');
+    }
+
+    public function totalKuantitasPO()
+    {
+        return $this->SKSO()->sum("kuantitas");
+    }
 }

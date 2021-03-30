@@ -30,7 +30,7 @@ class DashboardController extends Controller
         $info["total_hutang"] = $this->DashboardService->totalHutang();
         $info["total_piutang"] = $this->DashboardService->totalPiutang();
         $info["tren"] = $this->DashboardService->dataTrenPenjualanPembelian();
-
+ 
         return view('dashboard.index', compact("info"));
     }
 

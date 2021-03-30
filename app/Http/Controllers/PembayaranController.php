@@ -149,6 +149,7 @@ class PembayaranPenjualanController extends Controller
                     $sisa_hutang = $total - Helper::decimal($request->jumlah_pembayaran); 
                     $store->jumlah_pembayaran = Helper::decimal($request->jumlah_pembayaran);
                     $store->sisa_hutang = $sisa_hutang;
+                    $store->is_parsial = 1;
                 }else{
                     $pembayaran = $this->PembayaranService->sisaHutang($kategori, $id_header);
                     $store->jumlah_pembayaran = $pembayaran;

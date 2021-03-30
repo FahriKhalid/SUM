@@ -10,6 +10,7 @@ use Yajra\Datatables\Datatables;
 use App\Services\LogTransaksiService;
 use App\Services\PembayaranService;
 use App\Services\LampiranService;
+use App\Services\SkppAtmService;
 use App\Services\BarangService;
 use App\Services\StokService;
 use App\Services\SkppService;
@@ -18,7 +19,7 @@ use App\Customer;
 use App\Lampiran;
 use App\Produk;
 use App\SKPP;
-use App\Atm;
+use App\ATM;
 use App\Barang;
 use Validator;
 use Helper;
@@ -28,19 +29,22 @@ use DB;
 
 class SkppPenjualanController extends Controller
 {
-    protected $LogTransaksiService, $PembayaranService, $LampiranService, $BarangService, $SkppService, $StokService;
+    protected $LogTransaksiService, $PembayaranService, $LampiranService, $SkppAtmService, $BarangService, $SkppService, $StokService;
     protected $draft, $confirm, $approve, $unapprove;
 
     public function __construct(
         LogTransaksiService $LogTransaksiService,
         PembayaranService $PembayaranService,
         LampiranService $LampiranService, 
+        SkppAtmService $SkppAtmService,
         BarangService $BarangService, 
         SkppService $SkppService,
-        StokService $StokService){
+        StokService $StokService
+    ){
         $this->LogTransaksiService = $LogTransaksiService;
         $this->PembayaranService = $PembayaranService;
         $this->LampiranService = $LampiranService;
+        $this->SkppAtmService = $SkppAtmService;
         $this->BarangService = $BarangService;
         $this->SkppService = $SkppService;
         $this->StokService = $StokService;
@@ -94,10 +98,6 @@ class SkppPenjualanController extends Controller
 
             return $data->Customer->perusahaan;
             
-        })->addColumn('no_skpp', function($data){ 
-
-            return '<a href="'.url('penjualan/skpp/show/'.Helper::encodex($data->id_skpp)).'">'.$data->no_skpp.'</a>';
-            
         })->addColumn('status', function($data){ 
 
             return $data->Status->status;
@@ -106,6 +106,10 @@ class SkppPenjualanController extends Controller
 
             return $data->terakhir_pembayaran;
             
+        })->addColumn('status_terakhir_pembayaran', function($data){ 
+
+            return Helper::dateWarning($data->terakhir_pembayaran);
+  
         })->addColumn('pembayaran', function($data){ 
 
             if ($data->Pembayaran->sisa_hutang == null) {
@@ -116,13 +120,11 @@ class SkppPenjualanController extends Controller
                 return 'Lunas';
             } 
 
-
-            
         })->addColumn('created_by', function($data){ 
 
             return $data->CreatedBy->nama;
             
-        })->rawColumns(['action','pembayaran','no_skpp'])->make(true);
+        })->rawColumns(['action','pembayaran'])->make(true);
     }
 
     /**
@@ -135,7 +137,7 @@ class SkppPenjualanController extends Controller
         $info["customer"] = Customer::get();
         $info["produk"] = Produk::where("is_aktif", 1)->get();
         $info["no_skpp"] = $this->SkppService->lastKodeSkpp(); 
-        $info["atm"] = Atm::where("is_aktif", 1)->get();
+        $info["atm"] = ATM::where("is_aktif", 1)->get();
         return view('skpp.penjualan.create', compact("info"));
     }
 
@@ -152,13 +154,13 @@ class SkppPenjualanController extends Controller
             'nomor_skpp'            => 'required|unique:tr_skpp,no_skpp',
             'customer'              => 'required|exists:ms_customer,id_customer',
             'syarat_penyerahan'     => 'required',
-            'jadwal_penyerahan'     => 'required',    
+            'batas_akhir_pengambilan'     => 'required',    
             'produk.*'              => 'required|exists:ms_produk,id_produk|distinct',
             'incoterm.*'            => 'required',
             'kuantitas.*'           => 'required|numeric|min:1',
             'harga_jual.*'          => 'required',
             'nilai.*'               => 'required',
-            'atm'                   => 'required|exists:tr_atm,id_atm',
+            'atm.*'                   => 'required',
         ]; 
  
         $messages = [
@@ -167,16 +169,16 @@ class SkppPenjualanController extends Controller
             'nomor_skpp.unique'             => 'Nomor SKPP sudah pernah terdaftar pilih nomor SKPP yang lain',
             'customer.required'             => 'Customer waji diisi', 
             'customer.exists'               => 'Customer tidak valid',
-            'syarat_penyerahan.required'    => 'Syarat penyerahan wajib diisi',
-            'jadwal_penyerahan.required'    => 'Jadwal penyerahan wajib diisi', 
+            'syarat_penyerahan.required'    => 'Gudang pengambilan wajib diisi',
+            'batas_akhir_pengambilan.required'    => 'Batas akhir pengambilan wajib diisi', 
             'incoterm.*.required'           => 'Incoterm wajib diisi',
             'produk.*.required'             => 'Produk wajib diisi', 
             'kuantitas.*.required'          => 'Kuantitas wajib diisi',
             'kuantitas.*.min'               => 'Kuantitas tidak boleh 0',
             'harga_jual.*.required'         => 'Harga jual wajib diisi',
             'nilai.*.required'              => 'Nilai wajib diisi',
-            'atm.required'                  => 'ATM wajib diisi',
-            'atm.exists'                    => 'ATM tidak valid'
+            'atm.*.required'                  => 'ATM wajib diisi',
+            'atm.*.exists'                    => 'ATM tidak valid'
         ];
 
         if($request->is_lampiran == 1){
@@ -200,19 +202,12 @@ class SkppPenjualanController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
  
         if($validator->fails()){ 
-            return response()->json(['status' => 'error', 'message' => $validator->errors()->all()]); 
+            return response()->json(['status' => 'error_validate', 'message' => $validator->errors()->all()]); 
         }
-
 
         DB::beginTransaction();
         try {
-
-            $total_pembayaran = 0;
-            for ($j=0; $j < count($request->nilai); $j++) { 
-                $total_pembayaran += Helper::decimal($request->nilai[$j]);
-                //$total_pembayaran += Helper::PPN(Helper::decimal($request->harga_jual[$j])) * $request->kuantitas[$j];
-            }
-
+            
             // insert SKPP
             $skpp = new SKPP;
             $skpp->kategori = "penjualan";
@@ -221,58 +216,29 @@ class SkppPenjualanController extends Controller
             $skpp->syarat_penyerahan = $request->syarat_penyerahan;
             $skpp->jadwal_penyerahan = $request->jadwal_penyerahan;
             $skpp->batas_akhir_pengambilan = $request->batas_akhir_pengambilan == null ? null : Helper::dateFormat($request->batas_akhir_pengambilan, true, 'Y-m-d');
+            $skpp->terakhir_pembayaran = Helper::dateFormat($request->batas_akhir_pembayaran, true, 'Y-m-d');
             $skpp->biaya_ongkir = $request->ongkir != null ? Helper::decimal($request->ongkir) : null;
             $skpp->created_by = Auth::user()->id_user;
             $skpp->id_status = $request->status;
-            $skpp->total_pembayaran = $total_pembayaran;
-            $skpp->id_atm = $request->atm;
+            $skpp->total_pembayaran = $this->SkppService->requestTotalPembayaran($request); 
             $skpp->save();
 
             // insert po
-            $produk = [];
-            for ($i=0; $i < count($request->produk) ; $i++) 
-            { 
-                $x["id_skpp"] = $skpp->id_skpp;
-                $x["id_produk"] = $request->produk[$i];
-                $x["incoterm"] = $request->incoterm[$i];
-                $x["kuantitas"] = $request->kuantitas[$i];
-                $x["harga_jual"] = Helper::decimal($request->harga_jual[$i]);
-                $x["nilai"] = Helper::decimal($request->nilai[$i]);
-                $x["created_by"] = Auth::user()->id_user;
-                $produk[] = $x;
-            }
-            DB::table("tr_barang")->insert($produk);
+            $this->BarangService->store($request, $skpp->id_skpp, "skpp");
 
-             // insert po
-            if($request->is_lampiran == 1){
-                $lampiran = [];
-                $file = $request->file('file');
-                for ($i=0; $i < count($file) ; $i++) { 
-                    $namafile = 'lampiran-'.Str::random(8).'.'.$file[$i]->getClientOriginalExtension();
-                    $z["id_skpp"] = $skpp->id_skpp;
-                    $z["nama"] = $request->nama_file[$i];
-                    $z["file"] = $namafile;
-                    $z["size"]  = $file[$i]->getSize(); 
-                    $z["ekstensi"] = $file[$i]->getClientOriginalExtension();
-                    $z["keterangan"] = $request->keterangan_file[$i];
-                    $z["created_by"] = Auth::user()->id_user; 
-                    $lampiran[] = $z; 
+            // insert atm
+            $this->SkppAtmService->store($request, $skpp->id_skpp);
 
-                    $tujuan_upload = 'lampiran';
-                    // upload file
-                    $file[$i]->move($tujuan_upload, $namafile);
-                }
-                DB::table("tr_lampiran")->insert($lampiran);
-            }
+            if($request->lampiran == 1){
+                // insert lampiran
+                $this->LampiranService->store($request, $skpp->id_skpp, "skpp");
+            } 
 
             DB::commit();
-
             return response()->json(['status' => 'success', 'message' => 'Tambah SKPP berhasil', 'id_skpp' => Helper::encodex($skpp->id_skpp)]); 
-
         } catch (\Exception $e) {
             DB::rollback();
-
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
+            return response()->json(['status' => 'error', 'message' => $e->getMessage().' '. $e->getLine()]); 
         }
     }
 
@@ -287,12 +253,10 @@ class SkppPenjualanController extends Controller
         $id_skpp = Helper::decodex($id); 
 
         $info["kategori"]   = "penjualan";
-
-        $info["skpp"]       = SKPP::with('CreatedBy','Customer','Status')->findOrFail($id_skpp);
-
+        $info["skpp"]       = SKPP::with('CreatedBy','Customer','Status', 'SKPPATM')->findOrFail($id_skpp);
         $info["po"]         = Barang::with('Produk')->where("id_skpp", $id_skpp)->get();
-
         $info["lampiran"]   = Lampiran::where("id_skpp", $id_skpp)->get();
+        $info["email"]      = $info["skpp"]->Customer->email;
 
         return view('skpp.penjualan.show', compact('info','id'));
     }
@@ -308,16 +272,16 @@ class SkppPenjualanController extends Controller
         $id_skpp = Helper::decodex($id);
 
         $info["skpp"]  = SKPP::with('CreatedBy','Customer','Status')->findOrFail($id_skpp);
-
         $info["customer"] = Customer::get();
-
         $info["produk"] = Produk::where("is_aktif", 1)->get();
-
         $info["po"] = Barang::where("id_skpp", $id_skpp)->get(); 
-
         $info["lampiran"] = Lampiran::where("id_skpp", $id_skpp)->get();
+        $info["atm"] = ATM::where("is_aktif", 1)->get();
 
-        $info["atm"] = Atm::where("is_aktif", 1)->get();
+        $info["id_atm"] = [];
+        foreach ($info["skpp"]->SKPPATM as $value) {
+            $info["id_atm"][] = $value->id_atm;
+        }
 
         return view('skpp.penjualan.edit', compact('info','id'));
     }
@@ -344,7 +308,7 @@ class SkppPenjualanController extends Controller
             'kuantitas.*'           => 'required',
             'harga_jual.*'          => 'required',
             'nilai.*'               => 'required', 
-            'atm'                   => 'required|exists:tr_atm,id_atm',
+            'atm.*'                 => 'required',
         ]; 
  
         $messages = [
@@ -353,7 +317,7 @@ class SkppPenjualanController extends Controller
             'nomor_skpp.unique'             => 'Nomor SKPP sudah pernah terdaftar pilih nomor SKPP yang lain',
             'customer.required'             => 'Customer waji diisi', 
             'customer.exist'                => 'Customer tidak valid',
-            'syarat_penyerahan.required'    => 'Syarat penyerahan wajib diisi',
+            'syarat_penyerahan.required'    => 'Gudang pengambilan wajib diisi',
             'jadwal_penyerahan.required'    => 'Jadwal penyerahan wajib diisi', 
             'incoterm.*.required'           => 'Incoterm wajib diisi', 
             'produk.*.exists'               => 'Produk tidak valid', 
@@ -362,8 +326,8 @@ class SkppPenjualanController extends Controller
             'kuantitas.*.required'          => 'Kuantitas wajib diisi',
             'harga_jual.*.required'         => 'Harga jual wajib diisi',
             'nilai.*.required'              => 'Nilai wajib diisi',
-            'atm.required'                  => 'ATM wajib diisi',
-            'atm.exists'                    => 'ATM tidak valid'
+            'atm.*.required'                  => 'ATM wajib diisi',
+            'atm.*.exists'                    => 'ATM tidak valid'
         ];
 
         if($request->has('new_produk'))
@@ -423,12 +387,11 @@ class SkppPenjualanController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
  
         if($validator->fails()){ 
-            return response()->json(['status' => 'error', 'message' => $validator->errors()->all()]); 
+            return response()->json(['status' => 'error_validate', 'message' => $validator->errors()->all()]); 
         } 
         
         DB::beginTransaction();
         try {
-
             $total_pembayaran = 0;
             for ($j=0; $j < count($request->nilai); $j++) { 
                 $total_pembayaran += Helper::decimal($request->nilai[$j]);
@@ -439,17 +402,20 @@ class SkppPenjualanController extends Controller
             $skpp->id_customer = $request->customer;
             $skpp->syarat_penyerahan = $request->syarat_penyerahan;
             $skpp->jadwal_penyerahan = $request->jadwal_penyerahan;
+            $skpp->terakhir_pembayaran = Helper::dateFormat($request->batas_akhir_pembayaran, true, 'Y-m-d');
             $skpp->batas_akhir_pengambilan = $request->batas_akhir_pengambilan == null ? null : Helper::dateFormat($request->batas_akhir_pengambilan, true, 'Y-m-d');
             $skpp->biaya_ongkir = $request->ongkir != null ? Helper::decimal($request->ongkir) : null;
             $skpp->updated_by = Auth::user()->id_user;
             $skpp->id_status = $request->status;
-            $skpp->total_pembayaran = $total_pembayaran;
-            $skpp->id_atm = $request->atm;
+            $skpp->total_pembayaran = $total_pembayaran; 
             $skpp->save();
- 
+    
+            // update atm
+            $this->SkppAtmService->update($request, $id);
+
             // update po
             $this->BarangService->update($request, $id);
- 
+            
             // insert po
             if($request->has('new_produk')){
                 $this->BarangService->store($request, $id, "skpp");
@@ -586,7 +552,7 @@ class SkppPenjualanController extends Controller
             $this->SkppService->minusStok($id_skpp);
 
             if($request->is_send_email && $request->is_send_email == 1){
-               $this->send_email($skpp);
+               $this->send_email($id);
             }
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Approve SKPP berhasil']); 
@@ -610,7 +576,7 @@ class SkppPenjualanController extends Controller
             $this->SkppService->addStok($id_skpp);
 
             if($request->is_send_email && $request->is_send_email == 1){
-               $this->send_email($data);
+               //$this->send_email($id);
             }
 
             DB::commit();
@@ -622,18 +588,17 @@ class SkppPenjualanController extends Controller
     }
     
 
-    public function send_email($skpp)
-    {
+    public function send_email($id)
+    {   
         try {
-            
-            // $to_name = $skpp->Customer->nama;
-            // $to_email =  $skpp->Customer->email;
-            // $data = array('name'=> "SKPP", "body" => "A test mail");
+            $id_skpp = Helper::decodex($id);
+            $skpp = SKPP::findOrFail($id_skpp);
+            $email_tujuan = $skpp->Customer->email;
 
-            Mail::to($skpp->Customer->email)->send(new SendEmail("SKPP", $skpp->id_skpp)); 
-           
-            return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$to_email.' tidak berhasil']); 
-            
+            $pdf = $this->SkppService->suratSKPP($id_skpp); 
+            Mail::to($email_tujuan)->send(new SendEmail("SKPP", $pdf)); 
+
+            return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
         }

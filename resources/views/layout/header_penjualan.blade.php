@@ -11,7 +11,7 @@
         </li>  
 
         <li class="nav-item">
-            <a class="nav-link text-muted {{ Request::segment(1) == 'invoice' ? 'active' : ''}}" href="{{ url('invoice/index/'.$id) }}">Invoice</a>
+            <a class="nav-link text-muted {{ Request::segment(2) == 'invoice' ? 'active' : ''}}" href="{{ url('penjualan/invoice/index/'.$id) }}">Invoice</a>
         </li>  
     </ul> 
 </div>

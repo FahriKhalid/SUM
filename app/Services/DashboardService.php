@@ -88,10 +88,11 @@ class DashboardService
 						WHERE tanggal BETWEEN DATE('".$start."') AND DATE('".$end."')
 			) AS A
 			LEFT JOIN (
-			    SELECT SUM(jumlah_pembayaran) as pembayaran, p.created_at, s.kategori
+			    SELECT p.created_at, s.kategori, 
+                SUM(CASE WHEN s.kategori = 'penjualan' THEN jumlah_pembayaran ELSE 0 END) AS penjualan,
+                SUM(CASE WHEN s.kategori = 'pembelian' THEN jumlah_pembayaran ELSE 0 END) AS pembelian
 			    FROM tr_pembayaran as p 
 			    JOIN tr_skpp as s ON p.id_skpp = s.id_skpp
-			    GROUP BY s.kategori
 			) as B ON A.tanggal = DATE(B.created_at)
 
 			GROUP BY tanggal
@@ -101,20 +102,21 @@ class DashboardService
 	public function dataTrenPenjualanPembelian($start = null, $end = null)
 	{
 		$data = $this->queryPenjualanPembelian($start, $end);
+ 
 		$penjualan = [];
 		$pembelian = [];
 		foreach (array_chunk($data, 100) as $item) {
 			foreach ($item as $value) {
-				if ($value->kategori == "penjualan") {
-					array_push($penjualan, $value->pembayaran);
+				if ($value->penjualan != null) {
+					array_push($penjualan, $value->penjualan);
 				} else {
 					array_push($penjualan, 0);
 				} 
 			} 
 
 			foreach ($item as $value) {
-				if ($value->kategori == "pembelian") {
-					array_push($pembelian, $value->pembayaran);
+				if ($value->pembelian != null) {
+					array_push($pembelian, $value->pembelian);
 				} else {
 					array_push($pembelian, 0);
 				} 

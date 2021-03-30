@@ -10,7 +10,6 @@ class LampiranService
 {
 
 	public function store($request, $id, $kategori){
-
 		try {
 			$new_lampiran = [];
         	for ($i=0; $i < count($request->new_file) ; $i++) { 
@@ -32,8 +31,8 @@ class LampiranService
 	            $request->new_file[$i]->move('lampiran', $namafile);
 	        } 
 	       	Lampiran::insert($new_lampiran);
-		} catch (Exception $e) {
-			return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
+		} catch (\Exception $e) {
+			throw new \Exception("Tambah lampiran tidak berhasil ".$e->getMessage(), 1);
 		}
 	}
 
@@ -65,7 +64,7 @@ class LampiranService
 		        $lampiran->save();
 		    }
 		} catch (\Exception $e) {
-			return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
+			throw new \Exception("Update lampiran tidak berhasil ".$e->getMessage(), 1);
 		}
 	}
 
@@ -87,8 +86,8 @@ class LampiranService
 		            $item->delete();
 				}
 			}
-		} catch (\Exception $e) {
-			return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
+		} catch (\Exception $e) { 
+			throw new \Exception("Hapus lampiran tidak berhasil ".$e->getMessage(), 1);
 		} 
 	}
 }

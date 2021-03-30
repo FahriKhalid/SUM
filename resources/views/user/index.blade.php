@@ -11,10 +11,15 @@
 @include('user.form_modal')
  
 	<div class="container-fluid mt-4">
-		<button onclick="show_modal()" class="btn btn-success"><i class="fa fa-plus"></i> Tambah</button>
+		<div class="row">
+	        <div class="col-md-12 d-flex justify-content-between">
+	        	<h6 class="m-0 font-weight-bold text-primary">USER</h6>   
+	        </div>  
+	    </div>
 		<div class="card mt-3">
 			<div class="card-body">
-				<div class="table-responsive">
+				<button onclick="show_modal()" class="btn btn-success"><i class="fa fa-plus"></i> Tambah</button>
+				<div class="table-responsive mt-3">
                     <table class="table table-sm table-bordered" id="tabel-user" style="width:100%">
                         <thead>
                             <tr>

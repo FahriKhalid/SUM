@@ -155,9 +155,8 @@
 <script>
 
     let start = moment().clone().startOf('month');
-    let end = moment().clone().endOf('month');
+    let end = moment().clone().endOf('month'); 
 
- 
     var options = {
         series: [{
             name: 'Penjualan',
@@ -176,9 +175,16 @@
         stroke: {
             curve: 'smooth'
         },
+        yaxis: {
+            labels: {
+                formatter: function (value) {
+                  return formatNumber(value, 2);
+                }
+            },
+        },
         xaxis: {
             type: 'datetime',
-            categories: generateDates(start, end)
+            categories: dateRange(start, end)
         },
         tooltip: {
             x: { format: 'dd/MM/yy HH:mm' },
@@ -221,7 +227,7 @@
 
     function updateChart(start, end, resp)
     {
-        let dates = generateDates(start, end);
+        let dates = dateRange(start, end);
 
         chart_tren.updateOptions( {
             xaxis: { 
@@ -240,21 +246,20 @@
             }
         ]);
     }
+ 
+    function dateRange(startDate, endDate, steps = 1) {
+      const dateArray = [];
+      let currentDate = new Date(startDate);
+      const format = "YYYY-MM-DD" 
 
-    function generateDates(start, end)
-    {
-        let dates = [];
-        let currDate = moment.utc(new Date(start)).startOf("day");
-        let lastDate = moment.utc(new Date(end)).endOf("day");
-        const format = "YYYY-MM-DD"
+      while (currentDate <= new Date(endDate)) {
+        dateArray.push(moment(new Date(currentDate)).format(format));
+        // Use UTC date to prevent problems with time zones and DST
+        currentDate.setUTCDate(currentDate.getUTCDate() + steps);
+      }
 
-        do {
-            dates.push(moment(currDate.clone().toDate()).format(format));
-        } while (currDate.add(1, "days").diff(lastDate) < 0);
-        dates.push(moment(currDate.clone().toDate()).format(format));
-
-        return dates;
-    }
+      return dateArray;
+    } 
 
 
     

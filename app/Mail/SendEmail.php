@@ -13,7 +13,7 @@ class SendEmail extends Mailable
 {
     use Queueable, SerializesModels; 
     
-    public $id_skpp, $subject;
+    public $subject, $pdf;
 
     /**
      * Create a new message instance.
@@ -21,10 +21,10 @@ class SendEmail extends Mailable
      * @return void
      */
 
-    public function __construct($subject, $id_skpp)
-    {
-        $this->id_skpp = $id_skpp;
+    public function __construct($subject, $pdf)
+    { 
         $this->subject = $subject;
+        $this->pdf = $pdf;
     }
 
     /**
@@ -32,14 +32,13 @@ class SendEmail extends Mailable
      *
      * @return $this
      */
-    public function build(SkppService $SkppService)
+    public function build()
     { 
+        $subject = $this->subject;
 
-        $pdf = $SkppService->suratSKPP($this->id_skpp); 
-
-        return $this->from('SETIAGUNG USAHA MANDIRI')
-                    ->subject($this->subject)
-                    ->view('email.email_template') 
-                    ->attachData($pdf->output(), 'skpp-'.date('dmY').'.pdf');
+        return $this->from('setiagungpt@gmail.com')
+                    ->subject($subject)
+                    ->view('email.email_template', compact('subject')) 
+                    ->attachData($this->pdf->output(), $subject.'.pdf');
     }
 }

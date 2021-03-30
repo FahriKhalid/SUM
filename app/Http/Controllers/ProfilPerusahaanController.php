@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\ProfilPerusahaan;
-use App\Atm;
+use App\ATM;
 use Validator;
 use Helper;
 use Auth;
@@ -20,7 +20,7 @@ class ProfilPerusahaanController extends Controller
     public function index()
     {
         $info["data"] = ProfilPerusahaan::first();
-        $info["atm"]  = Atm::where("is_aktif", 1)->get();
+        $info["atm"]  = ATM::where("is_aktif", 1)->get();
         return view('profil_perusahaan.index', compact('info'));
     }
 
@@ -65,7 +65,7 @@ class ProfilPerusahaanController extends Controller
     public function edit()
     { 
         $info["data"] = ProfilPerusahaan::first();
-        $info["atm"] = Atm::get();
+        $info["atm"] = ATM::get();
 
         return view('profil_perusahaan.edit', compact("info"));
     }
@@ -154,7 +154,7 @@ class ProfilPerusahaanController extends Controller
                     ];
                 }
 
-                Atm::insert($data_atm);
+                ATM::insert($data_atm);
             }
 
             if($request->has('atm')){
@@ -166,13 +166,13 @@ class ProfilPerusahaanController extends Controller
                         "updated_by" => Auth::user()->id_user
                     ];
 
-                    Atm::findOrFail(Helper::decodex($request->id_atm[$i]))->update($update_atm);
+                    ATM::findOrFail(Helper::decodex($request->id_atm[$i]))->update($update_atm);
                 }
             }
 
             DB::commit();
 
-            $info["atm"] = Atm::get();
+            $info["atm"] = ATM::get();
 
             return response()->json([
                 'status' => 'success', 
@@ -196,8 +196,8 @@ class ProfilPerusahaanController extends Controller
         $id_atm = Helper::decodex($id);
 
         try {
-            Atm::findOrFail($id_atm)->delete();
-            $info["atm"] = Atm::get();
+            ATM::findOrFail($id_atm)->delete();
+            $info["atm"] = ATM::get();
             return response()->json([
                 'status' => 'success', 
                 'message' => 'Hapus ATM berhasil',

@@ -1,9 +1,13 @@
 <?php
 
 namespace App\Services; 
+use App\Lampiran;
 use App\PreOrder; 
-use Auth;
+use App\Barang;
 use Helper;
+use Auth;
+use PDF;
+use DB;
 
 class PreOrderService 
 {
@@ -20,6 +24,15 @@ class PreOrderService
 		return $nomor_skpp;
 	}
 
-	
+	public function suratPreOrder($id)
+	{
+		$info["pre_order"]          = PreOrder::with('CreatedBy','Produsen','Status')->findOrFail($id);
+        $info["po"]                 = Barang::with('Produk')->where("id_pre_order", $id)->get();
+        $info["lampiran"]           = Lampiran::where("id_pre_order", $id)->get();
+        $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
+        $pdf = PDF::loadview('pre_order.surat_po', compact('info')); 
+        
+        return $pdf;
+	}
  
 }

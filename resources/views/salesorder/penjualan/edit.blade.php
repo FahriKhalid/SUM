@@ -24,16 +24,22 @@
 				<div class="card-body" id="layout-parent"> 
 
 					<div class="form-row ">
-						<div class="form-group col-md-6">
+						<div class="form-group col-md-4">
 	                        <label>Nomor SKPP <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
-	                            <input class="form-control" disabled value="{{ $info["so"]->SKPP->no_skpp }}" placeholder="Wajib di isi"> 
+	                            <input class="form-control" disabled value="{{ $info["so"]->SKPP->no_skpp }}" placeholder="Wajib diisi"> 
 	                        </div>
 	                    </div> 
-						<div class="form-group col-md-6">
+						<div class="form-group col-md-4">
 	                        <label>Nomor Sales Order <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
-	                            <input class="form-control" name="nomor_so" value="{{ $info["so"]->no_so }}" placeholder="Wajib di isi"> 
+	                            <input class="form-control" name="nomor_so" value="{{ $info["so"]->no_so }}" placeholder="Wajib diisi"> 
+	                        </div>
+	                    </div> 
+	                    <div class="form-group col-md-4">
+	                        <label>Nomor Sales Order pengambilan<span class="text-danger">*</span></label>
+	                        <div class="form-group"> 
+	                            <input class="form-control" name="nomor_so_pengambilan" value="{{ $info["so"]->no_so_pengambilan }}" placeholder="Wajib diisi"> 
 	                        </div>
 	                    </div> 
 	                     
@@ -55,7 +61,7 @@
 	                    <div class="form-group col-md-6">
 		                    <label>Tujuan <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
-	                            <input class="form-control" name="tujuan" value="{{ $info["so"]->tujuan }}" placeholder="Wajib di isi"> 
+	                            <input class="form-control" name="tujuan" value="{{ $info["so"]->tujuan }}" placeholder="Wajib diisi"> 
 	                        </div>
 		                </div>  
 					</div>

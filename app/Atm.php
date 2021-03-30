@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Atm extends Model
+class ATM extends Model
 {
     protected $table = 'tr_atm';
     protected $primaryKey = 'id_atm'; 
@@ -32,4 +32,6 @@ class Atm extends Model
             'nama' => '-'
         ]);
     }
+
+    
 }

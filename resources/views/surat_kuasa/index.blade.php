@@ -6,8 +6,9 @@
 @endsection
 @section('content') 
 
-@include('salesorder.penjualan.header_salesorder')
+@include('salesorder.penjualan.header_salesorder') 
 @include('surat_kuasa.modal_detail')
+@include('layout.modal_email')
 
 <div class="container-fluid mb-4 mt-4">
 
@@ -29,6 +30,7 @@
 						<tr> 
 							<th>Nomor surat kuasa</th>
 							<th>Supir</th> 
+							<th>Kuantitas</th>
 							<th>Gudang</th> 
 							<th>Created by</th>
 							<th>Created at</th>
@@ -62,16 +64,36 @@
     |--------------------------------------------------------------------------
     */ 
 
-    var data_table = [ 
+    var columns = [ 
     {data: 'no_sk',       name: 'no_sk'},  
     {data: 'supir',       name: 'supir', orderable: false},   
+    {data: 'kuantitas',   name: 'kuantitas'},
     {data: 'gudang',  	  name: 'gudang'},
     {data: 'created_by',  name: 'created_by'}, 
     {data: 'created_at',  name: 'created_at'}, 
     {data: 'action',      name: 'action', orderable: false},
     ];
-    
-    var table_riwayat_supir = table('#tabel-surat-kuasa', '{{url('surat_kuasa/data')}}/'+'{{$id}}', data_table);
+     
+    $('#tabel-surat-kuasa').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url : '{{url('surat_kuasa/data')}}/'+'{{$id}}'
+        },
+        columns: columns,
+        responsive: true,
+        colReorder: true, 
+        columnDefs:[{
+        	targets:2, render:function(data){
+		      	return data + " MT";
+		    }
+		}],
+        createdRow: function ( row, data, index ) { 
+        	if(data['pembayaran'] != 'Lunas'){
+        		$(row).addClass(data['status_terakhir_pembayaran']);
+        	}
+		}
+    });  
 
 	
 	/*

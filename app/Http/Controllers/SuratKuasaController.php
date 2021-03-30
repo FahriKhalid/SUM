@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables; 
 use App\Services\SuratKuasaService;
+use App\Mail\SendEmail;
 use App\SuratKuasa;
 use App\Gudang;
 use App\Supir;
-use App\SO;
 use App\SOPO;
 use App\SKSO;
+use App\SO;
 use Validator;
 use Helper;
 use Auth;
@@ -33,7 +35,7 @@ class SuratKuasaController extends Controller
     public function index($id)
     {
         $info["so"] = SO::with('SKPP')->findOrFail(Helper::decodex($id));
-
+        $info["email"] = $info["so"]->SKPP->Customer->email;
         return view('surat_kuasa.index', compact('info', 'id'));
     }
 
@@ -46,9 +48,7 @@ class SuratKuasaController extends Controller
     public function data(SuratKuasa $suratKuasa, Request $request, $id)
     {
         $id_so = Helper::decodex($id);
-
         $data = $suratKuasa->query()->where("id_so", $id_so)->with('CreatedBy', 'Status', 'Supir', 'Gudang');
-
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){ 
 
             return '<div class="btn-group btn-group-sm" role="group">
@@ -67,21 +67,15 @@ class SuratKuasaController extends Controller
                   </div>';
 
         })->addColumn('supir', function($data){ 
- 
             return $data->Supir->nama;
-            
         })->addColumn('kendaraan', function($data){ 
-            
             return $data->Supir->kendaraan;
-            
-        })->addColumn('gudang', function($data){ 
-            
-            return $data->Gudang->nama;
-            
-        })->addColumn('created_by', function($data){ 
-            
-            return $data->CreatedBy->nama;
-            
+        })->addColumn('gudang', function($data){             
+            return $data->Gudang->nama;            
+        })->addColumn('kuantitas', function($data){             
+            return $data->totalKuantitasPO();            
+        })->addColumn('created_by', function($data){             
+            return $data->CreatedBy->nama;            
         })->rawColumns(['action'])->make(true);
     }
 
@@ -94,15 +88,10 @@ class SuratKuasaController extends Controller
     public function create($id)
     {
         $id_so = Helper::decodex($id);
-
         $info["so"] = SO::with("SKPP")->findOrFail($id_so); 
- 
         $info["no_sk"] = $this->SuratKuasaService->lastKodeSk(); 
-
         $info["gudang"] = Gudang::where("is_aktif", 1)->get();
-
         $info["supir"] = Supir::where("is_aktif", 1)->get();
-
         $info["so_po"] = SOPO::with("SO")->where("id_so", $id_so)->get();   
 
         return view('surat_kuasa.create', compact('info','id'));
@@ -205,13 +194,9 @@ class SuratKuasaController extends Controller
     public function edit($id)
     {
         $id_sk = Helper::decodex($id);
-
         $info["sk"] = SuratKuasa::with("SO")->findOrFail($id_sk);
-
         $info["sk_so"] = SKSO::where("id_sk", $id_sk)->get(); 
-
         $info["gudang"] = Gudang::where("is_aktif", 1)->get();
-
         $info["supir"] = Supir::where("is_aktif", 1)->get();
 
         return view('surat_kuasa.edit', compact('info', 'id'));
@@ -309,14 +294,33 @@ class SuratKuasaController extends Controller
      */
     public function surat_kuasa($id)
     {
-        $id = Helper::decodex($id);
-        
-        $info["surat_kuasa"] = SuratKuasa::with('Gudang','Supir')->findOrFail($id);
-
-        $info["skso"] = SKSO::with('SOPO')->where("id_sk", $id)->get();  
-
-        $pdf = PDF::loadview('surat_kuasa.surat_kuasa', compact('info', 'id')); 
+        $id = Helper::decodex($id); 
+        $pdf = $this->SuratKuasaService->suratKuasa($id);
 
         return $pdf->setPaper('a4')->stream();
     }
+
+
+    /**
+     * Send email surat kuasa.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function send_email($id)
+    {
+        try {
+            $id_sk = Helper::decodex($id);
+            $sk = SuratKuasa::findOrFail($id_sk);
+            $email_tujuan = $sk->SO->SKPP->Customer->email;
+
+            $pdf = $this->SuratKuasaService->suratKuasa($id_sk); 
+            Mail::to($email_tujuan)->send(new SendEmail("SURAT KUASA", $pdf)); 
+
+            return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
+        }
+    }
+
 }

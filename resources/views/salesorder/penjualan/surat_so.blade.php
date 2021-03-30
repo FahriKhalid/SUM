@@ -104,7 +104,7 @@
 		<div class="text-dark" style="display: flex; align-items: center;">
 			<img src="{{ public_path('img/logo_perusahaan_1.png')}}" width="40px">
 			<div style="margin-left: 50px">
-				PT. SETIAGUNG USAHA MANDIRI
+				PT SETIAGUNG USAHA MANDIRI
 			</div>
 		</div>
 

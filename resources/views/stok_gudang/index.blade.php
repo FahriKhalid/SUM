@@ -1,6 +1,6 @@
 @extends('layout.index')
 
-@section('title', 'SUM - User')
+@section('title', 'SUM - Stok Gudang')
 
 @section('css')
 	<link rel="stylesheet" type="text/css" href="{{asset('vendor/datatables/dataTables.bootstrap4.min.css')}}"> 
@@ -10,10 +10,10 @@
  
 	<div class="container-fluid mt-4">
 		<div class="row">
-	        <div class="col-md-12 d-flex justify-content-between">
-	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-fw fa-boxes"></i> Stok Gudang</h6>   
-	        </div>  
-	    </div>
+            <div class="col-md-12 d-flex justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">STOK GUDANG</h6>   
+            </div>  
+        </div>
 		<div class="card mt-3">
 			<div class="card-body">
 				<div class="table-responsive">

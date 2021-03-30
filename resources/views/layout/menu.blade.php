@@ -13,49 +13,49 @@
                     <span>Dashboard</span></a>
             </li>
             <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item {{ in_array(Request::segment(1), ['skpp','pembayaran','salesorder']) ? 'active' : '' }}">
-                <a class="nav-link {{ in_array(Request::segment(1), ['skpp','pembayaran','salesorder']) ? '' : 'collapsed' }}" href="#" data-toggle="collapse" data-target="#collapseTwo"
+            <li class="nav-item {{ in_array(Request::segment(1), ['penjualan']) ? 'active' : '' }}">
+                <a class="nav-link {{ in_array(Request::segment(1), ['penjualan']) ? '' : 'collapsed' }}" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-coins"></i>
                     <span>Penjualan</span>
                 </a>
-                <div id="collapseTwo" class="collapse {{ Helper::menu_expand() != "yes" ? (in_array(Request::segment(1), ['skpp','pembayaran','salesorder']) ? 'show' : '') : '' }}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div id="collapseTwo" class="collapse {{ Helper::menu_expand() != "yes" ? (in_array(Request::segment(1), ['penjualan']) ? 'show' : '') : '' }}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded"> 
-                        <a class="collapse-item {{ in_array(Request::segment(1), ['skpp','pembayaran','salesorder']) ? 'active' : '' }}" href="{{url('penjualan/skpp')}}">SKPP</a>
+                        <a class="collapse-item {{ in_array(Request::segment(1), ['penjualan']) ? 'active' : '' }}" href="{{url('penjualan/skpp')}}">SKPP</a>
                         {{-- <a class="collapse-item" href="{{url('faktur_penjualan')}}">Faktur Penjualan</a>
                         <a class="collapse-item" href="{{url('surat_jalan')}}">Surat jalan</a> --}}
                     </div>
                 </div>
             </li>
             <!-- Nav Item - Dashboard --> 
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseThree"
+            <li class="nav-item {{ in_array(Request::segment(1), ['pembelian']) ? 'active' : '' }}">
+                <a class="nav-link {{ in_array(Request::segment(1), ['pembelian']) ? '' : 'collapsed' }}" href="#" data-toggle="collapse" data-target="#collapseThree"
                     aria-expanded="true" aria-controls="collapseThree">
                     <i class="fas fa-shopping-cart"></i>
                     <span>Pembelian</span>
                 </a>
-                <div id="collapseThree" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div id="collapseThree" class="collapse {{ Helper::menu_expand() != "yes" ? (in_array(Request::segment(1), ['pembelian']) ? 'show' : '') : '' }}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">  
-                        <a class="collapse-item" href="{{url('pembelian/pre_order')}}">Pre Order</a> 
+                        <a class="collapse-item {{ in_array(Request::segment(1), ['pembelian']) ? 'active' : '' }}" href="{{url('pembelian/pre_order')}}">Pre Order</a> 
                     </div>
                 </div>
             </li>
  
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
+            <li class="nav-item {{ in_array(Request::segment(1), ['stok']) ? 'active' : '' }}">
                 <a class="nav-link" href="{{url('stok')}}">
                     <i class="fas fa-fw fa-boxes"></i>
                     <span>Stok gudang</span></a>
             </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item {{ in_array(Request::segment(1), ['customer','produk','gudang','user','supir','profil_perusahaan']) ? 'active' : '' }}">
-                <a class="nav-link {{ in_array(Request::segment(1), ['customer','produk','gudang','user','supir','profil_perusahaan']) ? '' : 'collapsed' }}" href="#" data-toggle="collapse" data-target="#collapseDataMaster"
+            <li class="nav-item {{ in_array(Request::segment(1), ['customer','produsen','produk','gudang','user','supir','profil_perusahaan']) ? 'active' : '' }}">
+                <a class="nav-link {{ in_array(Request::segment(1), ['customer','produsen','produk','gudang','user','supir','profil_perusahaan']) ? '' : 'collapsed' }}" href="#" data-toggle="collapse" data-target="#collapseDataMaster"
                     aria-expanded="true" aria-controls="collapseDataMaster">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Data master</span>
                 </a>
-                <div id="collapseDataMaster" class="collapse {{ Helper::menu_expand() != "yes" ? (in_array(Request::segment(1), ['customer','produk','gudang','user','supir','profil_perusahaan']) ? 'show' : '') : '' }}" aria-labelledby="headingUtilities"
+                <div id="collapseDataMaster" class="collapse {{ Helper::menu_expand() != "yes" ? (in_array(Request::segment(1), ['customer','produsen','produk','gudang','user','supir','profil_perusahaan']) ? 'show' : '') : '' }}" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded"> 
                         <a class="collapse-item {{ Request::segment(1) == 'customer' ? 'active' : '' }}" href="{{url('customer')}}">Customer</a>

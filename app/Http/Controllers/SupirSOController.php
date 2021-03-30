@@ -5,15 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;  
 use Yajra\Datatables\Datatables; 
 use App\Services\SoService; 
-use App\Supir;
+use App\SuratKuasa;
 use App\SupirSO;
+use App\Supir;
 use App\SOPO; 
 use App\SO;
 use Validator;
-use Auth;
 use Helper;
-use DB;
+use Auth;
 use PDF;
+use DB;
 
 class SupirSOController extends Controller
 {
@@ -103,10 +104,12 @@ class SupirSOController extends Controller
             return response()->json(['status' => 'error', 'message' => $validator->errors()->all()]); 
         }
 
+        $id_so = Helper::decodex($request->id_so);
+
         DB::beginTransaction();
         try {
             // update supir lama
-            $supir_lama = SupirSO::where("id_so", Helper::decodex($request->id_so))->where("is_aktif", 1)->firstOrFail(); 
+            $supir_lama = SupirSO::where("id_so", $id_so)->where("is_aktif", 1)->firstOrFail(); 
             $supir_lama->is_aktif = '0'; 
             $supir_lama->updated_by = Auth::user()->id_user;
             $supir_lama->keterangan = $request->keterangan;
@@ -114,10 +117,14 @@ class SupirSOController extends Controller
 
             // insert supir baru
             $supir_baru = new SupirSO();
-            $supir_baru->id_so = Helper::decodex($request->id_so); 
+            $supir_baru->id_so = $id_so; 
             $supir_baru->id_supir = $request->supir; 
             $supir_baru->created_by = Auth::user()->id_user;
             $supir_baru->save();
+
+            $sk = SuratKuasa::where("id_so", $id_so)->firstOrFail();
+            $sk->id_supir = $request->supir; 
+            $sk->save();
 
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Ganti supir berhasil']); 

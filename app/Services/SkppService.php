@@ -91,12 +91,23 @@ class SkppService
 
 	public function suratSKPP($id)
 	{
-        $info["skpp"]               = SKPP::with('CreatedBy','Customer','Status','ATM')->findOrFail($id);
+        $info["skpp"]               = SKPP::with('CreatedBy','Customer','Status','SKPPATM')->findOrFail($id);
         $info["po"]                 = Barang::with('Produk')->where("id_skpp", $id)->get();
         $info["lampiran"]           = Lampiran::where("id_skpp", $id)->get();
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
         $pdf = PDF::loadview('skpp.penjualan.surat_skpp', compact('info')); 
         return $pdf;
+	}
+
+	public function requestTotalPembayaran($request)
+	{
+		$total_pembayaran = 0;
+        for ($j=0; $j < count($request->new_nilai); $j++) { 
+            $total_pembayaran += Helper::decimal($request->new_nilai[$j]);
+            //$total_pembayaran += Helper::PPN(Helper::decimal($request->harga_jual[$j])) * $request->kuantitas[$j];
+        }
+
+        return $total_pembayaran;
 	}
  
 }

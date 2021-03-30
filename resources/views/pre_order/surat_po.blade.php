@@ -108,7 +108,7 @@
 		<div class="text-dark" style="display: flex; align-items: center;">
 			<img src="{{ public_path('img/logo_perusahaan_1.png')}}" width="40px">
 			<div style="margin-left: 50px">
-				PT. SETIAGUNG USAHA MANDIRI
+				PT SETIAGUNG USAHA MANDIRI
 			</div>
 		</div> 
 		<div class="text-center">
@@ -163,7 +163,7 @@
 				<thead>
 					<tr>
 						<th align="center">Jenis Pupuk</th>
-						<th align="center">Harga per ton Include PPN</th>
+						<th align="center">Harga per ton</th>
 						<th align="center">Kuantum</th>
 						<th align="center">Incoterm</th> 
 					</tr>
@@ -171,13 +171,13 @@
 				<tbody>
 					@php($total = 0)
 					@foreach($info["po"] as $po) 
-					<?php  
+					{{-- <?php  
 					$ppn_harga = $po->harga_jual * 0.1;
 					$harga = $po->harga_jual + $ppn_harga
-					?>
+					?> --}}
 					<tr>
 						<td align="center">{{ $po->Produk->nama }}</td> 
-						<td align="center">{{ Helper::currency(Helper::toFixed($harga, 2)) }}</td>
+						<td align="center">{{ Helper::currency($po->harga_jual) }}</td>
 						<td align="center">{{ $po->kuantitas }} MT</td> 
 						<td align="center">{{ $po->incoterm }}</td>  
 					</tr> 

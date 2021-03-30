@@ -9,6 +9,7 @@
 @section('content')
  
 @include('layout.header_penjualan')
+@include('layout.modal_email')
 @include("skpp.modal_konfirmasi_skpp")
 @include("skpp.modal_approve_skpp")
 @include("skpp.modal_unapprove_skpp")
@@ -43,6 +44,7 @@
 					<button onclick="approve('{{ url('penjualan/skpp/approve/'.Helper::encodex($info["skpp"]->id_skpp)) }}')" class="btn btn-success"><i class="fa fa-check-double"></i> Approve</button>
 				@elseif($info["skpp"]->id_status == 3) 
 					<button onclick="revisi('{{ url('penjualan/skpp/revisi/'.Helper::encodex($info["skpp"]->id_skpp)) }}')" class="btn btn-warning"><i class="fa fa-edit"></i> Revisi</button>
+					<button class="btn btn-warning" onclick="show_form_email('dokumen SKPP', '{{ url('penjualan/skpp/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email</button>
 				@endif
 			</div>
 			<div>
@@ -73,9 +75,9 @@
 					<td>{{ $info["skpp"]->syarat_penyerahan == null ? '-' : $info["skpp"]->syarat_penyerahan }}</td>
 				</tr>
 				<tr>
-					<th>Jadwal penyerahan</th>
+					<th>Batas akhir pembayaran</th>
 					<th>:</th>
-					<td>{{ $info["skpp"]->jadwal_penyerahan == null ? '-' : $info["skpp"]->jadwal_penyerahan }}</td>
+					<td>{{ $info["skpp"]->terakhir_pembayaran == null ? '-' : Helper::dateIndo($info["skpp"]->terakhir_pembayaran) }}</td>
 				</tr>
 				<tr>
 					<th>Batas akhir pengambilan</th>
@@ -85,7 +87,19 @@
 				<tr>
 					<th>ATM</th>
 					<th>:</th>
-					<td>{{ $info["skpp"]->ATM->nama .' ('. $info["skpp"]->ATM->nomor.')' }}</td>
+					<td>
+						@if(count($info["skpp"]->SKPPATM) > 1)
+						<ol>
+							@foreach($info["skpp"]->SKPPATM as $atm)
+							<li>{{ $atm->ATM->nama .' ('. $atm->ATM->nomor.')' }}</li>
+							@endforeach
+						</ol>
+						@elseif(count($info["skpp"]->SKPPATM) == 1)
+							{{ $info["skpp"]->SKPPATM[0]->ATM->nama .' ('. $info["skpp"]->SKPPATM[0]->ATM->nomor.')' }}
+						@else
+						-
+						@endif
+					</td>
 				</tr>
 				<tr>
 					<th>Lampiran</th>

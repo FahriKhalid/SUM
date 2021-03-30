@@ -3,19 +3,21 @@
 namespace App\Http\Controllers\SalesOrder;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request; 
 use Yajra\Datatables\Datatables; 
-use App\Services\SoService;
 use App\Services\SkppService;
+use App\Services\SoService;
+use App\Mail\SendEmail;
 use App\Customer;
 use App\SupirSO;
+use App\Barang;
 use App\Gudang;
 use App\Produk;
 use App\Status;
 use App\Supir;
 use App\SKPP;
 use App\SOPO;
-use App\Barang;
 use App\SO;
 use Validator;
 use Helper;
@@ -166,6 +168,7 @@ class SalesOrderPenjualanController extends Controller
             $so = new SO();
             $so->id_skpp = Helper::decodex($request->id_skpp);
             $so->no_so = $request->nomor_so; 
+            $so->no_so_pengambilan = $request->nomor_so_pengambilan; 
             $so->tujuan = $request->tujuan;
             $so->id_status = $request->status;
             $so->created_by = Auth::user()->id_user;
@@ -220,12 +223,10 @@ class SalesOrderPenjualanController extends Controller
         $id_so = Helper::decodex($id);
 
         $info["so"] = SO::with("SupirAktif")->findOrFail($id_so); 
-        
         $info["sopo"] = SOPO::with('SO','Barang')->where("id_so", $id_so)->get();  
-
         $info["supir"] = Supir::where("id_supir", "!=", $info["so"]->SupirAktif[0]->id_supir)->get();
-
         $info["riwayat_supir"] = SupirSO::where("id_so", $id_so)->where("is_aktif", "0")->get();
+        $info["email"] = $info["so"]->SKPP->Customer->email;
 
         return view('salesorder.penjualan.show', compact('id', 'info'));
     }
@@ -289,7 +290,7 @@ class SalesOrderPenjualanController extends Controller
         if($validator->fails()){ 
             return response()->json(['status' => 'error', 'message' => $validator->errors()->all()]); 
         }
-
+        
         DB::beginTransaction();
         try {
 
@@ -299,6 +300,7 @@ class SalesOrderPenjualanController extends Controller
             // insert SO
             $so = SO::findOrFail($id_so); 
             $so->no_so = $request->nomor_so; 
+            $so->no_so_pengambilan = $request->nomor_so_pengambilan; 
             $so->tujuan = $request->tujuan;
             $so->updated_by = Auth::user()->id_user;
             $so->save();
@@ -364,14 +366,7 @@ class SalesOrderPenjualanController extends Controller
     public function surat_so($id)
     {
         $id = Helper::decodex($id);
-        
-        $info["so"] = SO::with('SKPP')->findOrFail($id);
-
-        $info["sopo"] = SOPO::with('SO','Barang')->where("id_so", $id)->get();  
-
-        $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
-
-        $pdf = PDF::loadview('salesorder.penjualan.surat_so', compact('info', 'id')); 
+        $pdf = $this->SoService->suratSo($id);
 
         return $pdf->setPaper('a4')->stream();
     }
@@ -427,13 +422,34 @@ class SalesOrderPenjualanController extends Controller
     public function sopo($id)
     {
         $id_so = Helper::decodex($id);
-
         $info["so"] = SO::with('Invoice')->findOrFail($id_so);
-        
         $info["sopo"] = SOPO::where("id_so", $id_so)->get();
  
         return response()->json([ 
             'html' => view('salesorder.penjualan.table_sopo', compact('info'))->render()
         ]); 
+    }
+
+
+    /**
+     * Send email surat SO
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function send_email($id)
+    {   
+        try {
+            $id_so = Helper::decodex($id);
+            $so = SO::findOrFail($id_so);
+            $email_tujuan = $so->SKPP->Customer->email;
+
+            $pdf = $this->SoService->suratSo($id_so);
+            Mail::to($email_tujuan)->send(new SendEmail("SALES ORDER", $pdf)); 
+
+            return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
+        }
     }
 }

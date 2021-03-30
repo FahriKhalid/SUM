@@ -10,6 +10,7 @@
 @include('salesorder.penjualan.header_salesorder')
 @include('salesorder.penjualan.modal_ganti_supir')
 @include('salesorder.penjualan.modal_update_status') 
+@include('layout.modal_email') 
 
 <div class="container-fluid mb-4 mt-4">
 
@@ -33,6 +34,8 @@
 					<button class="btn btn-warning action" {{ $info["so"]->Status->id_status == 6 ? 'disabled' : '' }} onclick="update_status('On Process', '{{ Helper::encodex(6) }}')"><i class="fas fa-truck-moving"></i> On process</button>
 					<button class="btn btn-warning action" {{ $info["so"]->Status->id_status == 5 ? 'disabled' : '' }} onclick="update_status('Delivered', '{{ Helper::encodex(5) }}')"><i class="fas fa-truck-loading"></i> Delivered</button>
 				</div>
+
+				<button class="btn btn-warning"onclick="show_form_email('dokumen Sales Order', '{{ url('penjualan/salesorder/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email</button>
 			</div>
 
 			<div>
@@ -62,7 +65,7 @@
 		<div class="card-body">
 			<div class="row">
 				<div class="col-md-12">
-					<table class="table table-borderless" style="margin-left: -12px;">
+					<table class="table table-sm table-borderless" style="margin-left: -12px;">
 						<tbody>
 							<tr>
 								<th width="15%">Nomor SKPP</th>
@@ -73,6 +76,11 @@
 								<th width="15%">Nomor SO</th>
 								<th width="1%">:</th>
 								<td>{{ $info["so"]->no_so }}</td>
+							</tr>
+							<tr>
+								<th width="15%">Nomor SO pengambilan</th>
+								<th width="1%">:</th>
+								<td>{{ $info["so"]->no_so_pengambilan }}</td>
 							</tr> 
 							<tr>
 								<th>Alat angkut</th>

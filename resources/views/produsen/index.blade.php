@@ -1,6 +1,6 @@
 @extends('layout.index')
 
-@section('title', 'Produsen')
+@section('title', 'SUM - Produsen')
 
 @section('css')
 	<link rel="stylesheet" type="text/css" href="{{asset('vendor/datatables/dataTables.bootstrap4.min.css')}}">
@@ -12,10 +12,15 @@
 @include('produsen.form_modal')
  
 	<div class="container-fluid mt-4">
-		<button onclick="show_modal()" class="btn btn-success"><i class="fa fa-plus"></i> Tambah</button>
+		<div class="row">
+	        <div class="col-md-12 d-flex justify-content-between">
+	        	<h6 class="m-0 font-weight-bold text-primary">PRODUSEN</h6>   
+	        </div>  
+	    </div>
 		<div class="card mt-3">
 			<div class="card-body">
-				<div class="table-responsive">
+				<button onclick="show_modal()" class="btn btn-success"><i class="fa fa-plus"></i> Tambah</button>
+				<div class="table-responsive mt-3">
                     <table class="table table-sm table-bordered" id="tabel-produsen" style="width:100%">
                         <thead>
                             <tr>

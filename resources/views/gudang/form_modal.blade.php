@@ -14,8 +14,15 @@
                     <div class="form-group">
                         <label>Nama Gudang <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="nama" placeholder="Wajib diisi">
-                    </div>  
-                    
+                    </div>   
+                    <div class="form-group">
+                        <label>Produsen <span class="text-danger">*</span></label>
+                        <select class="form-control select2">
+                            @foreach($info["produsen"] as $produsen)
+                                <option value="{{ $produsen->id_produsen }}">{{ $produsen->perusahaan }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label>Alamat <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="alamat" placeholder="Wajib diisi">

@@ -79,7 +79,7 @@
 
 <body>
 	<div class="text-grey">
-		PT. SETIAGUNG USAHA MANDIRI
+		PT SETIAGUNG USAHA MANDIRI
 	</div>
 
 	<br>
@@ -181,21 +181,21 @@
 
 		<p align="justify" class="ml-3">
 			Pembayaran secara tunai senilai Rp <b>142.500.000,-</b> (Seratus Empat Puluh Dua Juta Lima Ratus
-			Ribu Rupiah) untuk dapat dilaksanakan sebelum pengambilan barang, ke rekening PT. Setiagung
+			Ribu Rupiah) untuk dapat dilaksanakan sebelum pengambilan barang, ke rekening PT Setiagung
 			Usaha Mandiri di Bank Mandiri Cab.Lhoktuan No. <b>148-0015001509</b>.
 		</p>
 
 		<p align="justify" class="ml-3">
 			Agar disampaikan berita acara serah terima setelah tiba di gudang penerima. Pupuk ini sama
 			sekali tidak diperbolehkan untuk diekspor, pelanggaran terhadap ketentuan ini akan mendapat
-			sanksi yang ditetapkan secara sepihak oleh PT. Setiagung Usaha Mandiri dan atau sanksi hukum
+			sanksi yang ditetapkan secara sepihak oleh PT Setiagung Usaha Mandiri dan atau sanksi hukum
 			sesuai undang-undang/peraturan pemerintah yang berlaku yang harus ditanggung oleh Pembeli.
 		</p>
 
 		<p align="justify" class="ml-3">
 			Ketentuan harga dan tonase dalam surat ini tidak mengikat lagi apabila pembayaran dan
 			pengambilan pupuk tidak dilakukan sebelum jadwal penyerahan diatas. Adapun ketentuan lain
-			akan diatur dalam Surat Perjanjian / Kontrak Jual Beli antara perusahaan Saudara dengan PT.
+			akan diatur dalam Surat Perjanjian / Kontrak Jual Beli antara perusahaan Saudara dengan PT
 			Setiagung Usaha Mandiri.
 		</p>
 

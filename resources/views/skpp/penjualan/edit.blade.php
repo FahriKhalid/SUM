@@ -1,8 +1,6 @@
 @extends('layout.index')
 
-
 @section('title', 'SUM - Edit SKPP')
- 
 
 @section('content')
  	
@@ -47,36 +45,32 @@
 	                    </div> 
 
 	                    <div class="form-group col-md-6">
-	                        <label>Syarat penyerahan <span class="text-danger">*</span></label>
+	                        <label>Gudang pegambilan <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
 	                            <input class="form-control" name="syarat_penyerahan" value="{{ $info["skpp"]->syarat_penyerahan }}" placeholder="Wajib di isi"> 
 	                        </div>
 	                    </div>
 
 	                    <div class="form-group col-md-6">
-	                        <label>Jadwal penyerahan <span class="text-danger">*</span></label>
-	                        <div class="form-group">  
-	                            <select class="form-control" name="jadwal_penyerahan">
-	                            	@for($i = 1; $i <= 12; $i++)
-	                            		<option value="{{ $i }}" {{ $info["skpp"]->jadwal_penyerahan == $i ? 'selected' : '' }}>{{ Helper::bulan($i) }}</option>
-	                            	@endfor
-	                            </select>
-	                        </div>
-	                    </div>
-
-	                    <div class="form-group col-md-6">
-	                        <label>Batas akhir pengambilan {{ Helper::dateFormat($info["skpp"]->batas_akhir_pengambilan, false, 'd/m/Y') }} </label>
+	                        <label>Batas akhir pengambilan <i class="text-danger">*</i></label> 
 	                        <div class="form-group"> 
-	                            <input class="form-control datepicker" name="batas_akhir_pengambilan" value="{{ Helper::dateFormat($info["skpp"]->batas_akhir_pengambilan, false, 'd/m/Y') }}" placeholder="Opsional"> 
+	                            <input type="text" class="form-control" autocomplete="off" name="batas_akhir_pengambilan" value="{{ Helper::dateFormat($info["skpp"]->batas_akhir_pengambilan, false, 'd/m/Y') }}" placeholder="Wajib diisi"> 
 	                        </div>
 	                    </div> 
-						
-						<div class="form-group col-md-6">
-	                        <label>Atm <i class="text-danger">*</i></label>
+	                    
+	                    <div class="form-group col-md-6">
+	                        <label>Batas akhir pembayaran <i class="text-danger">*</i></label> 
 	                        <div class="form-group"> 
-	                        	 <select class="form-control" name="atm">
+	                            <input type="text" class="form-control" autocomplete="off" name="batas_akhir_pembayaran" value="{{ Helper::dateFormat($info["skpp"]->terakhir_pembayaran, false, 'd/m/Y') }}" placeholder="Wajib diisi"> 
+	                        </div>
+	                    </div> 
+
+						<div class="form-group col-md-6">
+	                        <label>Atm <i class="text-danger">*</i></label> 
+	                        <div class="form-group"> 
+	                        	 <select class="form-control select2" multiple name="atm[]">
 	                        	 	@foreach($info["atm"] as $atm)
-	                        	 		<option value="{{ $atm->id_atm }}" {{ $info["skpp"]->id_atm == $atm->id_atm ? "selected" : "" }}>{{ $atm->nama.' - '.$atm->nomor }}</option>
+	                        	 		<option value="{{ Helper::encodex($atm->id_atm) }}" {{ in_array($atm->id_atm, $info["id_atm"]) ? "selected" : "" }}>{{ $atm->nama.' - '.$atm->nomor }}</option>
 	                        	 	@endforeach
 	                        	 </select>
 	                        </div>
@@ -136,6 +130,19 @@
 @section('footer')
  
 <script type="text/javascript">
+
+	$('input[name=batas_akhir_pembayaran]').datepicker({
+	    showOtherMonths: true,
+	    uiLibrary: 'bootstrap4',
+	    format: 'dd/mm/yyyy'
+	});
+
+	$('input[name=batas_akhir_pengambilan]').datepicker({
+	    showOtherMonths: true,
+	    uiLibrary: 'bootstrap4',
+	    format: 'dd/mm/yyyy'
+	});
+
 	$("body").delegate("#show-form-lampiran", "click", function(){
 		if($(this).is(":checked")){
             $("#form-lampiran").removeClass("d-none"); 
@@ -368,19 +375,22 @@
 		data.append("syarat_penyerahan", $("input[name=syarat_penyerahan]").val());
 		data.append("jadwal_penyerahan", $("select[name=jadwal_penyerahan] option:selected").val());
 		data.append("batas_akhir_pengambilan", $("input[name=batas_akhir_pengambilan]").val());
+		data.append("batas_akhir_pembayaran", $("input[name=batas_akhir_pembayaran]").val());
 		data.append("atm", $("select[name=atm] option:selected").val());
 		data.append("is_lampiran", $("input[name=is_lampiran]:checked").val())
 
 		$.each($("input[name='id_po[]'"), function(){
         	data.append("id_po[]", $(this).val())
-        })
-
+        });
+        $.each($("select[name='atm[]'] option:selected"), function(){
+        	data.append("atm[]", $(this).val())
+        });
 		$.each($("select[name='produk[]'] option:selected"), function(){            
             data.append("produk[]", $(this).val()); 
         });
         $.each($("input[name='incoterm[]'"), function(){
         	data.append("incoterm[]", $(this).val())
-        })
+        });
         $.each($("input[name='kuantitas[]']"), function(){
         	data.append("kuantitas[]", $(this).val()); 
         });
@@ -390,13 +400,12 @@
 		$.each($("input[name='nilai[]']"), function(){
 			data.append("nilai[]", $(this).val()); 
 		});
-
 		$.each($("select[name='new_produk[]'] option:selected"), function(){            
             data.append("new_produk[]", $(this).val()); 
         });
         $.each($("input[name='new_incoterm[]'"), function(){
         	data.append("new_incoterm[]", $(this).val())
-        })
+        });
         $.each($("input[name='new_kuantitas[]']"), function(){
         	data.append("new_kuantitas[]", $(this).val()); 
         });
@@ -451,10 +460,12 @@
                 loader(".card", true);
 			},
 			success : function(resp){
-               	if (resp.status == "error"){
+               	if (resp.status == "error_validate"){
                		for (var i = 0; i < resp.message.length; i++) {
                			toastr.error(resp.message[i],{ "closeButton": true });
                		}  
+                } else if (resp.status == "error"){
+               		toastr.error(resp.message,{ "closeButton": true });
                 } else {
                		toastr.success(resp.message, { "closeButton": true });  
                		$("#table-po").html(resp.form_edit_po);

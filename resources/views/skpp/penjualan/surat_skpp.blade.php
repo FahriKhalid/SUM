@@ -104,7 +104,7 @@
 		<div class="text-dark" style="display: flex; align-items: center;">
 			<img src="{{ public_path('img/logo_perusahaan_1.png')}}" width="40px">
 			<div style="margin-left: 50px">
-				PT. SETIAGUNG USAHA MANDIRI
+				PT SETIAGUNG USAHA MANDIRI
 			</div>
 		</div> 
 		<div class="text-center">
@@ -197,9 +197,9 @@
 						<td>{{ $info["skpp"]->syarat_penyerahan == null ? '-' : $info["skpp"]->syarat_penyerahan }}</td>
 					</tr>
 					<tr>
-						<td>Jadwal Penyerahan</td>
+						<td>Batas Akhir Pembayaran</td>
 						<td>:</td>
-						<td>{{ $info["skpp"]->jadwal_penyerahan == null ? '-' : $info["skpp"]->jadwal_penyerahan }}</td>
+						<td>{{ $info["skpp"]->terakhir_pembayaran == null ? '-' : Helper::dateIndo($info["skpp"]->terakhir_pembayaran) }}</td>
 					</tr>
 					<tr>
 						<td>Batas AKhir Pengambilan</td>
@@ -210,8 +210,17 @@
 			</table>
 
 			<p align="justify" class="ml-3">
-				Pembayaran secara tunai senilai Rp <b>{{ Helper::currency($total) }},-</b> ({{Helper::penyebut($total)}}) untuk dapat dilaksanakan sebelum pengambilan barang, ke rekening PT. Setiagung
-				Usaha Mandiri di {{ $info["skpp"]->ATM->nama }} No. <b>{{ $info["skpp"]->ATM->nomor }}</b>.
+				Pembayaran secara tunai senilai Rp <b>{{ Helper::currency($total) }},-</b> ({{Helper::penyebut($total)}}) untuk dapat dilaksanakan sebelum pengambilan barang, ke rekening PT Setiagung
+				Usaha Mandiri di 
+				@foreach($info["skpp"]->SKPPATM as $atm)
+				@php($atm = $atm->ATM->nama .' No. <b> '.$atm->ATM->nomor .'</b> /')
+				 	@if($loop->last)
+				        {!! str_replace("/", "", $atm) !!}
+				    @else
+				    	{!! $atm !!}
+				    @endif 
+				@endforeach
+				.
 			</p>
 
 			<p align="justify" class="ml-3">
@@ -224,7 +233,7 @@
 			<p align="justify" class="ml-3">
 				Ketentuan harga dan tonase dalam surat ini tidak mengikat lagi apabila pembayaran dan
 				pengambilan pupuk tidak dilakukan sebelum jadwal penyerahan diatas. Adapun ketentuan lain
-				akan diatur dalam Surat Perjanjian / Kontrak Jual Beli antara perusahaan Saudara dengan PT.
+				akan diatur dalam Surat Perjanjian / Kontrak Jual Beli antara perusahaan Saudara dengan PT
 				Setiagung Usaha Mandiri.
 			</p>
 

@@ -36,4 +36,9 @@ class Gudang extends Model
             'nama' => '-'
         ]);
     }
+
+    public function Produsen()
+    {
+        return $this->belongsTo(Produsen::class, 'id_produsen', 'id_produsen')->withDefault();
+    }
 }

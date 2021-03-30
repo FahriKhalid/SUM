@@ -12,7 +12,7 @@
 <div class="container-fluid mt-4">
 	<div class="row">
         <div class="col-md-12 d-flex justify-content-between">
-        	<h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-bullseye"></i> Pre order</h6>   
+        	<h6 class="m-0 font-weight-bold text-primary">PRE ORDER</h6>   
         </div>  
     </div> 
 	

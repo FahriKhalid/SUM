@@ -4,8 +4,10 @@ namespace App\Services;
 use App\SuratKuasa;
 use App\SKSO;
 use App\SOPO;
-use Auth;
 use Helper;
+use Auth;
+use PDF;
+use DB;
 
 class SuratKuasaService 
 {
@@ -60,6 +62,15 @@ class SuratKuasaService
                 throw new \Exception("Total kuantitas tidak boleh kosong", 1); 
             }
         }
+    }
+
+    public function suratKuasa($id)
+    { 
+        $info["surat_kuasa"] = SuratKuasa::with('Gudang','Supir')->findOrFail($id);
+        $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
+        $info["skso"] = SKSO::with('SOPO')->where("id_sk", $id)->get();   
+        $pdf = PDF::loadview('surat_kuasa.surat_kuasa', compact('info', 'id')); 
+        return $pdf;
     }
 }
 

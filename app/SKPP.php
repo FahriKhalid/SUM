@@ -62,9 +62,9 @@ class SKPP extends Model
         return $this->belongsTo(User::class,'updated_by','id_user')->withDefault();
     }
 
-    public function ATM()
+    public function SKPPATM()
     {
-        return $this->belongsTo(Atm::class,'id_atm','id_atm')->withDefault();   
+        return $this->hasMany(SKPPATM::class,'id_skpp','id_skpp');   
     }
 
     public function Lampiran()

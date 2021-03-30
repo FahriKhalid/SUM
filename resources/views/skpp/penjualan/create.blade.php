@@ -19,7 +19,7 @@
 						<div class="form-group col-md-6">
 	                        <label>Nomor SKPP <i class="text-danger">*</i></label>
 	                        <div class="form-group"> 
-	                            <input class="form-control" name="nomor_skpp" placeholder="Wajib di isi" value="{{ $info["no_skpp"] }}"> 
+	                            <input class="form-control" name="nomor_skpp" placeholder="Wajib diisi" value="{{ $info["no_skpp"] }}"> 
 	                        </div>
 	                    </div> 
 
@@ -35,36 +35,32 @@
 	                    </div> 
 
 	                    <div class="form-group col-md-6">
-	                        <label>Syarat penyerahan <i class="text-danger">*</i></label>
+	                        <label>Gudang pengambilan <i class="text-danger">*</i></label>
 	                        <div class="form-group"> 
-	                            <input class="form-control" name="syarat_penyerahan" placeholder="Wajib di isi"> 
-	                        </div>
-	                    </div>
-
-	                    <div class="form-group col-md-6">
-	                        <label>Jadwal penyerahan <i class="text-danger">*</i></label>
-	                        <div class="form-group">  
-	                            <select class="form-control" name="jadwal_penyerahan">
-	                            	@for($i = 1; $i <= 12; $i++)
-	                            		<option value="{{ $i }}" {{ date('m') == $i ? 'selected' : '' }}>{{ Helper::bulan($i) }}</option>
-	                            	@endfor
-	                            </select>
-	                        </div>
-	                    </div>
-
-	                    <div class="form-group col-md-6">
-	                        <label>Batas akhir pengambilan</label>
-	                        <div class="form-group"> 
-	                            <input class="form-control datepicker" autocomplete="off" name="batas_akhir_pengambilan" placeholder="Opsional"> 
+	                            <input class="form-control" name="syarat_penyerahan" placeholder="Wajib diisi"> 
 	                        </div>
 	                    </div> 
-						
+
+	                    <div class="form-group col-md-6">
+	                        <label>Batas akhir pengambilan <i class="text-danger">*</i></label>
+	                        <div class="form-group"> 
+	                            <input type="text" class="form-control" autocomplete="off" name="batas_akhir_pengambilan" placeholder="Wajib diisi"> 
+	                        </div>
+	                    </div> 
+
+	                    <div class="form-group col-md-6">
+	                        <label>Batas akhir pembayaran <i class="text-danger">*</i></label>
+	                        <div class="form-group"> 
+	                            <input type="text" class="form-control" autocomplete="off" name="batas_akhir_pembayaran" placeholder="Wajib diisi"> 
+	                        </div>
+	                    </div> 
+	                	
 						<div class="form-group col-md-6">
 	                        <label>Atm <i class="text-danger">*</i></label>
 	                        <div class="form-group"> 
-	                        	 <select class="form-control" name="atm">
+	                        	 <select class="form-control select2" multiple name="atm[]">
 	                        	 	@foreach($info["atm"] as $atm)
-	                        	 		<option value="{{ $atm->id_atm }}">{{ $atm->nama.' - '.$atm->nomor }}</option>
+	                        	 		<option value="{{ Helper::encodex($atm->id_atm) }}">{{ $atm->nama.' - '.$atm->nomor }}</option>
 	                        	 	@endforeach
 	                        	 </select>
 	                        </div>
@@ -212,6 +208,19 @@
 @section('footer')
  
 <script type="text/javascript">
+
+	$('input[name=batas_akhir_pembayaran]').datepicker({
+	    showOtherMonths: true,
+	    uiLibrary: 'bootstrap4',
+	    format: 'dd/mm/yyyy'
+	});
+
+	$('input[name=batas_akhir_pengambilan]').datepicker({
+	    showOtherMonths: true,
+	    uiLibrary: 'bootstrap4',
+	    format: 'dd/mm/yyyy'
+	});
+
 	$("body").delegate("#show-form-lampiran", "click", function(){
 		if($(this).is(":checked")){
             $("#form-lampiran").removeClass("d-none"); 
@@ -228,22 +237,17 @@
         }
 	});
 
-	function addRowPO(){ 
+	function addRowPO()
+	{ 
 		var html = $("#form-parent-po").find("tr:last");
-
 		html.find("select").select2("destroy");
-
 		var clone = html.clone();
-
 		clone.find('button:last').addClass("remove-row-po").removeClass("btn-success")
 				.addClass("btn-danger")
 				.attr("onclick", "")
 				.find('i').removeClass("fa-plus").addClass("fa-minus");
-
 		clone.removeClass("bg-red");
-
 		clone.find("input").val("");
-
 		clone.find(".kuantitas").val(0);
 		
 		var append = $("#form-parent-po").append(clone);
@@ -426,32 +430,35 @@
 		data.append("syarat_penyerahan", $("input[name=syarat_penyerahan]").val());
 		data.append("jadwal_penyerahan", $("select[name=jadwal_penyerahan] option:selected").val());
 		data.append("batas_akhir_pengambilan", $("input[name=batas_akhir_pengambilan]").val());
-		data.append("atm", $("select[name=atm] option:selected").val());
-		data.append("is_lampiran", $("input[name=is_lampiran]:checked").val())
+		data.append("batas_akhir_pembayaran", $("input[name=batas_akhir_pembayaran]").val());
+		data.append("is_lampiran", $("input[name=is_lampiran]:checked").val());
 
+		$.each($("select[name='atm[]'] option:selected"), function(){            
+            data.append("atm[]", $(this).val()); 
+        });
 		$.each($(".select-produk option:selected"), function(){            
-            data.append("produk[]", $(this).val()); 
+            data.append("new_produk[]", $(this).val()); 
         });
         $.each($("input[name='incoterm[]'"), function(){
-        	data.append("incoterm[]", $(this).val())
+        	data.append("new_incoterm[]", $(this).val())
         })
         $.each($(".kuantitas"), function(){
-        	data.append("kuantitas[]", $(this).val()); 
+        	data.append("new_kuantitas[]", $(this).val()); 
         });
         $.each($(".harga-jual"), function(){
-        	data.append("harga_jual[]", $(this).val()); 
+        	data.append("new_harga_jual[]", $(this).val()); 
         }); 
 		$.each($(".nilai"), function(){
-			data.append("nilai[]", $(this).val()); 
+			data.append("new_nilai[]", $(this).val()); 
 		});
-		$.each($('input[type=file]'), function(i, value){
-		    data.append('file['+i+']', value.files[0]);
+		$.each($('input[type=file]'), function(i, value){ 
+		    data.append('new_file['+i+']', value.files[0]);
 		});
 		$.each($("input[name='nama_file[]']"), function(){
-			data.append("nama_file[]", $(this).val()); 
+			data.append("new_nama_file[]", $(this).val()); 
 		});
 		$.each($("textarea[name='keterangan_file[]']"), function(){
-			data.append("keterangan_file[]", $(this).val()); 
+			data.append("new_keterangan_file[]", $(this).val()); 
 		});
 
 		$.ajax({
@@ -465,10 +472,12 @@
                 loader(".card", true);
 			},
 			success : function(resp){
-               	if (resp.status == "error"){
+               	if (resp.status == "error_validate"){
                		for (var i = 0; i < resp.message.length; i++) {
                			toastr.error(resp.message[i],{ "closeButton": true });
                		} 
+                } else if(resp.status == "error") {
+                	toastr.error(resp.message,{ "closeButton": true });
                 } else {
                		toastr.success(resp.message, { "closeButton": true });  
                		location.href = '{{url("penjualan/skpp/show")}}/'+resp.id_skpp;

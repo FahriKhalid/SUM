@@ -8,6 +8,9 @@
         </li> 
         <li class="nav-item">
             <a class="nav-link text-muted {{ Request::segment(2) == 'salesorder' ? 'active' : ''}}" href="{{ url('pembelian/salesorder/show/'.$id) }}">Sales Order</a>
+        </li>     
+        <li class="nav-item">
+            <a class="nav-link text-muted {{ Request::segment(2) == 'invoice' ? 'active' : ''}}" href="{{ url('pembelian/invoice/index/'.$id) }}">Invoice</a>
         </li>       
     </ul> 
 </div>

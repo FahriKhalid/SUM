@@ -27,8 +27,6 @@ Route::group(['middleware' => ['auth']], function ()
         Route::post('filter', 'DashboardController@filter'); 
     });
 
-	
- 
     Route::group(['prefix' => 'penjualan'], function(){
         Route::group(['prefix' => 'skpp'], function(){
             Route::get('/', 'SKPP\SkppPenjualanController@index');
@@ -44,8 +42,8 @@ Route::group(['middleware' => ['auth']], function ()
             Route::post('approve/{id}', 'SKPP\SkppPenjualanController@approve');
             Route::post('unapprove/{id}', 'SKPP\SkppPenjualanController@unapprove');
             Route::delete('destroy/{id}', 'SKPP\SkppPenjualanController@destroy');
+            Route::post('send_email/{id}', 'SKPP\SkppPenjualanController@send_email');
         });
-
 
         Route::group(['prefix' => 'pembayaran'], function() { 
             Route::get('/', 'Pembayaran\PembayaranPenjualanController@index');
@@ -55,7 +53,6 @@ Route::group(['middleware' => ['auth']], function ()
             Route::post('store/{id}', 'Pembayaran\PembayaranPenjualanController@store');
             Route::delete('destroy/{id}/{id_header}', 'Pembayaran\PembayaranPenjualanController@destroy');
         });
-
 
         Route::group(['prefix' => 'salesorder'], function() { 
             Route::get('/', 'SalesOrder\SalesOrderPenjualanController@index');
@@ -71,8 +68,20 @@ Route::group(['middleware' => ['auth']], function ()
             Route::delete('destroy/{id}', 'SalesOrder\SalesOrderPenjualanController@destroy'); 
             Route::get('surat_so/{id}', 'SalesOrder\SalesOrderPenjualanController@surat_so'); 
             Route::get('sopo/{id}', 'SalesOrder\SalesOrderPenjualanController@sopo');
+            Route::post('send_email/{id}', 'SalesOrder\SalesOrderPenjualanController@send_email'); 
         });
 
+        Route::group(['prefix' => 'invoice'], function() {  
+            Route::get('index/{id}', 'Invoice\InvoicePenjualanController@index'); 
+            Route::get('create/{id}', 'Invoice\InvoicePenjualanController@create'); 
+            Route::post('store/{id}', 'Invoice\InvoicePenjualanController@store'); 
+            Route::get('data/{id}', 'Invoice\InvoicePenjualanController@data'); 
+            Route::get('show/{id}', 'Invoice\InvoicePenjualanController@show');
+            Route::get('edit/{id}', 'Invoice\InvoicePenjualanController@edit');
+            Route::post('update/{id}', 'Invoice\InvoicePenjualanController@update');
+            Route::delete('destroy/{id}', 'Invoice\InvoicePenjualanController@destroy'); 
+            Route::get('surat/{id}', 'Invoice\InvoicePenjualanController@surat');
+        }); 
     });
  
     Route::group(['prefix' => 'pembelian'], function() {
@@ -89,6 +98,7 @@ Route::group(['middleware' => ['auth']], function ()
             Route::post('revisi/{id}', 'PreOrderController@revisi');
             Route::post('approve/{id}', 'PreOrderController@approve');
             Route::delete('destroy/{id}', 'PreOrderController@destroy');
+            Route::post('send_email/{id}', 'PreOrderController@send_email'); 
         });
 
         Route::group(['prefix' => 'skpp'], function(){
@@ -106,20 +116,15 @@ Route::group(['middleware' => ['auth']], function ()
         });
 
         Route::group(['prefix' => 'salesorder'], function() { 
-            // Route::get('/', 'SalesOrder\SalesOrderPembelianController@index');
             Route::get('detail/{id}', 'SalesOrder\SalesOrderPembelianController@detail');
-            Route::get('{id}/create', 'SalesOrder\SalesOrderPembelianController@create');
-            // Route::post('store/{id}', 'SalesOrder\SalesOrderPembelianController@store');
-            Route::get('data/{id}', 'SalesOrder\SalesOrderPembelianController@data');
-            // Route::get('index/{id}', 'SalesOrder\SalesOrderPembelianController@index');
+            Route::get('{id}/create', 'SalesOrder\SalesOrderPembelianController@create'); 
+            Route::get('data/{id}', 'SalesOrder\SalesOrderPembelianController@data'); 
             Route::get('show/{id}', 'SalesOrder\SalesOrderPembelianController@show');
             Route::get('show_produk/{id}', 'SalesOrder\SalesOrderPembelianController@showProduk');
             Route::get('edit/{id}', 'SalesOrder\SalesOrderPembelianController@edit');
             Route::post('store/{id}', 'SalesOrder\SalesOrderPembelianController@store');
             Route::post('update/{id}', 'SalesOrder\SalesOrderPembelianController@update');
-            Route::get('destroy/{id}', 'SalesOrder\SalesOrderPembelianController@destroy'); 
-            // Route::get('surat_so/{id}', 'SalesOrder\SalesOrderPembelianController@surat_so'); 
-            // Route::get('sopo/{id}', 'SalesOrder\SalesOrderPembelianController@sopo');
+            Route::get('destroy/{id}', 'SalesOrder\SalesOrderPembelianController@destroy');  
         });
 
         Route::group(['prefix' => 'pengajuan_so'], function(){
@@ -135,6 +140,17 @@ Route::group(['middleware' => ['auth']], function ()
             Route::get('table_view/{id}', 'PengajuanSoController@table_view');
         });
 
+        Route::group(['prefix' => 'invoice'], function() {  
+            Route::get('index/{id}', 'Invoice\InvoicePembelianController@index'); 
+            Route::get('create/{id}', 'Invoice\InvoicePembelianController@create'); 
+            Route::post('store/{id}', 'Invoice\InvoicePembelianController@store'); 
+            Route::get('data/{id}', 'Invoice\InvoicePembelianController@data'); 
+            Route::get('show/{id}', 'Invoice\InvoicePembelianController@show');
+            Route::get('edit/{id}', 'Invoice\InvoicePembelianController@edit');
+            Route::post('update/{id}', 'Invoice\InvoicePembelianController@update');
+            Route::delete('destroy/{id}', 'Invoice\InvoicePembelianController@destroy'); 
+            Route::get('surat/{id}', 'Invoice\InvoicePembelianController@surat');
+        }); 
     });
   
     Route::group(['prefix' => 'surat_kuasa'], function() { 
@@ -149,19 +165,10 @@ Route::group(['middleware' => ['auth']], function ()
         Route::post('update/{id}', 'SuratKuasaController@update');
         Route::delete('destroy/{id}', 'SuratKuasaController@destroy'); 
         Route::get('surat_kuasa/{id}', 'SuratKuasaController@surat_kuasa'); 
+        Route::post('send_email/{id}', 'SuratKuasaController@send_email'); 
     });
 
-    Route::group(['prefix' => 'invoice'], function() {  
-        Route::get('index/{id}', 'InvoiceController@index'); 
-        Route::get('create/{id}', 'InvoiceController@create'); 
-        Route::post('store/{id}', 'InvoiceController@store'); 
-        Route::get('data/{id}', 'InvoiceController@data'); 
-        Route::get('show/{id}', 'InvoiceController@show');
-        Route::get('edit/{id}', 'InvoiceController@edit');
-        Route::post('update/{id}', 'InvoiceController@update');
-        Route::delete('destroy/{id}', 'InvoiceController@destroy'); 
-        Route::get('surat/{id}', 'InvoiceController@surat');
-    }); 
+    
  
     Route::group(['prefix' => 'booking'], function() {   
         Route::get('show/{id}', 'BookingController@show'); 

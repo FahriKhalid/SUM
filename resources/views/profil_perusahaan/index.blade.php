@@ -9,12 +9,15 @@
 @section('content')
  
 	<div class="container-fluid mt-4"> 
-		<div class="card mt-3">
-			<div class="card-header bg-white">
-				<a href="{{ url('profil_perusahaan/edit') }}" class="btn btn-warning"><i class="fa fa-edit"></i> Edit</a>
-			</div>
+        <div class="row">
+            <div class="col-md-12 d-flex justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">PROFIL PERUSAHAAN</h6>   
+            </div>  
+        </div>
+		<div class="card mt-3"> 
 			<div class="card-body">
-				<div class="table-responsive">
+                <a href="{{ url('profil_perusahaan/edit') }}" class="btn btn-warning"><i class="fa fa-edit"></i> Edit</a>
+				<div class="table-responsive mt-3">
                     <table class="table table-borderless">
                         <thead>
                             <tr>

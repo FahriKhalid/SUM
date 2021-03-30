@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Services; 
-use App\SO;
 use App\Barang;
 use App\SOPO;
-use Auth;
+use App\SO;
 use Helper;
+use Auth;
+use PDF;
+use DB;
 
 class SoService 
 {
@@ -58,5 +60,14 @@ class SoService
                 throw new \Exception("Total kuantitas tidak boleh kosong", 1); 
             }
         }
+    }
+
+    public function suratSo($id)
+    {
+        $info["so"] = SO::with('SKPP')->findOrFail($id);
+        $info["sopo"] = SOPO::with('SO','Barang')->where("id_so", $id)->get();  
+        $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
+        $pdf = PDF::loadview('salesorder.penjualan.surat_so', compact('info', 'id')); 
+        return $pdf;
     }
 }

@@ -103,7 +103,7 @@
 		<div class="text-dark" style="display: flex; align-items: center;">
 			<img src="{{ public_path('img/logo_perusahaan_1.png')}}" width="40px">
 			<div style="margin-left: 50px">
-				PT. SETIAGUNG USAHA MANDIRI
+				PT SETIAGUNG USAHA MANDIRI
 			</div>
 		</div>
 
@@ -137,7 +137,7 @@
 			<div class="ml-3 mt-25">
 				<div>Kepada Yth,</div>
 				<div class="mt-15">
-					<b>PT. Pupuk Kalimantan Timur</b>
+					<b>PT Pupuk Kalimantan Timur</b>
 				</div> 
 				<div>Kepala Gudang {{ $info["surat_kuasa"]->Gudang->nama }}</div>
 				<div>{{ $info["surat_kuasa"]->Gudang->alamat }}</div>
@@ -191,7 +191,7 @@
 			
 
 			<div style="margin-left: 4px;" class="mt-15">
-			 	Bertindak sebagai  penerima Kuasa untuk melakukan pengambilan pupuk di Gudang PT.Pupuk Kalimantan Timur dengan ketentuan sebagai berikut:
+			 	Bertindak sebagai  penerima Kuasa untuk melakukan pengambilan pupuk di Gudang PT Pupuk Kalimantan Timur dengan ketentuan sebagai berikut:
 			</div>
 
 			<table class="ml-3 mt-20 table">
@@ -216,23 +216,22 @@
 					@endforeach
 				</tbody> 
 			</table>
+		</div>
+	</div>
 
-
-			<br><br><br>
-			<div class="ttd verdana ml-3">
-				<div class="text-green-moss"><b>{{ Helper::profil_perusahaan()->nama }}</b> </div>
-				<br><br><br>
-				<div><b><u>{{ Helper::profil_perusahaan()->direktur }}</u></b></div>
-				<div><b>Direktur</b></div>
-			</div> 
+	<div class="container-fluid" style="position: absolute; bottom: 100px">
+		<div class="container ttd verdana ml-3"> 
+			<div class="text-green-moss"><b>{{ $info["profil_perusahaan"]->nama }}</b> </div> 
+			<br><br><br><br><br>
+			<div><b><u>{{ $info["profil_perusahaan"]->direktur }}</u></b></div>
+			<div><b>Direktur</b></div>
 		</div>
 	</div>
 
 	<footer>
-		<div>{{ Helper::profil_perusahaan()->alamat }}</div>
-		<div>{{ Helper::profil_perusahaan()->telepon }}</div>
-		<div>{{ Helper::profil_perusahaan()->email }}</div>
-	</footer>
-
+		<div>{{ $info["profil_perusahaan"]->alamat }}</div>
+		<div>{{ $info["profil_perusahaan"]->telepon }}</div>
+		<div>{{ $info["profil_perusahaan"]->email }}</div>
+	</footer> 
 </body>
 </html>

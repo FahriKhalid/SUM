@@ -133,9 +133,7 @@ class PreOrderController extends Controller
     public function create()
     {
         $info["produsen"] = Produsen::get();
-
         $info["produk"] = Produk::where("is_aktif", 1)->get();
-
         $info["no_po"] = $this->PreOrderService->lastKodePreOrder();
 
         return view('pre_order.create', compact('info'));
@@ -259,12 +257,10 @@ class PreOrderController extends Controller
     public function show($id)
     {
         $id_pre_order = Helper::decodex($id);
-
         $info["pre_order"] = PreOrder::with('Produsen')->findOrFail($id_pre_order);
-
         $info["po"]         = Barang::with('Produk')->where("id_pre_order", $id_pre_order)->get();
-
         $info["lampiran"]   = Lampiran::where("id_pre_order", $id_pre_order)->get(); 
+        $info["email"] = $info["pre_order"]->Produsen->email;
         
         return view('pre_order.show', compact('id', 'info'));
     }
@@ -457,13 +453,30 @@ class PreOrderController extends Controller
     public function surat_po($id)
     {
         $id = Helper::decodex($id); 
-
-        $info["pre_order"]          = PreOrder::with('CreatedBy','Produsen','Status')->findOrFail($id);
-        $info["po"]                 = Barang::with('Produk')->where("id_pre_order", $id)->get();
-        $info["lampiran"]           = Lampiran::where("id_pre_order", $id)->get();
-        $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
-
-        $pdf = PDF::loadview('pre_order.surat_po', compact('info')); 
+        $pdf = $this->PreOrderService->suratPreOrder($id);
+        
         return $pdf->setPaper('a4')->stream(); 
+    }
+
+    /**
+     * Send email surat pre order
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function send_email($id)
+    {   
+        try {
+            $id_po = Helper::decodex($id);
+            $po = PreOrder::findOrFail($id_po);
+            $email_tujuan = $po->Produsen->email;
+
+            $pdf = $this->PreOrderService->suratPreOrder($id_po);
+            Mail::to($email_tujuan)->send(new SendEmail("PRE ORDER", $pdf)); 
+
+            return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
+        }
     }
 }

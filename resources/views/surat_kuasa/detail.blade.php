@@ -1,6 +1,7 @@
 <div class="mb-3">
     <a href="{{ url('surat_kuasa/edit/'.$id) }}" class="btn btn-primary"><i class="fa fa-edit"></i> Edit</a>
     <a href="{{ url('surat_kuasa/surat_kuasa/'.$id) }}" target="_blank" class="btn btn-warning"><i class="fa fa-download"></i> Surat kuasa</a>
+    <button class="btn btn-warning"onclick="show_form_email('dokumen Surat Kuasa', '{{ url('surat_kuasa/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email</button>
 </div>
 <table class="table table-borderless">
     <tr>

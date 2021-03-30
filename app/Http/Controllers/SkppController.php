@@ -14,7 +14,7 @@ use App\Customer;
 use App\Lampiran;
 use App\Produk;
 use App\SKPP;
-use App\Atm;
+use App\ATM;
 use App\Barang;
 use Validator;
 use Helper;
@@ -109,7 +109,7 @@ class SkppController extends Controller
         $info["customer"] = Customer::get();
         $info["produk"] = Produk::where("is_aktif", 1)->get();
         $info["no_skpp"] = $this->SkppService->lastKodeSkpp(); 
-        $info["atm"] = Atm::where("is_aktif", 1)->get();
+        $info["atm"] = ATM::where("is_aktif", 1)->get();
         return view('skpp.create', compact("info"));
     }
 
@@ -285,7 +285,7 @@ class SkppController extends Controller
 
         $info["lampiran"] = Lampiran::where("id_skpp", $id_skpp)->get();
 
-        $info["atm"] = Atm::where("is_aktif", 1)->get();
+        $info["atm"] = ATM::where("is_aktif", 1)->get();
 
         return view('skpp.edit', compact('info','id'));
     }

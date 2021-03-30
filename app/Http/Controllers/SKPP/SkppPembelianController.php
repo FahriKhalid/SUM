@@ -18,7 +18,7 @@ use App\Customer;
 use App\Lampiran;
 use App\Produk;
 use App\SKPP;
-use App\Atm;
+use App\ATM;
 use App\Barang;
 use Validator;
 use Helper;
