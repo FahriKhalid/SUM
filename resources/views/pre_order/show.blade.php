@@ -32,7 +32,7 @@
 
 				<a target="_blank" href="{{ url('pembelian/pre_order/surat_po/'.Helper::encodex($info["pre_order"]->id_pre_order)) }}" class="btn btn-warning"><i class="fa fa-download"></i> Pre Order</a>
 
-				<button class="btn btn-warning"onclick="show_form_email('dokumen Sales Order', '{{ url('pembelian/pre_order/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email</button>
+				<button class="btn btn-warning"onclick="show_form_email('dokumen Pre Order', '{{ url('pembelian/pre_order/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email</button>
 				{{-- @if($info["pre_order"]->id_status == 1)
 					<a href="{{ url('pembelian/pre_order/edit/'.Helper::encodex($info["pre_order"]->id_pre_order)) }}" class="btn btn-primary"><i class="fa fa-edit"></i> Edit</a>
 					<button onclick="confirm('{{ url('pembelian/pre_order/confirm/'.Helper::encodex($info["pre_order"]->id_pre_order)) }}')" class="btn btn-success"><i class="fa fa-check"></i> Confirm</button>

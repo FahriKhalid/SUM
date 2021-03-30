@@ -210,7 +210,7 @@
 	<div class="container-fluid" style="position: absolute; bottom: 100px">
 		<div class="container ttd verdana ml-3"> 
 			<div class="text-green-moss"><b>{{ $info["profil_perusahaan"]->nama }}</b> </div> 
-			<br><br><br><br><br><br>
+			<img src="{{ asset('img/ttd.png') }}" width="100px">
 			<div><b><u>{{ $info["profil_perusahaan"]->direktur }}</u></b></div>
 			<div><b>Direktur</b></div>
 		</div>

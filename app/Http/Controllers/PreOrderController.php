@@ -43,9 +43,7 @@ class PreOrderController extends Controller
     public function data(PreOrder $PreOrder, Request $request)
     {
         $data = $PreOrder->query()->with('CreatedBy','Produsen','Status','SKPP');
-
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){ 
-
             $aksi = '';
             // if($data->id_status < 2){
                 $aksi .= '<div class="dropdown-divider"></div>
@@ -53,7 +51,6 @@ class PreOrderController extends Controller
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item hapus" url="'.url('pembelian/pre_order/destroy/'.Helper::encodex($data->id_pre_order)).'"  href="javascript:void(0);"><i class="fa fa-trash"></i> Hapus</a>';
             //}
-
             return '<div class="btn-group btn-group-sm" role="group">
                     <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       Aksi
@@ -69,33 +66,20 @@ class PreOrderController extends Controller
                   </div>';
 
         })->addColumn('produsen', function($data){ 
-
-            return $data->Produsen->perusahaan;
-            
+            return $data->Produsen->perusahaan;            
         })->addColumn('skpp', function($data){ 
-
-            return $data->SKPP->no_skpp;
-            
+            return $data->SKPP->no_skpp;            
         })->addColumn('terakhir_pembayaran', function($data){ 
-
-            return $data->SKPP->terakhir_pembayaran;
-            
+            return $data->SKPP->terakhir_pembayaran;            
         })->addColumn('status_terakhir_pembayaran', function($data){ 
-
-            return Helper::dateWarning($data->SKPP->terakhir_pembayaran);
-  
+            return Helper::dateWarning($data->SKPP->terakhir_pembayaran);  
         })->addColumn('status', function($data){ 
-
-            return $data->Status->status;
-            
-        })->addColumn('pembayaran', function($data){ 
-            
-            $skpp = $data->SKPP->no_skpp;
-            
+            return $data->Status->status;            
+        })->addColumn('pembayaran', function($data){             
+            $skpp = $data->SKPP->no_skpp;            
             if($skpp != '-')
             {
                 $pembayaran = $this->PembayaranService->sisaHutang("pembelian", $data->SKPP->id_skpp);   
-
                 if ($pembayaran == null) {
                     return 'Belum dibayar';
                 } elseif($pembayaran > 0){
@@ -105,12 +89,9 @@ class PreOrderController extends Controller
                 } 
             } else {
                 return '-';
-            } 
-            
+            }             
         })->addColumn('created_by', function($data){ 
-
-            return $data->CreatedBy->nama;
-            
+            return $data->CreatedBy->nama;            
         })->rawColumns(['action','pembayaran','no_po'])->make(true);
     }
 

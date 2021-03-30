@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables;
+use App\Mail\SendEmail;
 use App\Services\PengajuanSoService;
 use App\BarangPengajuanSo;
 use App\PengajuanSo;
@@ -269,12 +271,7 @@ class PengajuanSoController extends Controller
     public function surat_pengajuan_so($id)
     {
         $id_pengajuan_so = Helper::decodex($id);
-
-        $info["pengajuan_so"] = PengajuanSo::with("PreOrder")->findOrFail($id_pengajuan_so);
-
-        $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
-        
-        $pdf = PDF::loadview('pengajuan_so.surat_pengajuan_so', compact('info', 'id')); 
+        $pdf = $this->PengajuanSoService->suratPengajuanSo($id_pengajuan_so);
 
         return $pdf->setPaper('a4')->stream();
     }
@@ -286,5 +283,27 @@ class PengajuanSoController extends Controller
         $info["pengajuan_so"] = PengajuanSo::with("PreOrder")->findOrFail($id_pengajuan_so);
 
         return response()->json(view("pengajuan_so.table_view", compact("info", "id"))->render());
+    }
+
+    /**
+     * Send email surat pre order
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function send_email($id)
+    {   
+        try {
+            $id_pengajuan_so = Helper::decodex($id);
+            $po = PengajuanSo::findOrFail($id_pengajuan_so);
+            $email_tujuan = $po->PreOrder->Produsen->email;
+
+            $pdf = $this->PengajuanSoService->suratPengajuanSo($id_pengajuan_so);
+            Mail::to($email_tujuan)->send(new SendEmail("PRE ORDER", $pdf)); 
+
+            return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
+        }
     }
 }

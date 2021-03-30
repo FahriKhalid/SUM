@@ -12,6 +12,7 @@
 @include('skpp.pembelian.modal_detail_booking') 
 @include('skpp.pembelian.modal_form_pembayaran')
 @include('pengajuan_so.modal_detail') 
+@include('layout.modal_email') 
 
 <div class="container-fluid mb-4 mt-4">
 

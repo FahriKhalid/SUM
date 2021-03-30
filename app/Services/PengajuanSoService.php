@@ -7,6 +7,8 @@ use App\Barang;
 use Exception;
 use Helper;
 use Auth;
+use PDF;
+use DB;
 
 class PengajuanSoService 
 {
@@ -36,6 +38,14 @@ class PengajuanSoService
         } 
 
         return $sisa;
+    }
+
+    public function suratPengajuanSo($id)
+    {
+    	$info["pengajuan_so"] = PengajuanSo::with("PreOrder")->findOrFail($id);
+        $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
+        $pdf = PDF::loadview('pengajuan_so.surat_pengajuan_so', compact('info', 'id')); 
+        return $pdf;
     }
  
 }

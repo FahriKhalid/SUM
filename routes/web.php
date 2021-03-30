@@ -138,6 +138,7 @@ Route::group(['middleware' => ['auth']], function ()
             Route::get('barang/{id}', 'PengajuanSoController@barang'); 
             Route::get('surat_pengajuan_so/{id}', 'PengajuanSoController@surat_pengajuan_so'); 
             Route::get('table_view/{id}', 'PengajuanSoController@table_view');
+            Route::post('send_email/{id}', 'PengajuanSoController@send_email'); 
         });
 
         Route::group(['prefix' => 'invoice'], function() {  
