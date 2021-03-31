@@ -49,6 +49,14 @@
 		margin-top: 10px;
 	}
 
+	.ml-15{
+		margin-left: 15px;
+	}
+
+	.ml-10{
+		margin-left: 10px;
+	}
+
 	.ml-3 {
 		margin-left: 3px;
 	}
@@ -202,7 +210,7 @@
 						<td>{{ $info["skpp"]->terakhir_pembayaran == null ? '-' : Helper::dateIndo($info["skpp"]->terakhir_pembayaran) }}</td>
 					</tr>
 					<tr>
-						<td>Batas AKhir Pengambilan</td>
+						<td>Batas Akhir Pengambilan</td>
 						<td>:</td>
 						<td>{{ $info["skpp"]->batas_akhir_pengambilan == null ? '-' : Helper::dateIndo($info["skpp"]->batas_akhir_pengambilan) }}</td>
 					</tr>
@@ -246,11 +254,10 @@
 			<br> 
 
 			<div class="ttd verdana ml-3">
-				
 				<div class="text-green-moss"><b>{{ $info["profil_perusahaan"]->nama }}</b> </div>
-
-				<br><br><br><br>
-
+				<div class="ml-15">
+					<img src="{{ public_path('img/ttd.png') }}" width="130px">
+				</div>
 				<div><b><u>{{ $info["profil_perusahaan"]->direktur }}</u></b></div>
 				<div><b>Direktur</b></div>
 			</div>
