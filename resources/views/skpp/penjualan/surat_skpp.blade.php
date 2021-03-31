@@ -6,6 +6,11 @@
 
 <style type="text/css"> 
 
+	body {
+	    font-family: Verdana, sans-serif;
+   		font-size: 12px !important;
+	}
+
 	.container {
 		padding-left: 20px;
 		padding-right: 20px;
@@ -248,22 +253,20 @@
 			<p align="justify" class="ml-3">
 				Demikian surat ini kami buat dengan harapan terjalin kerjasama yang baik. Atas perhatian dan
 				kerjasamanya kami ucapkan terima kasih.
-			</p>
-
-			<br>
-			<br> 
-
-			<div class="ttd verdana ml-3">
-				<div class="text-green-moss"><b>{{ $info["profil_perusahaan"]->nama }}</b> </div>
-				<div class="ml-15">
-					<img src="{{ public_path('img/ttd.png') }}" width="130px">
-				</div>
-				<div><b><u>{{ $info["profil_perusahaan"]->direktur }}</u></b></div>
-				<div><b>Direktur</b></div>
-			</div>
+			</p> 
 		</div>
 	</div>
 
+	<div class="container-fluid" style="position: absolute; bottom: 100px">
+		<div class="container ttd verdana ml-3"> 
+			<div class="text-green-moss"><b>{{ $info["profil_perusahaan"]->nama }}</b> </div> 
+			<div class="ml-10">
+					<img src="{{ public_path('img/ttd.png') }}" width="120px">
+				</div>
+			<div><b><u>{{ $info["profil_perusahaan"]->direktur }}</u></b></div>
+			<div><b>Direktur</b></div>
+		</div>
+	</div>
 
 	<footer>
 		<div>{{ $info["profil_perusahaan"]->alamat }}</div>

@@ -5,7 +5,11 @@
 </head>
 
 <style type="text/css">
-
+	body {
+	    font-family: Verdana, sans-serif;
+   		font-size: 12px !important;
+	}
+	
 	.container {
 		padding-left: 20px;
 		padding-right: 20px;
@@ -236,7 +240,9 @@
 	<div class="container-fluid" style="position: absolute; bottom: 100px">
 		<div class="container ttd verdana ml-3"> 
 			<div class="text-green-moss"><b>{{ $info["profil_perusahaan"]->nama }}</b> </div> 
-			<br><br><br><br><br>
+			<div class="ml-10">
+					<img src="{{ public_path('img/ttd.png') }}" width="120px">
+				</div>
 			<div><b><u>{{ $info["profil_perusahaan"]->direktur }}</u></b></div>
 			<div><b>Direktur</b></div>
 		</div>

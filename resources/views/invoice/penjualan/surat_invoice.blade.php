@@ -5,7 +5,10 @@
 </head>
 
 <style type="text/css">
-
+	body {
+	    font-family: Verdana, sans-serif;
+   		font-size: 12px !important;
+	}
 	.container {
 		padding-left: 20px;
 		padding-right: 20px;
@@ -328,7 +331,7 @@
 			</p>  
 
 			<p>Pelunasan ke rekening kami nomor:</p>
-			<ol style="margin-top: -15px;">
+			<ol style="margin-top: -10px;">
 				@foreach($info["invoice"]->SKPP->SKPPATM as $atm)
 					@php($atm = $atm->ATM->nama .', No. '.$atm->ATM->nomor)
 				 	<li>{!! $atm !!}</li>
