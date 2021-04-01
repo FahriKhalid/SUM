@@ -260,9 +260,9 @@ class Helper {
     public static function fileUpload($file, $folder, $nama_file = null)
     { 
     	if ($nama_file == null) {
-    		$namafile = 'faktur-pajak-'.date('dmYHis').'.'.$file->getClientOriginalExtension();
+    		$namafile = date('dmYHis').'.'.$file->getClientOriginalExtension();
     	} else {
-    		$namafile = 'faktur-pajak-'.$nama_file.'.'.$file->getClientOriginalExtension();
+    		$namafile = $nama_file.'.'.$file->getClientOriginalExtension();
     	}
 
         $file->move($folder, $namafile);

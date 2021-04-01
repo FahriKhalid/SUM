@@ -1,14 +1,17 @@
 <?php
 
 namespace App\Services; 
+use App\Services\BarangService;
 use App\Pembayaran;
+use App\Barang;
+use App\SKPP;
 use Carbon\Carbon;
 use Helper;
 use Auth;
 use DB;
 
 class DashboardService 
-{
+{ 
 	public function totalPenjualan()
 	{
 		return Pembayaran::whereHas("SKPP", function($query){
@@ -26,16 +29,18 @@ class DashboardService
 
 	public function totalPiutang()
 	{
-		return Pembayaran::whereHas("SKPP", function($query){
-			$query->where("kategori", "penjualan");
-		})->sum("sisa_hutang"); 
+		// return Pembayaran::whereHas("SKPP", function($query){
+		// 	$query->where("kategori", "penjualan");
+		// })->sum("sisa_hutang");  
+		return (float)self::piutang() + (float)self::belumBayarPembelian();
 	}
 
 	public function totalHutang()
 	{
-		return Pembayaran::whereHas("SKPP", function($query){
-			$query->where("kategori", "pembelian");
-		})->sum("sisa_hutang"); 
+		// return Pembayaran::whereHas("SKPP", function($query){
+		// 	$query->where("kategori", "pembelian");
+		// })->sum("sisa_hutang");  
+		return (float) self::hutang() + (float)self::belumBayarPenjualan();
 	}
 
 	public function penjualan($from = null, $to = null)
@@ -127,6 +132,55 @@ class DashboardService
 			"penjualan" => $penjualan,
 			"pembelian" => $pembelian
 		);
+	}
+
+	public function bayar_penjualan()
+	{
+		return Barang::whereNotNull("id_skpp")->sum('nilai');
+	}
+
+	public function belumBayarPenjualan()
+	{
+		return SKPP::whereDoesntHave("Pembayaran")->where("kategori", "penjualan")->sum("total_pembayaran");
+	}
+
+	public function belumBayarPembelian()
+	{
+		return SKPP::whereDoesntHave("Pembayaran")->where("kategori", "pembelian")->sum("total_pembayaran");
+	}
+
+	public function hutang()
+	{
+		$hutang = DB::select(
+			DB::raw("SELECT SUM(sisa_hutang) as total_hutang 
+			FROM tr_pembayaran 
+			JOIN tr_skpp ON tr_skpp.id_skpp = tr_pembayaran.id_skpp
+			where id_pembayaran in (SELECT MAX(id_pembayaran) FROM tr_pembayaran GROUP BY id_skpp)
+			AND tr_skpp.kategori = 'penjualan'")
+		);
+
+		if($hutang){
+			return $hutang[0]->total_hutang;
+		} else {
+			return 0;
+		}
+	}
+
+	public function piutang()
+	{
+		$piutang = DB::select(
+			DB::raw("SELECT SUM(sisa_hutang) as total_piutang 
+			FROM tr_pembayaran 
+			JOIN tr_skpp ON tr_skpp.id_skpp = tr_pembayaran.id_skpp
+			where id_pembayaran in (SELECT max(id_pembayaran) FROM tr_pembayaran GROUP BY id_skpp)
+			AND tr_skpp.kategori = 'pembelian'")
+		);
+
+		if($piutang){
+			return $piutang[0]->total_piutang;
+		} else {
+			return 0;
+		} 
 	}
 }
 

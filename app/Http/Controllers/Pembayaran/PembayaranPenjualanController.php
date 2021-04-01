@@ -38,40 +38,24 @@ class PembayaranPenjualanController extends Controller
     public function data(Pembayaran $pembayaran, Request $request, $id)
     {
         $id = Helper::decodex($id);
-
         $kategori = "penjualan";
-
         $last_record = $this->PembayaranService->lastRecord($id);
-
         $data = $pembayaran->query()->where("id_skpp", $id)->with('CreatedBy', 'Status');
-
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data) use ($last_record, $kategori){
-
             $option = $last_record != $data->id_pembayaran ? 'disabled' : '';
-
             return '<a href="javascript:void(0)" did="'.Helper::encodex($data->id_pembayaran).'" class="btn btn-sm btn-primary detail-pembayaran"><i class="fa fa-search"></i></a>
             <button url="'.url('penjualan/pembayaran/destroy/'.Helper::encodex($data->id_pembayaran).'/'.Helper::encodex($data->id_skpp)).'" '.$option.' class="btn btn-sm btn-danger hapus"><i class="fa fa-trash"></i>  </button>';
 
         })->addColumn('bukti_pembayaran', function($data){ 
-
-            return '<div class="layout-overlay"><img class="img-overlay" src="/bukti_pembayaran/'.$data->file_bukti_pembayaran.'" width="100%"></div>';
-            
+            return '<div class="layout-overlay"><img class="img-overlay" src="/bukti_pembayaran/'.$data->file_bukti_pembayaran.'" width="100%"></div>';            
         })->addColumn('jumlah_pembayaran', function($data){ 
-
-            return Helper::currency($data->jumlah_pembayaran);
-            
+            return Helper::currency($data->jumlah_pembayaran);            
         })->addColumn('sisa_hutang', function($data){ 
-
-            return Helper::currency($data->sisa_hutang);
-            
+            return Helper::currency($data->sisa_hutang);            
         })->addColumn('status', function($data){ 
-
-            return $data->Status->status;
-            
+            return $data->Status->status;            
         })->addColumn('created_by', function($data){ 
-
-            return $data->CreatedBy->nama;
-            
+            return $data->CreatedBy->nama;          
         })->rawColumns(['action','bukti_pembayaran'])->make(true);
     }
 

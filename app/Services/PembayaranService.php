@@ -18,8 +18,8 @@ class PembayaranService
 		if($hutang){
 			return $hutang->sisa_hutang;
 		}else{ 
-			$PO = new BarangService();
-			return $PO->total_pembayaran($kategori, $id); 
+			$barang = new BarangService();
+			return $barang->total_pembayaran($kategori, $id); 
 		}
 	} 
 
@@ -106,10 +106,9 @@ class PembayaranService
         if(self::isLunas($kategori, $id_header))
         {
             try {
-                $store = new Pembayaran; 
-                $namafile = 'bukti-pembayaran-'.Str::random(8).'.'.$request->file->getClientOriginalExtension();
+                $store = new Pembayaran;   
                 $store->kode_booking = $request->kode_booking == null ? null : $request->kode_booking;
-                $store->file_bukti_pembayaran = $namafile;
+                $store->file_bukti_pembayaran = Helper::fileUpload($request->file, 'bukti_pembayaran');
                 $store->keterangan = $request->keterangan;
                 $store->id_skpp = $id_header;
                 
@@ -126,9 +125,7 @@ class PembayaranService
                 }
 
                 $store->created_by = Auth::user()->id_user; 
-                $store->save();
-
-                $request->file->move('bukti_pembayaran', $namafile);
+                $store->save(); 
 
                 if ($kategori == "penjualan") {
                     return response()->json([
@@ -141,7 +138,6 @@ class PembayaranService
                     $info["last_record"] = self::lastRecord($id_header);
                     $info["piutang"] = self::sisaHutang("pembelian", $id_header); 
                     $info["skpp"] = SKPP::findOrFail($id_header); 
-
                     return response()->json([
                         'status' => 'success', 
                         'message' => 'Tambah pembayaran berhasil', 
