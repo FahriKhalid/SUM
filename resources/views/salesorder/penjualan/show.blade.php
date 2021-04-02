@@ -70,7 +70,7 @@
 							<tr>
 								<th width="15%">Nomor SKPP</th>
 								<th width="1%">:</th>
-								<td> <a href="javascript::void(0)">{{ $info["so"]->SKPP->no_skpp }}</a></td>
+								<td> {{ $info["so"]->SKPP->no_skpp }}</td>
 							</tr> 
 							<tr>
 								<th width="15%">Nomor SO</th>
