@@ -41,7 +41,7 @@ class SendEmail extends Mailable
                     ->subject($subject)
                     ->view('email.email_template', compact('subject'))
                     ->attachData($this->pdf->output(), $subject.'.pdf'); 
-                     
+        dd($this->lampiran);
         if(count($this->lampiran) > 0)
         {
             foreach ($this->lampiran as $value) {
