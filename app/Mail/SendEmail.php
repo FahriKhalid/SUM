@@ -36,7 +36,7 @@ class SendEmail extends Mailable
     { 
         $subject = $this->subject;
 
-        return $this->from('admin@setiagung.com')
+        return $this->from('setiagung@setiagung.com')
                     ->subject($subject)
                     ->view('email.email_template', compact('subject')) 
                     ->attachData($this->pdf->output(), $subject.'.pdf');
