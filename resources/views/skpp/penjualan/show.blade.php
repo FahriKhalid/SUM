@@ -14,6 +14,7 @@
 @include("skpp.modal_approve_skpp")
 @include("skpp.modal_unapprove_skpp")
 @include("skpp.modal_revisi_skpp")
+@include("skpp.modal_view_lampiran")
 
 <div class="container-fluid mb-4 mt-4">
 
@@ -89,11 +90,11 @@
 					<th>:</th>
 					<td>
 						@if(count($info["skpp"]->SKPPATM) > 1)
-						<ol>
+						<ul style="margin-bottom: -5px; margin-left: -23px;">
 							@foreach($info["skpp"]->SKPPATM as $atm)
 							<li>{{ $atm->ATM->nama .' ('. $atm->ATM->nomor.')' }}</li>
 							@endforeach
-						</ol>
+						</ul>
 						@elseif(count($info["skpp"]->SKPPATM) == 1)
 							{{ $info["skpp"]->SKPPATM[0]->ATM->nama .' ('. $info["skpp"]->SKPPATM[0]->ATM->nomor.')' }}
 						@else
@@ -106,11 +107,11 @@
 					<th>:</th>
 					<td>
 						@if(count($info["lampiran"]) > 0)
-						<ol style="margin-left: -25px;"> 
+						<ul style="margin-left: -23px;"> 
 							@foreach($info["lampiran"] as $lampiran)
-							  	<li>{{ $lampiran->nama }}</li>
+							  	<li>{{ $lampiran->nama }} <a href="javascript:void(0)" onclick="view_lampiran('{{ $lampiran->nama }}','{{ asset('lampiran/'.$lampiran->file) }}')">Lihat dokumen</a></li>
 							@endforeach
-						</ol>
+						</ul>
 						@else
 						-
 						@endif
@@ -351,7 +352,12 @@
 	    });
 	});
 
-
+	function view_lampiran(nama, url)
+	{
+		$("#modal-view-lampiran").modal("show");
+		$("#title-modal-lampiran").html(nama);
+		$("#view-file-lampiran").attr("data", url+"#view=FitH");
+	}
 </script>
 
 @endsection

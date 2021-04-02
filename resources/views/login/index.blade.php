@@ -76,10 +76,10 @@
                                             Login
                                         </button> 
                                     </form>
-                                    <hr>
+                                    {{-- <hr>
                                     <div class="text-center">
                                         <a class="small" href="forgot-password.html">Forgot Password?</a>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>

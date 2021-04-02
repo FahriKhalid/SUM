@@ -13,7 +13,7 @@ class SendEmail extends Mailable
 {
     use Queueable, SerializesModels; 
     
-    public $subject, $pdf;
+    public $subject, $pdf, $lampiran;
 
     /**
      * Create a new message instance.
@@ -21,10 +21,11 @@ class SendEmail extends Mailable
      * @return void
      */
 
-    public function __construct($subject, $pdf)
+    public function __construct($subject, $pdf, $lampiran = null)
     { 
         $this->subject = $subject;
         $this->pdf = $pdf;
+        $this->lampiran = $lampiran;
     }
 
     /**
@@ -36,9 +37,18 @@ class SendEmail extends Mailable
     { 
         $subject = $this->subject;
 
-        return $this->from('setiagung@setiagung.com')
+        $email = $this->from('setiagung@setiagung.com')
                     ->subject($subject)
-                    ->view('email.email_template', compact('subject')) 
-                    ->attachData($this->pdf->output(), $subject.'.pdf');
+                    ->view('email.email_template', compact('subject'))
+                    ->attachData($this->pdf->output(), $subject.'.pdf'); 
+                     
+        if(count($this->lampiran) > 0)
+        {
+            foreach ($this->lampiran as $value) {
+                $email->attach($value["file"]);
+            }
+        }
+
+        return $email;
     }
 }

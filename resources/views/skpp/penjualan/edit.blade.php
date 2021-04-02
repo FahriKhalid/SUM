@@ -21,7 +21,7 @@
 	    @endif
 
 
-		<div class="card mt-3"> 
+		<div class="card mt-3 mb-4"> 
 			<form id="form-skpp" enctype="multipart/form-data">
 				@csrf
 				<div class="card-body">
@@ -92,34 +92,40 @@
 				        <input type="checkbox" class="custom-control-input" name="is_lampiran" {{ count($info["skpp"]->Lampiran) > 0 ? "checked" : "" }} value="1" id="show-form-lampiran">
 				        <label class="custom-control-label" for="show-form-lampiran">Centang jika ada lampiran</label>
 				    </div>
-					<table class="table table-sm table-bordered {{ count($info["skpp"]->Lampiran) > 0 ? "" : "d-none" }}" id="form-lampiran">
-						<thead>
-							<tr> 
-								<th width="200px">File <span class="text-danger">*</span></th> 
-								<th>Nama <span class="text-danger">*</span></th>
-								<th>Keterangan</th>
-								<th width="1px">
-									<button type="button" class="btn btn-success btn-sm" onclick="addRowLampiran()"><i class="fa fa-plus"></i></button>
-								</th> 
-							</tr>
-						</thead>
-						<tbody id="form-parent-lampiran">
-							@include('skpp.penjualan.form_edit_lampiran')
-						</tbody>
-					</table>
-				</div>
-
-				<div class="card-body">
-					{{-- <div class="custom-control custom-checkbox mb-2">
-				        <input type="checkbox" checked class="custom-control-input" name="is_draft" value="1" id="save-as-draft">
-				        <label class="custom-control-label" for="save-as-draft">Simpan sebagai draft</label>
+				    <div class="{{ count($info["skpp"]->Lampiran) > 0 ? "" : "d-none" }}" id="form-lampiran">
+				    	<table class="table table-sm table-bordered">
+							<thead>
+								<tr> 
+									<th width="200px">File <span class="text-danger">*</span></th> 
+									<th>Nama <span class="text-danger">*</span></th>
+									<th>Keterangan</th>
+									<th width="1px">
+										<button type="button" class="btn btn-success btn-sm" onclick="addRowLampiran()"><i class="fa fa-plus"></i></button>
+									</th> 
+								</tr>
+							</thead>
+							<tbody id="form-parent-lampiran">
+								@include('skpp.penjualan.form_edit_lampiran')
+							</tbody>
+						</table>
+						<small>
+							<span class="text-danger font-italic">
+								<div>Note : </div>
+								<div>- Extensi file lampiran yang diperbolehkan hanya DOC, DOCX, dan PDF.</div>
+								<div>- Maksimal ukuran file 2 Mb.</div> 
+							</span>
+						</small>
 				    </div>
-					<button class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> --}}
-
-
-					<button class="btn btn-secondary" type="button" onclick="save(1)"><i class="fa fa-save"></i> Draft</button>
-					<button class="btn btn-primary" type="button" onclick="save(2)" ><i class="fa fa-check"></i> Submit</button>
-
+				</div>
+  
+				<div class="card-body border-top d-flex justify-content-between">  
+					<div>
+						<div class="legend bg-red"></div> Stok Habis
+					</div> 
+					<div>
+						<button class="btn btn-secondary" type="button" onclick="save(1)"><i class="fa fa-save"></i> Draft</button>
+						<button class="btn btn-primary" type="button" onclick="save(2)" ><i class="fa fa-check"></i> Submit</button>
+					</div> 
 				</div>
 			</form>
 		</div>

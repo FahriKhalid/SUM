@@ -229,7 +229,7 @@ class SkppPenjualanController extends Controller
             // insert atm
             $this->SkppAtmService->store($request, $skpp->id_skpp);
 
-            if($request->lampiran == 1){
+            if($request->is_lampiran == 1){
                 // insert lampiran
                 $this->LampiranService->store($request, $skpp->id_skpp, "skpp");
             } 
@@ -422,11 +422,11 @@ class SkppPenjualanController extends Controller
             }
 
             // delete all attachment
-            if($request->lampiran != 1)
+            if($request->is_lampiran != 1)
             {
                 $this->LampiranService->destroy($id, "skpp");
             }
-            else if($request->lampiran == 1)
+            else if($request->is_lampiran == 1)
             {
                 // update attachment
                 if($request->has('nama_file')){ 
@@ -587,7 +587,12 @@ class SkppPenjualanController extends Controller
         }
     }
     
-
+    /**
+     * Send email SKPP
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function send_email($id)
     {   
         try {
@@ -595,8 +600,17 @@ class SkppPenjualanController extends Controller
             $skpp = SKPP::findOrFail($id_skpp);
             $email_tujuan = $skpp->Customer->email;
 
+            $lampiran = [];
+            if($skpp->Lampiran != null && count($skpp->Lampiran) > 0){
+                foreach ($skpp->Lampiran as $value) {
+                    $x["file"] = asset('lampiran/'.$value->file);
+                    $lampiran[] = $x;
+                }  
+            }
+
             $pdf = $this->SkppService->suratSKPP($id_skpp); 
-            Mail::to($email_tujuan)->send(new SendEmail("SKPP", $pdf)); 
+
+            Mail::to($email_tujuan)->send(new SendEmail("SKPP", $pdf, $lampiran)); 
 
             return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
         } catch (\Exception $e) {
