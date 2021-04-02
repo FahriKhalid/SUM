@@ -39,8 +39,10 @@ class AuthController extends Controller
             'username'  => $request->input('username'),
             'password'  => $request->input('password'),
         ];
+
+        $remember = $request->remember ? true : false;
  
-        Auth::attempt($data);
+        Auth::attempt($data, $remember);
  
         if (Auth::check()) {  
             return response()->json(['status' => 'success', 'message' => 'Autentifikasi berhasil']); 

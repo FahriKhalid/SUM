@@ -107,7 +107,8 @@
         	if(data['pembayaran'] != 'Lunas'){
         		$(row).addClass(data['status_terakhir_pembayaran']);
         	}
-		}
+		},
+		order: [[ 7, "desc" ]]
     });  
   
 

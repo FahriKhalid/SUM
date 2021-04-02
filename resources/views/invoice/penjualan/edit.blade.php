@@ -6,7 +6,7 @@
 	    <div class="row">
 	        <div class="col-md-12 d-flex justify-content-between">
 	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-plus-circle"></i> Form edit invoice </h6>
-	            <a href="{{ url("penjualan/invoice/index/".$id) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
+	            <a href="{{ url("penjualan/invoice/index/".Helper::encodex($info["invoice"]->id_skpp)) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
 	        </div>  
 	    </div> 
 	    @if(PembayaranService::isLunas("penjualan", Helper::decodex($id)))
@@ -147,10 +147,13 @@
 				</div>   
 				<div class="card-body border-top d-flex justify-content-between"> 
 					<div>
-						<span class="text-danger font-italic">
-							<div>- Extensi file yang diperbolehkan hanya JPG, JPEG, PNG dan PDF.</div>
-							<div>- Maksimal ukuran file 2 Mb.</div>
-						</span>
+						<small>
+							<span class="text-danger font-italic">
+								<div>Note : </div>
+								<div>- Extensi file yang diperbolehkan hanya JPG, JPEG, PNG dan PDF.</div>
+								<div>- Maksimal ukuran file 2 Mb.</div> 
+							</span>
+						</small>
 					</div>
 					@if(!PembayaranService::isLunas("penjualan", Helper::decodex($id)))
 					<div>

@@ -90,10 +90,10 @@ class SuratKuasaController extends Controller
         $id_so = Helper::decodex($id);
         $info["so"] = SO::with("SKPP")->findOrFail($id_so); 
         $info["no_sk"] = $this->SuratKuasaService->lastKodeSk(); 
-        $info["gudang"] = Gudang::where("is_aktif", 1)->get();
+        $info["gudang"] = Gudang::with("Produsen")->where("is_aktif", 1)->get();
         $info["supir"] = Supir::where("is_aktif", 1)->get();
         $info["so_po"] = SOPO::with("SO")->where("id_so", $id_so)->get();   
-
+     
         return view('surat_kuasa.create', compact('info','id'));
     }
 

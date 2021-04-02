@@ -442,7 +442,7 @@ class SalesOrderPenjualanController extends Controller
      */
     public function send_email($id)
     {   
-        try {
+       try {
             $id_so = Helper::decodex($id);
             $so = SO::findOrFail($id_so);
             $email_tujuan = $so->SKPP->Customer->email;

@@ -144,7 +144,7 @@
                 	$("input[name=total_pembayaran]").val(formatNumber(resp.data,2));
 
 	                toastr.success(resp.message, { "closeButton": true });    
-	                refresh_table("#tabel-pembayaran");
+	                refresh_table("#tabel-invoice");
 	                $("#modal-konfirmasi-hapus").modal("hide");
 	            } else {
 	                toastr.error(resp.message, { "closeButton": true });

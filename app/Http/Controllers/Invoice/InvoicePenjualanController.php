@@ -194,9 +194,8 @@ class InvoicePenjualanController extends Controller
     public function edit($id)
     {
         $id_invoice = Helper::decodex($id); 
-
         $info["invoice"] = Invoice::with('SO')->findOrFail($id_invoice);
-
+        
         return view('invoice.penjualan.edit', compact('info', 'id'));
     }
 

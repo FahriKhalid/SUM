@@ -41,12 +41,20 @@
 		@endforeach 
 		<tr>
 			<td colspan="5" align="right"><b>SUB TOTAL</b></td> 
-			<td>
+			{{-- <td>
 				<div class="d-flex justify-content-between">
 					<div>IDR</div>
 					<div>{{ Helper::currency(floor($sub_total)) }}</div>
 				</div>
 				<input type="hidden" class="form-control" value="{{ floor($sub_total) }}" name="sub_total">
+			</td> --}}
+			<td class="p-1">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text">IDR</span>
+					</div> 
+					<input type="text" class="form-control numeric" value="{{ Helper::currency($sub_total) }}" name="sub_total">
+				</div>
 			</td>
 		</tr>
 		<tr>
@@ -56,9 +64,9 @@
 					<div class="input-group-prepend">
 						<span class="input-group-text">IDR</span>
 					</div>
-					<div class="input-group-prepend">
+					{{-- <div class="input-group-prepend">
 						<button type="button" data-toggle="tooltip" data-placement="top" title="Reset PPN" class="btn btn-warning" onclick="reset_ppn()"><i class="fa fa-sync"></i></button>
-					</div>
+					</div> --}}
 					<input type="text" class="form-control numeric" value="{{ floor($sub_total / 10) }}" name="ppn">
 				</div>
 			</td>

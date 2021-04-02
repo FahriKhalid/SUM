@@ -49,6 +49,10 @@ class GudangController extends Controller
 
             return $data->CreatedBy->nama;
             
+        })->addColumn('produsen', function($data){ 
+
+            return $data->Produsen->perusahaan;
+            
         })->addColumn('created_on', function($data){ 
 
             return $data->created_on;

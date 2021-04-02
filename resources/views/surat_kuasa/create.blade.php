@@ -52,7 +52,7 @@
 	                        <div class="form-group"> 
 	                            <select class="form-control select2" name="gudang">
 		                        	@foreach($info["gudang"] as $gudang)
-		                        		<option value="{{ $gudang->id_gudang }}">{{ $gudang->nama }}</option>
+		                        		<option value="{{ $gudang->id_gudang }}">{{ $gudang->nama }} - {{ $gudang->Produsen->perusahaan }}</option>
 		                        	@endforeach
 		                        </select>
 	                        </div>

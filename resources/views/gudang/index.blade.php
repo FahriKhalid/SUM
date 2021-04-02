@@ -29,6 +29,7 @@
                             <tr>
                                 <th width="1px">No</th>
                                 <th>Nama gudang</th>  
+                                <th>Produsen</th>
                                 <th>Alamat</th>
                                 <th>Status</th>
                                 <th>Created by</th>
@@ -69,7 +70,8 @@
 
 	var data_table = [
         {data: 'DT_RowIndex', 	name: 'DT_RowIndex', orderable: false, searchable: false}, 
-        {data: 'nama',		  	name: 'nama'}, 
+        {data: 'nama',		  	name: 'nama'},  
+        {data: 'produsen',		name: 'produsen'},  
         {data: 'alamat',		name: 'alamat'}, 
         {data: 'is_aktif',    	name: 'is_aktif'}, 
         {data: 'created_by',  	name: 'created_by'},
@@ -155,7 +157,8 @@
                	$("input[name=alamat]").val(resp.alamat); 
                	$("input[name=kepala_gudang]").val(resp.kepala_gudang);  
                	$("input[type=radio][name=status][value="+resp.is_aktif+"]").prop("checked", true);
-                loader(".modal-content", false);
+               	$("select[name=produsen]").val(resp.id_produsen).change();
+                loader(".modal-content", false);  
 			},
 			error : function(jqXHR, exception){
 				errorHandling(jqXHR.status, exception);

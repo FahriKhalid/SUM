@@ -79,10 +79,14 @@
 				</div>   
 				<div class="card-body border-top d-flex justify-content-between"> 
 					<div>
-						<span class="text-danger font-italic">
-							<div>- Extensi file yang diperbolehkan hanya JPG, JPEG, PNG dan PDF.</div>
-							<div>- Maksimal ukuran file 2 Mb.</div>
-						</span>
+						<small>
+							<span class="text-danger font-italic">
+								<div>Note : </div>
+								<div>- Extensi file yang diperbolehkan hanya JPG, JPEG, PNG dan PDF.</div>
+								<div>- Maksimal ukuran file 2 Mb.</div>
+								<div>- Pastikan sales order yang dipilih sudah delivered</div>
+							</span>
+						</small>
 					</div>
 					@if(!PembayaranService::isBayar("penjualan", Helper::decodex($id)))
 					<div>
@@ -201,12 +205,29 @@
     |--------------------------------------------------------------------------
     */
 
+    // $("body").delegate("input[name=ppn]", "keyup", function(){
+    // 	var ppn = $(this).val();
+    // 	var sub_total = $("input[name=sub_total]").val();
+    // 	var total = convertNumeric(ppn) + parseFloat(sub_total);
+
+    // 	$("input[name=total]").val(formatNumber(total, 0));
+    // });
+
+    
     $("body").delegate("input[name=ppn]", "keyup", function(){
     	var ppn = $(this).val();
     	var sub_total = $("input[name=sub_total]").val();
-    	var total = convertNumeric(ppn) + parseFloat(sub_total);
+    	var total = convertNumeric(ppn) + convertNumeric(sub_total);
 
-    	$("input[name=total]").val(formatNumber(total, 0));
+    	$("input[name=total]").val(formatNumber(total.toFixed(2), 2));
+    });
+
+    $("body").delegate("input[name=sub_total]", "keyup", function(){
+    	var sub_total = $(this).val();
+    	var ppn = $("input[name=ppn]").val();
+    	var total = convertNumeric(sub_total) + convertNumeric(ppn);
+
+    	$("input[name=total]").val(formatNumber(total.toFixed(2), 2));
     });
 
 

@@ -21,7 +21,18 @@
     <!-- Custom styles for this template-->
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/waitme/waitme.min.css') }}" rel="stylesheet">
-
+    <style type="text/css">
+        .bg-image {
+            background: white;
+            background-position-x: 0%;
+            background-position-y: 0%;
+            background-image: none;
+            background-size: auto;
+            background-image: url('/img/background.png');
+            background-size: cover;
+            background-position: center center;
+        }
+    </style>
 </head>
 
 <body class="bg-gradient-primary">
@@ -31,8 +42,7 @@
         <!-- Outer Row -->
         <div class="row justify-content-center">
 
-            <div class="col-xl-10 col-lg-12 col-md-9">
-
+            <div class="col-xl-10 col-lg-12 col-md-9"> 
                 <div class="card o-hidden border-0 shadow-lg my-5">
                     <div class="card-body p-0">
                         <!-- Nested Row within Card Body -->
@@ -41,6 +51,7 @@
                             <div class="col-lg-6" id="loader">
                                 <div class="p-5">
                                     <div class="text-center">
+                                        <img src="{{asset('img/logo_perusahaan.png')}}">
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                     </div>
                                     <form class="user" id="form-login">
@@ -56,7 +67,7 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
-                                                <input type="checkbox" class="custom-control-input" id="customCheck">
+                                                <input type="checkbox" class="custom-control-input" name="remember" id="customCheck">
                                                 <label class="custom-control-label" for="customCheck">Remember
                                                     Me</label>
                                             </div>
