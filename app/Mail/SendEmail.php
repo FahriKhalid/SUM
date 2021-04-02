@@ -45,7 +45,7 @@ class SendEmail extends Mailable
         if(count($this->lampiran) > 0)
         {
             foreach ($this->lampiran as $value) {
-                $email = $email->attach($value["file"]);
+                $email->attachData($value["url_file"], $value["name_file"]);
             }
         }
 

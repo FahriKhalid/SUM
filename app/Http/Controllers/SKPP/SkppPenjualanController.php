@@ -603,7 +603,8 @@ class SkppPenjualanController extends Controller
             $lampiran = [];
             if($skpp->Lampiran != null && count($skpp->Lampiran) > 0){
                 foreach ($skpp->Lampiran as $value) {
-                    $x["file"] = asset('lampiran/'.$value->file);
+                    $x["name_file"] = $value->file;
+                    $x["url_file"] = asset('lampiran/'.$value->file);
                     $lampiran[] = $x;
                 }  
             }
