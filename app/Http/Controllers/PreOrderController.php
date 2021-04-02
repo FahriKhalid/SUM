@@ -452,8 +452,18 @@ class PreOrderController extends Controller
             $po = PreOrder::findOrFail($id_po);
             $email_tujuan = $po->Produsen->email;
 
+            $lampiran = [];
+            if($po->Lampiran != null && count($po->Lampiran) > 0){
+                foreach ($po->Lampiran as $value) {
+                    $x["name_file"] = $value->file;
+                    $x["url_file"] = asset('lampiran/'.$value->file);
+                    $lampiran[] = $x;
+                }  
+            }
+
+
             $pdf = $this->PreOrderService->suratPreOrder($id_po);
-            Mail::to($email_tujuan)->send(new SendEmail("PRE ORDER", $pdf)); 
+            Mail::to($email_tujuan)->send(new SendEmail("PRE ORDER", $pdf, $lampiran)); 
 
             return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
         } catch (\Exception $e) {
