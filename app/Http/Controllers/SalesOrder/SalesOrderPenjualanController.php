@@ -131,6 +131,7 @@ class SalesOrderPenjualanController extends Controller
         $rules = [
             'id_skpp'               => 'required',
             'nomor_so'              => 'required|unique:tr_so,no_so',
+            'nomor_so_pengambilan'  => 'required',
             'supir'                 => 'required|exists:ms_supir,id_supir',
             'tujuan'                => 'required',  
             'status'                => 'required',  
@@ -143,13 +144,13 @@ class SalesOrderPenjualanController extends Controller
         $messages = [
             'nomor_so.required'     => 'Nomor sales order wajib diisi', 
             'nomor_so.unique'       => 'Nomor sales order sudah pernah terdaftar pilih nomor sales order yang lain',
+            'nomor_so_pengambilan.required'  => 'Nomor sales order pengaambilan wajib diisi',
             'supir.required'        => 'Penanggung jawab wajib diisi', 
             'status.required'       => 'Status wajib diisi', 
             'supir.exist'           => 'Penanggung jawab tidak valid', 
             'tujuan.required'       => 'Tujuan wajib diisi', 
             'id_po.required'        => 'PO wajib diisi', 
-            'kuantitas.required'    => 'kuantitas wajib diisi'
-
+            'kuantitas.required'    => 'kuantitas wajib diisi',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -267,6 +268,7 @@ class SalesOrderPenjualanController extends Controller
 
         $rules = [ 
             'nomor_so'              => 'required|unique:tr_so,no_so,'.$id_so.',id_so',
+            'nomor_so_pengambilan'  => 'required',
             'supir'                 => 'required|exists:ms_supir,id_supir',
             'tujuan'                => 'required',   
             'id_supir_so'           => 'required',
@@ -277,6 +279,7 @@ class SalesOrderPenjualanController extends Controller
         $messages = [
             'nomor_so.required'     => 'Nomor sales order wajib diisi', 
             'nomor_so.unique'       => 'Nomor sales order sudah pernah terdaftar pilih nomor sales order yang lain',
+            'nomor_so_pengambilan.required'  => 'Nomor sales order pengaambilan wajib diisi',
             'supir.required'        => 'Penanggung jawab waji diisi', 
             'supir.exist'           => 'Penanggung jawab tidak valid', 
             'tujuan.required'       => 'Tujuan wajib diisi', 
