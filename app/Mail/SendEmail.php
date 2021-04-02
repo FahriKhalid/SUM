@@ -42,7 +42,7 @@ class SendEmail extends Mailable
                     ->view('email.email_template', compact('subject'))
                     ->attachData($this->pdf->output(), $subject.'.pdf'); 
          
-        if($this->lampiran != null && count($this->lampiran) > 0)
+        if($this->lampiran != null)
         {
             foreach ($this->lampiran as $value) {
                 $email->attach($value["url_file"]);

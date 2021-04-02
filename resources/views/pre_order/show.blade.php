@@ -71,11 +71,11 @@
 					<th>:</th>
 					<td>
 						@if(count($info["lampiran"]) > 0)
-						<ol style="margin-left: -25px;"> 
+						<ul style="margin-left: -23px;"> 
 							@foreach($info["lampiran"] as $lampiran)
 							  	<li>{{ $lampiran->nama }}</li>
 							@endforeach
-						</ol>
+						</ul>
 						@else
 						-
 						@endif
