@@ -34,6 +34,43 @@
                             <th width="70px">Aksi</th>
                         </tr>
                     </thead> 
+                    <thead>
+                        <tr>
+                            <td class="p-1"></td>
+                            <td class="p-1">
+                            	<input type="text" class="form-control" id="filter-no-po" placeholder="Cari" name="">
+                            </td>  
+                            <td class="p-1">
+                            	<select class="form-control select2" id="filter-produsen" title="produsen">
+                            		<option value="">Semua</option>
+                            		@foreach($info["produsen"] as $produsen)
+                            		<option value="{{ Helper::encodex($produsen->id_produsen) }}">{{ $produsen->perusahaan }}</option>
+                            		@endforeach
+                            	</select>
+                            </td> 
+                            <td class="p-1">
+                            	<input type="text" class="form-control" id="filter-no-skpp" placeholder="Cari" name="">
+                            </td> 
+                            <td class="p-1"> 
+                            	<input type="text" class="form-control datepicker-table" id="filter-terakhir-pembayaran" placeholder="Cari" name="">
+                            </td>
+                            <td class="p-1">
+                                  	<select class="form-control select2" id="filter-pembayaran">
+                            		<option value="">Semua</option> 
+                            		@foreach($info["status_pembayaran"] as $status)
+                            		<option value="{{ Helper::encodex($status->id_status) }}">{{ $status->status }}</option>
+                            		@endforeach
+                            	</select>
+                            </td>
+                            <td class="p-1">
+                            	<input type="text" class="form-control" id="filter-created-by" placeholder="Cari" name="">
+                            </td>
+                            <td class="p-1">
+                            	<input type="text" class="form-control datepicker-table" id="filter-created-at" placeholder="Cari" name="">
+                            </td>
+                            <td class="p-1"></td>
+                        </tr>
+                    </thead> 
                 </table>
             </div>
 
@@ -89,7 +126,16 @@
         processing: true,
         serverSide: true,
         ajax: {
-            url : '{{url('pembelian/pre_order/data')}}'
+            url : '{{url('pembelian/pre_order/data')}}',
+            data: function (d) {
+                d.no_po = $("#filter-no-po").val();
+                d.produsen = $("#filter-produsen").val();
+                d.no_skpp = $("#filter-no-skpp").val();
+                d.terakhir_pembayaran = $("#filter-terakhir-pembayaran").val();
+                d.pembayaran = $("#filter-pembayaran").val();
+                d.created_by = $("#filter-created-by").val(); 
+                d.created_at = $("#filter-created-at").val(); 
+            }
         },
         columns: columns,
         responsive: true,
@@ -109,7 +155,15 @@
         	}
 		},
 		order: [[ 7, "desc" ]]
-    }); 
+    });
+
+    /*
+	|--------------------------------------------------------------------------
+	| Function filter Datatable
+	|--------------------------------------------------------------------------
+	*/   
+
+	filterDatatable("#tabel-pre-order"); 
 
 
     /*

@@ -9,7 +9,7 @@
     <meta name="csrf-token" id="csrf-token" content="{{ csrf_token() }}"> 
     <meta name="author" content="Pahri Khalid">
     <meta name="email" content="fahri.halid@gmail.com">
-    <link rel="icon" href="{{ asset('img/logo_perusahaan.ico') }}" type="image/x-icon" />
+    <link rel="icon" href="/img/logo_perusahaan.ico" type="image/x-icon" />
 
     <title>
         @yield('title')
@@ -587,6 +587,35 @@
                 }
             })
         });
+        
+
+        /*
+        |--------------------------------------------------------------------------
+        | Function filter Datatable
+        |--------------------------------------------------------------------------
+        */   
+
+        function filterDatatable(selector)
+        {
+            $("body").delegate(selector+" select", "change", function(){
+                $(selector).DataTable().draw(true);
+            });
+
+            $("body").delegate(selector+" input:not(.datepicker-table)", "keyup", function(){
+                $(selector).DataTable().draw(true);
+            });
+
+            $('.datepicker-table').each(function() {
+                $(this).datepicker({
+                    showOtherMonths: true,
+                    uiLibrary: 'bootstrap4',
+                    format: 'dd/mm/yyyy',
+                    change: function (e) {
+                        $(selector).DataTable().draw(true);
+                    }
+                });
+            }); 
+        }
     </script>
     @yield('footer')
 

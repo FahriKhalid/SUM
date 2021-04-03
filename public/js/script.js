@@ -319,3 +319,32 @@ $(document).on("submit", "#form-send-email", function(e){
         }
     })
 });
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Function filter Datatable
+|--------------------------------------------------------------------------
+*/   
+
+function filterDatatable(selector)
+{
+    $("body").delegate(selector+" select", "change", function(){
+        $(selector).DataTable().draw(true);
+    });
+
+    $("body").delegate(selector+" input:not(.datepicker-table)", "keyup", function(){
+        $(selector).DataTable().draw(true);
+    });
+     
+    $('.datepicker-table').datepicker({
+        showOtherMonths: true,
+        uiLibrary: 'bootstrap4',
+        format: 'dd/mm/yyyy',
+        change: function (e) {
+            $(selector).DataTable().draw(true);
+        }
+    });
+}
+

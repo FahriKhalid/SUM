@@ -17,6 +17,7 @@ use App\Produsen;
 use App\Booking;
 use App\Barang;
 use App\Produk; 
+use App\Status;
 use Validator;
 use Helper;
 use Auth;
@@ -40,9 +41,84 @@ class PreOrderController extends Controller
         $this->PembayaranService = $PembayaranService;
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $info["produsen"] = Produsen::get();
+        $info["status_skpp"] = Status::whereIn("id_status", [1,2,3])->get();
+        $info["status_pembayaran"] = Status::whereIn("id_status", [9,10,11])->get();
+        return view('pre_order.index', compact('info'));
+    }
+
+
+    /**
+     * Data of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function data(PreOrder $PreOrder, Request $request)
     {
         $data = $PreOrder->query()->with('CreatedBy','Produsen','Status','SKPP');
+
+        if($request->no_po != ""){
+            $data->where("no_po", "LIKE", "%".$request->no_po."%");
+        }
+
+        if($request->no_skpp != ""){ 
+            $data->whereHas("SKPP", function($query) use ($request){
+                $query->where("no_skpp", "LIKE", "%".$request->no_skpp."%");
+            });
+        }
+
+        if($request->produsen != ""){ 
+            $data->where("id_produsen", Helper::decodex($request->produsen));
+        }
+
+        if($request->terakhir_pembayaran != ""){ 
+            $tanggal = Helper::dateFormat($request->terakhir_pembayaran, true, 'Y-m-d');
+            $data->whereHas("SKPP", function($query) use ($tanggal){
+                $query->where("terakhir_pembayaran", $tanggal);
+            }); 
+        }
+
+        if($request->pembayaran != ""){ 
+            //dd(Helper::decodex($request->pembayaran));
+            if(Helper::decodex($request->pembayaran) == 9) {
+                $data->whereHas("SKPP", function($query) use ($request){
+                    $query->whereDoesntHave("PembayaranTerakhir");
+                });
+            } else { 
+                if(Helper::decodex($request->pembayaran) == 10){  
+                    $data->whereHas("SKPP", function($query) use ($request){
+                        $query->whereHas("Pembayaran", function($query) use ($request){
+                             $query->where("id_pembayaran", 27);
+                        });
+                    });
+                } else {
+                    $data->whereHas("SKPP", function($query) use ($request){
+                        $query->whereHas("PembayaranTerakhir", function($query) use ($request){
+                            $query->where("sisa_hutang", 0.00); 
+                        });
+                    });
+                }
+            } 
+        }
+
+        if($request->created_by != ""){ 
+            $data->whereHas("CreatedBy", function($query) use ($request){
+                $query->where("nama", "LIKE", "%".$request->created_by."%");
+            });
+        }
+
+        if($request->created_at != ""){ 
+            $tanggal = Helper::dateFormat($request->created_at, true, 'Y-m-d');
+            $data->where("created_at", "LIKE", "%".$tanggal."%");
+        }
+
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){ 
             $aksi = '';
             // if($data->id_status < 2){
@@ -78,14 +154,13 @@ class PreOrderController extends Controller
         })->addColumn('pembayaran', function($data){             
             $skpp = $data->SKPP->no_skpp;            
             if($skpp != '-')
-            {
-                $pembayaran = $this->PembayaranService->sisaHutang("pembelian", $data->SKPP->id_skpp);   
-                if ($pembayaran == null) {
-                    return 'Belum dibayar';
-                } elseif($pembayaran > 0){
-                    return 'Belum lunas';
-                } elseif($pembayaran == 00.0) {
-                    return 'Lunas';
+            { 
+                if ($data->SKPP->PembayaranTerakhir->sisa_hutang == null) {
+                    return 'Belum bayar';
+                } elseif($data->SKPP->PembayaranTerakhir->sisa_hutang != null && $data->SKPP->PembayaranTerakhir->sisa_hutang > 00.0){
+                    return 'Belum lunas '. $data->SKPP->PembayaranTerakhir->id_pembayaran;
+                } elseif($data->SKPP->PembayaranTerakhir->sisa_hutang != null && $data->SKPP->PembayaranTerakhir->sisa_hutang == 00.0) {
+                    return 'Lunas '. $data->SKPP->PembayaranTerakhir->id_pembayaran;
                 } 
             } else {
                 return '-';
@@ -93,18 +168,8 @@ class PreOrderController extends Controller
         })->addColumn('created_by', function($data){ 
             return $data->CreatedBy->nama;            
         })->rawColumns(['action','pembayaran','no_po'])->make(true);
-    }
-
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        return view('pre_order.index');
-    }
+    } 
+    
 
     /**
      * Show the form for creating a new resource.

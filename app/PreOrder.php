@@ -80,6 +80,11 @@ class PreOrder extends Model
         return $this->hasOne(SKPP::class, 'id_pre_order', 'id_pre_order')->withDefault([
             'no_skpp' => '-',
             'terakhir_pembayaran' => '-'
-        ]);
+        ])->with("Pembayaran");
+    }
+
+    public function Pembayaran()
+    {
+       return $this->SKPP()->with("Pembayaran");
     }
 }

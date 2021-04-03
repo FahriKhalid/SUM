@@ -18,6 +18,7 @@ use App\Mail\SendEmail;
 use App\Customer;
 use App\Lampiran;
 use App\Produk;
+use App\Status;
 use App\SKPP;
 use App\ATM;
 use App\Barang;
@@ -61,16 +62,59 @@ class SkppPenjualanController extends Controller
      */
     public function index()
     {
-        
-        return view('skpp.penjualan.index');
+        $info["customer"] = Customer::get();
+        $info["status_skpp"] = Status::whereIn("id_status", [1,2,3])->get();
+        $info["status_pembayaran"] = Status::whereIn("id_status", [9,10,11])->get();
+        return view('skpp.penjualan.index', compact('info'));
     }
 
 
     public function data(SKPP $SKPP, Request $request)
     {
-        $data = $SKPP->query()->with('CreatedBy','Customer','Status','Pembayaran')
-                    ->where("kategori", "penjualan")
-                    ->orderBy("no_skpp", "desc");
+        $data = $SKPP->query()->with('CreatedBy','Customer','Status','Pembayaran')->where("kategori", "penjualan");
+
+        if($request->no_skpp != ""){
+            $data->where("no_skpp", "LIKE", "%".$request->no_skpp."%");
+        }
+
+        if($request->customer != ""){ 
+            $data->where("id_customer", Helper::decodex($request->customer));
+        }
+
+        if($request->terakhir_pembayaran != ""){ 
+            $tanggal = Helper::dateFormat($request->terakhir_pembayaran, true, 'Y-m-d');
+            $data->where("terakhir_pembayaran", $tanggal);
+        }
+
+        if($request->status != ""){ 
+            $data->where("id_status", Helper::decodex($request->status));
+        }
+
+        if($request->pembayaran != ""){ 
+
+            if(Helper::decodex($request->pembayaran) == 9) {
+                $data->whereDoesntHave("PembayaranTerakhir");
+            } else {
+                $data->whereHas("PembayaranTerakhir", function($query) use ($request){
+                    if(Helper::decodex($request->pembayaran) == 10){
+                        $query->where("sisa_hutang", ">", 00.0); 
+                    } else {
+                        $query->where("sisa_hutang", 00.0); 
+                    }
+                });
+            } 
+        }
+
+        if($request->created_by != ""){ 
+            $data->whereHas("CreatedBy", function($query) use ($request){
+                $query->where("nama", "LIKE", "%".$request->created_by."%");
+            });
+        }
+
+        if($request->created_at != ""){ 
+            $tanggal = Helper::dateFormat($request->created_at, true, 'Y-m-d');
+            $data->where("created_at", "LIKE", "%".$tanggal."%");
+        }
 
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){ 
 
@@ -95,35 +139,23 @@ class SkppPenjualanController extends Controller
                   </div>';
 
         })->addColumn('customer', function($data){ 
-
             return $data->Customer->perusahaan;
-            
         })->addColumn('status', function($data){ 
-
-            return $data->Status->status;
-            
+            return $data->Status->status;            
         })->addColumn('terakhir_pembayaran', function($data){ 
-
-            return $data->terakhir_pembayaran;
-            
+            return $data->terakhir_pembayaran;            
         })->addColumn('status_terakhir_pembayaran', function($data){ 
-
-            return Helper::dateWarning($data->terakhir_pembayaran);
-  
+            return Helper::dateWarning($data->terakhir_pembayaran);  
         })->addColumn('pembayaran', function($data){ 
-
-            if ($data->Pembayaran->sisa_hutang == null) {
+            if ($data->PembayaranTerakhir->sisa_hutang == null) {
                 return 'Belum dibayar';
-            } elseif($data->Pembayaran->sisa_hutang != null && $data->Pembayaran->sisa_hutang > 0){
+            } elseif($data->PembayaranTerakhir->sisa_hutang != null && $data->PembayaranTerakhir->sisa_hutang > 00.0){
                 return 'Belum lunas';
-            } elseif($data->Pembayaran->sisa_hutang != null && $data->Pembayaran->sisa_hutang == 00.0) {
+            } elseif($data->PembayaranTerakhir->sisa_hutang != null && $data->PembayaranTerakhir->sisa_hutang == 00.0) {
                 return 'Lunas';
             } 
-
         })->addColumn('created_by', function($data){ 
-
             return $data->CreatedBy->nama;
-            
         })->rawColumns(['action','pembayaran'])->make(true);
     }
 

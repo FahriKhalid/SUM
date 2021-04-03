@@ -1,6 +1,6 @@
 @extends('layout.index')
 
-@section('title', 'SUM - Pre Order')
+@section('title', 'SUM - SKPP')
 
 @section('css')
 	<link rel="stylesheet" type="text/css" href="{{asset('vendor/datatables/dataTables.bootstrap4.min.css')}}"> 
@@ -20,7 +20,7 @@
 		<div class="card-body">
 			<a href="{{ url('penjualan/skpp/create') }}" class="btn btn-success mb-3"><i class="fa fa-plus"></i> Tambah</a>
 			<div class="table-responsive">
-                <table class="table table-bordered" id="tabel-pre-order" style="width:100%">
+                <table class="table table-bordered" id="tabel-skpp" style="width:100%">
                     <thead>
                         <tr>
                             <th width="1px">No</th>
@@ -32,6 +32,48 @@
                             <th>Created by</th>
                             <th width="130px">Created at</th>
                             <th width="70px">Aksi</th>
+                        </tr>
+                    </thead> 
+                    <thead>
+                        <tr>
+                            <td class="p-1"></td>
+                            <td class="p-1">
+                            	<input type="text" class="form-control" id="filter-no-skpp" placeholder="Cari" name="">
+                            </td>  
+                            <td class="p-1">
+                            	<select class="form-control select2" id="filter-customer" title="customer">
+                            		<option value="">Semua</option>
+                            		@foreach($info["customer"] as $customer)
+                            		<option value="{{ Helper::encodex($customer->id_customer) }}">{{ $customer->perusahaan }}</option>
+                            		@endforeach
+                            	</select>
+                            </td> 
+                            <td class="p-1">
+                            	<input type="text" class="form-control datepicker-table" id="filter-terkahir-pembayaran" placeholder="Cari" name="">
+                            </td> 
+                            <td class="p-1">
+                            	<select class="form-control select2" id="filter-pembayaran">
+                            		<option value="">Semua</option> 
+                            		@foreach($info["status_pembayaran"] as $status)
+                            		<option value="{{ Helper::encodex($status->id_status) }}">{{ $status->status }}</option>
+                            		@endforeach
+                            	</select>
+                            </td>
+                            <td class="p-1">
+                            	<select class="form-control select2" id="filter-status" title="status">
+                            		<option value="">Semua</option>
+                            		@foreach($info["status_skpp"] as $status)
+                            		<option value="{{ Helper::encodex($status->id_status) }}">{{ $status->status }}</option>
+                            		@endforeach
+                            	</select>
+                            </td>
+                            <td class="p-1">
+                            	<input type="text" class="form-control" id="filter-created-by" placeholder="Cari" name="">
+                            </td>
+                            <td class="p-1">
+                            	<input type="text" class="form-control datepicker-table" id="filter-created-at" placeholder="Cari" name="">
+                            </td>
+                            <td class="p-1"></td>
                         </tr>
                     </thead> 
                 </table>
@@ -85,11 +127,20 @@
         {data: 'action',      name: 'action', orderable: false,},
     ];
 
-    $('#tabel-pre-order').DataTable({
+    $('#tabel-skpp').DataTable({
         processing: true,
         serverSide: true,
         ajax: {
-            url : '{{url('penjualan/skpp/data')}}'
+            url : '{{url('penjualan/skpp/data')}}',
+            data: function (d) {
+                d.no_skpp = $("#filter-no-skpp").val();
+                d.customer = $("#filter-customer").val();
+                d.terakhir_pembayaran = $("#filter-terkahir-pembayaran").val();
+                d.pembayaran = $("#filter-pembayaran").val();
+                d.status = $("#filter-status").val();
+                d.created_by = $("#filter-created-by").val(); 
+                d.created_at = $("#filter-created-at").val(); 
+            }
         },
         columns: columns,
         responsive: true,
@@ -110,7 +161,15 @@
 		},
 		order: [[ 7, "desc" ]]
     });  
-  
+
+
+    /*
+	|--------------------------------------------------------------------------
+	| Function filter Datatable
+	|--------------------------------------------------------------------------
+	*/   
+	filterDatatable("#tabel-skpp");
+ 
 
     /*
 	|--------------------------------------------------------------------------

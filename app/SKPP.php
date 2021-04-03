@@ -52,6 +52,11 @@ class SKPP extends Model
         return $this->belongsTo(Pembayaran::class,'id_skpp','id_skpp')->withDefault();
     }
 
+    public function PembayaranTerakhir()
+    {
+        return $this->Pembayaran()->latest();
+    }
+
     public function CreatedBy()
     {
         return $this->belongsTo(User::class,'created_by','id_user')->withDefault();
