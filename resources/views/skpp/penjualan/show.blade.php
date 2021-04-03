@@ -106,12 +106,17 @@
 					<th>Lampiran</th>
 					<th>:</th>
 					<td>
-						@if(count($info["lampiran"]) > 0)
-						<ul style="margin-left: -23px;"> 
-							@foreach($info["lampiran"] as $lampiran)
-							  	<li>{{ $lampiran->nama }} <a href="javascript:void(0)" onclick="view_lampiran('{{ $lampiran->nama }}','{{ asset('lampiran/'.$lampiran->file) }}')">Lihat dokumen</a></li>
-							@endforeach
-						</ul>
+						@if(count($info["lampiran"]) > 0) 
+							@foreach($info["lampiran"] as $lampiran)  
+							  	<span class="badge rounded-pill border custom-pill"> 
+						  			{{ $lampiran->nama }} . {{ Helper::getExtensionFromString($lampiran->file) }} 
+						  			@if(Helper::getExtensionFromString($lampiran->file) == "PDF")
+						  			<a href="javascript:void(0)" onclick="view_lampiran('{{ $lampiran->nama }}','{{ asset('lampiran/'.$lampiran->file) }}')">Lihat dokumen</a>
+						  			@else
+						  			<a href="{{ asset('lampiran/'.$lampiran->file) }}" download>Download</a>
+						  			@endif
+    							</span>
+							@endforeach 
 						@else
 						-
 						@endif

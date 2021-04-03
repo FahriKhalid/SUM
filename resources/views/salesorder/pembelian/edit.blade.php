@@ -8,7 +8,7 @@
 
 	    <div class="row">
 	        <div class="col-md-12 d-flex justify-content-between">
-	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-plus-circle"></i> Form edit sales order </h6>
+	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-edit"></i> FORM EDIT SALES ORDER </h6>
 	            <a href="{{ url("pembelian/salesorder/show/".Helper::encodex($info['so']->SKPP->PreOrder->id_pre_order)) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>
 	        </div>  
 	    </div>  

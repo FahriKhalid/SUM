@@ -275,6 +275,11 @@ class Helper {
             unlink($folder.'/'.$file);
         }
     }
+
+    public static function getExtensionFromString($string)
+    {
+    	return strtoupper(explode('.', $string)[1]);
+    }
 }
 
 

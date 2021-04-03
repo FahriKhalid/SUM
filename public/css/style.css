@@ -109,8 +109,10 @@
  
 ol { margin-left: -23px !important; }    
 
-
-
+.custom-pill {
+    font-size: 14px; 
+    font-weight: 500;
+}
 
 
 

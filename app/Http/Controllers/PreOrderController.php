@@ -158,9 +158,9 @@ class PreOrderController extends Controller
                 if ($data->SKPP->PembayaranTerakhir->sisa_hutang == null) {
                     return 'Belum bayar';
                 } elseif($data->SKPP->PembayaranTerakhir->sisa_hutang != null && $data->SKPP->PembayaranTerakhir->sisa_hutang > 00.0){
-                    return 'Belum lunas '. $data->SKPP->PembayaranTerakhir->id_pembayaran;
+                    return 'Belum lunas';
                 } elseif($data->SKPP->PembayaranTerakhir->sisa_hutang != null && $data->SKPP->PembayaranTerakhir->sisa_hutang == 00.0) {
-                    return 'Lunas '. $data->SKPP->PembayaranTerakhir->id_pembayaran;
+                    return 'Lunas';
                 } 
             } else {
                 return '-';

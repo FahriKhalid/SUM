@@ -26,6 +26,16 @@
                         <label>File invoice <span class="text-danger">*</span></label>
                         <input type="file" accept="application/pdf" class="form-control email" name="file_invoice" placeholder="Wajib di isi">
                     </div> 
+
+                    <div class="mt-3">
+                        <small>
+                            <span class="text-danger font-italic">
+                                <div>Note : </div>
+                                <div>- Extensi file lampiran yang diperbolehkan hanya PDF.</div>
+                                <div>- Maksimal ukuran file 2 Mb.</div> 
+                            </span>
+                        </small>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times-circle"></i> Close</button>

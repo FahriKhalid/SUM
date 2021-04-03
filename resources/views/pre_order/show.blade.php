@@ -7,6 +7,7 @@
 @include('layout.header_pembelian')
 @include("skpp.modal_konfirmasi_skpp")
 @include('layout.modal_email')
+@include("skpp.modal_view_lampiran")
 
 <div class="container-fluid mb-4 mt-4">
 
@@ -33,15 +34,6 @@
 				<a target="_blank" href="{{ url('pembelian/pre_order/surat_po/'.Helper::encodex($info["pre_order"]->id_pre_order)) }}" class="btn btn-warning"><i class="fa fa-download"></i> Pre Order</a>
 
 				<button class="btn btn-warning"onclick="show_form_email('dokumen Pre Order', '{{ url('pembelian/pre_order/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email</button>
-				{{-- @if($info["pre_order"]->id_status == 1)
-					<a href="{{ url('pembelian/pre_order/edit/'.Helper::encodex($info["pre_order"]->id_pre_order)) }}" class="btn btn-primary"><i class="fa fa-edit"></i> Edit</a>
-					<button onclick="confirm('{{ url('pembelian/pre_order/confirm/'.Helper::encodex($info["pre_order"]->id_pre_order)) }}')" class="btn btn-success"><i class="fa fa-check"></i> Confirm</button>
-				@elseif($info["pre_order"]->id_status == 2)
-					<button onclick="revisi('{{ url('pembelian/pre_order/revisi/'.Helper::encodex($info["pre_order"]->id_pre_order)) }}')" class="btn btn-warning"><i class="fa fa-edit"></i> Revisi</button>
-					<button onclick="approve('{{ url('pembelian/pre_order/approve/'.Helper::encodex($info["pre_order"]->id_pre_order)) }}')" class="btn btn-success"><i class="fa fa-check-double"></i> Approve</button>
-				@elseif($info["pre_order"]->id_status == 3) 
-					<button onclick="revisi('{{ url('pembelian/pre_order/revisi/'.Helper::encodex($info["pre_order"]->id_pre_order)) }}')" class="btn btn-warning"><i class="fa fa-edit"></i> Revisi</button>
-				@endif --}}
 
 			</div>
 			<div>
@@ -70,12 +62,17 @@
 					<th>Lampiran</th>
 					<th>:</th>
 					<td>
-						@if(count($info["lampiran"]) > 0)
-						<ul style="margin-left: -23px;"> 
-							@foreach($info["lampiran"] as $lampiran)
-							  	<li>{{ $lampiran->nama }}</li>
-							@endforeach
-						</ul>
+						@if(count($info["lampiran"]) > 0) 
+							@foreach($info["lampiran"] as $lampiran)  
+							  	<span class="badge rounded-pill border custom-pill"> 
+						  			{{ $lampiran->nama }} . {{ Helper::getExtensionFromString($lampiran->file) }} 
+						  			@if(Helper::getExtensionFromString($lampiran->file) == "PDF")
+						  			<a href="javascript:void(0)" onclick="view_lampiran('{{ $lampiran->nama }}','{{ asset('lampiran/'.$lampiran->file) }}')">Lihat dokumen</a>
+						  			@else
+						  			<a href="{{ asset('lampiran/'.$lampiran->file) }}" download>Download</a>
+						  			@endif
+    							</span>
+							@endforeach 
 						@else
 						-
 						@endif
@@ -313,6 +310,13 @@
 	        }
 	    });
 	});
+
+	function view_lampiran(nama, url)
+	{
+		$("#modal-view-lampiran").modal("show");
+		$("#title-modal-lampiran").html(nama);
+		$("#view-file-lampiran").attr("data", url+"#view=FitH");
+	}
 </script>
 
 @endsection

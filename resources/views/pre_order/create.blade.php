@@ -10,7 +10,7 @@
 
 	    <div class="row">
 	        <div class="col-md-12 d-flex justify-content-between">
-	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-plus-circle"></i> Form tambah Pre Order</h6>
+	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-plus-circle"></i> FORM TAMBAH PRE ORDER</h6>
 	            <a href="{{ url("pembelian/pre_order") }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
 	        </div>  
 	    </div> 
@@ -113,41 +113,47 @@
 				        <input type="checkbox" class="custom-control-input" name="is_lampiran" value="1" id="show-form-lampiran">
 				        <label class="custom-control-label" for="show-form-lampiran">Centang jika ada lampiran</label>
 				    </div>
-					<table class="table table-sm table-bordered d-none" id="form-lampiran">
-						<thead>
-							<tr> 
-								<th width="200px">File <i class="text-danger">*</i></th> 
-								<th>Nama <i class="text-danger">*</i></th>
-								<th>Keterangan</th>
-								<th width="1px"></th> 
-							</tr>
-						</thead>
-						<tbody id="form-parent-lampiran">
-							<tr> 
-								<td> 
-									<input type="file" class="lampiran" name="file[]">
-								</td> 
-								<td>
-									<input type="text" class="form-control lampiran" name="nama_file[][]">
-								</td>
-								<td>
-									<textarea style="height: 38px" class="form-control lampiran" rows="1" name="keterangan_file[]"></textarea>
-								</td> 
-								<td><button type="button" class="btn btn-success btn-sm" onclick="addRowLampiran()"><i class="fa fa-plus"></i></button></td>
-							</tr> 
-						</tbody>
-					</table>
+					<div class="d-none" id="form-lampiran">
+						<table class="table table-sm table-bordered">
+							<thead>
+								<tr> 
+									<th width="200px">File <i class="text-danger">*</i></th> 
+									<th>Nama <i class="text-danger">*</i></th>
+									<th>Keterangan</th>
+									<th width="1px"></th> 
+								</tr>
+							</thead>
+							<tbody id="form-parent-lampiran">
+								<tr> 
+									<td> 
+										<input type="file" class="lampiran" name="file[]">
+									</td> 
+									<td>
+										<input type="text" class="form-control lampiran" name="nama_file[][]">
+									</td>
+									<td>
+										<textarea style="height: 38px" class="form-control lampiran" rows="1" name="keterangan_file[]"></textarea>
+									</td> 
+									<td><button type="button" class="btn btn-success btn-sm" onclick="addRowLampiran()"><i class="fa fa-plus"></i></button></td>
+								</tr> 
+							</tbody>
+						</table>
+						<small>
+							<span class="text-danger font-italic">
+								<div>Note : </div>
+								<div>- Extensi file lampiran yang diperbolehkan hanya DOC, DOCX, dan PDF.</div>
+								<div>- Maksimal ukuran file 2 Mb.</div> 
+							</span>
+						</small>
+					</div>
 				</div>
 
-				<div class="card-body">
-					{{-- <div class="custom-control custom-checkbox mb-2">
-				        <input type="checkbox" checked class="custom-control-input" name="is_draft" value="1" id="save-as-draft">
-				        <label class="custom-control-label" for="save-as-draft">Simpan sebagai draft</label>
-				    </div> --}}
-					{{-- <button class="btn btn-secondary" type="button" onclick="save(1)"><i class="fa fa-save"></i> Draft</button> --}}
-					<button class="btn btn-primary" type="button" onclick="save(2)" ><i class="fa fa-save"></i> Submit</button>
-				</div>
-			 
+				<div class="card-body border-top d-flex justify-content-between">  
+					<div></div>
+					<div> 
+						<button class="btn btn-primary" type="button" onclick="save(2)" ><i class="fa fa-check"></i> Submit</button>
+					</div>
+				</div> 
 		</div>
 	</div>
 
