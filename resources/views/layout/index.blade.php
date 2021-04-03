@@ -9,7 +9,7 @@
     <meta name="csrf-token" id="csrf-token" content="{{ csrf_token() }}"> 
     <meta name="author" content="Pahri Khalid">
     <meta name="email" content="fahri.halid@gmail.com">
-    <link rel="icon" href="/img/logo_perusahaan.ico" type="image/x-icon"/>
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon"/>
 
     <title>
         @yield('title')
