@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
     <meta name="author" content="Pahri Khalid">
     <meta name="email" content="fahri.halid@gmail.com">
-    <link rel="icon" href="{{ asset('img/logo_perusahaan.ico') }}" type="image/x-icon" />
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon" />
 
     <title>SUM - Login</title>
 
