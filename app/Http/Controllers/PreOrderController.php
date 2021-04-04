@@ -141,8 +141,6 @@ class PreOrderController extends Controller
                     </div>
                   </div>';
 
-        })->addColumn('no_po', function($data){ 
-            return '<a href="'.url('pembelian/invoice/show/'.Helper::encodex($data->id_invoice)).'">'.$data->no_pre_order.'</a>';  
         })->addColumn('produsen', function($data){ 
             return $data->Produsen->perusahaan;            
         })->addColumn('skpp', function($data){ 
