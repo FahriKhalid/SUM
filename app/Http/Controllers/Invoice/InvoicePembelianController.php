@@ -56,9 +56,11 @@ class InvoicePembelianController extends Controller
                     </div>
                 </div>';
 
-        })->addColumn('created_by', function($data){ 
+        })
+
+        ->addColumn('created_by', function($data){ 
  
-            return $data->CreatedBy->nama .' - '.$data->id_skpp;
+            return $data->CreatedBy->nama;
             
         })->rawColumns(['action'])->make(true);
     }
