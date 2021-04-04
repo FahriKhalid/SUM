@@ -167,7 +167,7 @@ class PreOrderController extends Controller
             }             
         })->addColumn('created_by', function($data){ 
             return $data->CreatedBy->nama;            
-        })->rawColumns(['action','pembayaran','no_po'])->make(true);
+        })->rawColumns(['action','pembayaran'])->make(true);
     } 
     
 
