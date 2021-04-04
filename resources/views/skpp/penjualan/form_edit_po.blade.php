@@ -28,7 +28,7 @@
 				<select class="form-control select2 select-produk" title="Pilih Produk" name="produk[]">
 					<option value="">-- Pilih produk --</option>
 					@foreach($info["produk"] as $produk)
-						<option {{ $barang->id_produk == $produk->id_produk ? "selected" : "" }} value="{{ $produk->id_produk }}">{{ $produk->nama.' - '.$produk->spesifikasi }}</option>
+						<option {{ $barang->id_produk == $produk->id_produk ? "selected" : "" }} value="{{ $produk->id_produk }}">{{ $produk->nama.' ('.$produk->spesifikasi.')' }}</option>
 					@endforeach
 				</select>
 			</td>

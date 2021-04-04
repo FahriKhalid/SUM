@@ -23,7 +23,7 @@
 					<option value="">-- Pilih Produk --</option>
 
 					@foreach($info["produk"] as $produk)
-					<option {{ $barang->id_produk == $produk->id_produk ? "selected" : "" }} value="{{ $produk->id_produk }}">{{ $produk->nama.' - '.$produk->spesifikasi }}</option>
+					<option {{ $barang->id_produk == $produk->id_produk ? "selected" : "" }} value="{{ $produk->id_produk }}">{{ $produk->nama.' ('.$produk->spesifikasi.')' }}</option>
 					@endforeach
 				</select>
 			</td>
