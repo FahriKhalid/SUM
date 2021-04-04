@@ -96,7 +96,7 @@
         {data: 'action',      		name: 'action', orderable: false,},
     ];
     
-    table('#tabel-invoice', '{{url('pembelian/invoice/data')}}/'+'{{$id}}', data_table);
+    table('#tabel-invoice', '{{url('pembelian/invoice/data')}}/'+'{{ Helper::encodex($info["skpp"]->id_skpp) }}', data_table);
 
     /*
 	|--------------------------------------------------------------------------

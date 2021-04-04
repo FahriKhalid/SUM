@@ -24,7 +24,7 @@ class InvoicePembelianController extends Controller
     public function index($id)
     {
         $id_pre_order = Helper::decodex($id);
-        $info["skpp"] = SKPP::where("id_pre_order", $id_pre_order)->first();  
+        $info["skpp"] = SKPP::where("id_pre_order", $id_pre_order)->first();   
         return view('invoice.pembelian.index', compact('info','id'));
     }
 
@@ -35,7 +35,7 @@ class InvoicePembelianController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function data(Invoice $invoice, Request $request, $id = null)
-    {
+    {  
         $data = $invoice->query()->where(function($query) use ($id){
             if($id != null){
                 $query->where("id_skpp", Helper::decodex($id));
@@ -58,7 +58,7 @@ class InvoicePembelianController extends Controller
 
         })->addColumn('created_by', function($data){ 
  
-            return $data->CreatedBy->nama;
+            return $data->CreatedBy->nama .' - '.$data->id_skpp;
             
         })->rawColumns(['action'])->make(true);
     }
@@ -105,7 +105,6 @@ class InvoicePembelianController extends Controller
         }
 
         try {
-
             $invoice = new Invoice();
             $invoice->id_skpp = Helper::decodex($request->id_skpp);  
             $invoice->no_tagihan = $request->nomor_tagihan;

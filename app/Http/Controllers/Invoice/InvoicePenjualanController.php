@@ -298,7 +298,7 @@ class InvoicePenjualanController extends Controller
     public function surat($id)
     {
         $id_invoice = Helper::decodex($id);  
- 
+
         $info["invoice"] = Invoice::with("SKPP")->findOrFail($id_invoice);  
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
         $pdf = PDF::loadview('invoice.penjualan.surat_invoice', compact('info')); 
