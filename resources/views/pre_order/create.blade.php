@@ -58,7 +58,7 @@
 									<select class="form-control select2 select-produk" title="Pilih Produk" name="produk[]">
 										<option value="">-- Pilih Barang --</option>
 										@foreach($info["produk"] as $produk)
-											<option value="{{ $produk->id_produk }}">{{ $produk->nama }}</option>
+											<option value="{{ $produk->id_produk }}">{{ $produk->nama.' - '.$produk->spesifikasi }}</option>
 										@endforeach
 									</select>
 								</td>
