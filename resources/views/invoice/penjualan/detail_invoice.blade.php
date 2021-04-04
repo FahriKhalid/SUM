@@ -8,8 +8,8 @@
 <div class="tab-content">
     <div class="tab-pane fade show active" id="nav-invoice">
         <div class="modal-body">
-            <a href="{{ url('invoice/edit/'.$id) }}" class="btn btn-primary"><i class="fa fa-edit"></i> Edit</a>
-            <a href="{{ url('invoice/surat/'.Helper::encodex($info["invoice"]->id_invoice)) }}" target="_blank" class="btn btn-warning"><i class="fa fa-download"></i> Invoice</a>
+            <a href="{{ url('penjualan/invoice/edit/'.$id) }}" class="btn btn-primary"><i class="fa fa-edit"></i> Edit</a>
+            <a href="{{ url('penjualan/invoice/surat/'.Helper::encodex($info["invoice"]->id_invoice)) }}" target="_blank" class="btn btn-warning"><i class="fa fa-download"></i> Invoice</a>
             <table class="table table-borderless mt-2" style="margin-left: -10px"> 
                 <tr>
                     <th width="200px">Customer</th>

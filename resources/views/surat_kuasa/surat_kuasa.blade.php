@@ -206,6 +206,7 @@
 						<th align="center">Kuantum</th>
 						<th align="center">Nomor SO</th>
 						<th align="center">Pengambilan</th> 
+						<th align="center">Nomor DO</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -217,6 +218,7 @@
 						<td align="center">{{ $skso->kuantitas }} MT</td> 
 						<td align="center">{{ $skso->SOPO->SO->no_so }}</td> 
 						<td align="center">{{ $info["surat_kuasa"]->Gudang->nama }}</td> 
+						<td>{{ $info["surat_kuasa"]->SO->no_so_pengambilan }}</td>
 					</tr> 
 					@endforeach
 				</tbody> 
