@@ -85,7 +85,10 @@
 
 	$("body").delegate(".detail", "click", function(){
     	var url = $(this).attr("url");
-    	
+    	detail(url);
+    });
+
+    function detail(url) {
     	$.ajax({
     		url : url,
     		type : "GET",
@@ -103,7 +106,7 @@
 	            errorHandling(jqXHR.status, exception); 
     		}
     	});
-    });
+    }
 
 
 
@@ -158,5 +161,11 @@
 	    });
 	});
 </script>
+
+@if(isset($_GET["url"]) && $_GET["url"] != "")
+<script type="text/javascript">
+	detail('{{ Helper::decodex($_GET["url"]) }}');
+</script>
+@endif
 
 @endsection

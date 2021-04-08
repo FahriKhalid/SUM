@@ -33,8 +33,8 @@ class SuratKuasaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index($id)
-    {
-        $info["so"] = SO::with('SKPP')->findOrFail(Helper::decodex($id));
+    {    
+        $info["so"] = SO::with('SKPP')->findOrFail(Helper::decodex($id));  
         $info["email"] = $info["so"]->SKPP->Customer->email;
         return view('surat_kuasa.index', compact('info', 'id'));
     }

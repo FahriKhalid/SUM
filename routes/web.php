@@ -168,8 +168,6 @@ Route::group(['middleware' => ['auth']], function ()
         Route::get('surat_kuasa/{id}', 'SuratKuasaController@surat_kuasa'); 
         Route::post('send_email/{id}', 'SuratKuasaController@send_email'); 
     });
-
-    
  
     Route::group(['prefix' => 'booking'], function() {   
         Route::get('show/{id}', 'BookingController@show'); 
@@ -181,8 +179,7 @@ Route::group(['middleware' => ['auth']], function ()
         Route::delete('destroy/{id}', 'BookingController@destroy');
         Route::get('sisa_pembayaran/{id}', 'BookingController@sisa_pembayaran');
         Route::get('sisa_jumlah_barang/{id}', 'BookingController@sisa_barang');
-    });
- 
+    }); 
 
     Route::group(['prefix' => 'stok'], function() {   
         Route::get('/', 'StokController@index'); 
@@ -276,7 +273,10 @@ Route::group(['middleware' => ['auth']], function ()
         Route::get('set', 'CookieController@set'); 
         Route::get('unset', 'CookieController@unset');
     });
-    
+    Route::group(['prefix' => 'pencarian'], function() {
+        Route::get('', 'PencarianController@search');
+    });
+
     Route::get('profil', 'AuthController@profil');
     Route::post('profil/update/{id}', 'AuthController@updateProfil');
     Route::get('logout', 'AuthController@logout');

@@ -177,6 +177,11 @@
 	$("body").delegate(".detail", "click", function(){
 		let url = $(this).attr("url");
 
+		detail(url);
+	});
+
+	function detail(url)
+	{
 		$.ajax({
 	        url : url,
 	        type : 'GET',  
@@ -195,7 +200,14 @@
 	            loader(".modal-content", false);
 	        }
 	    });
-	});
+	}
+
 </script>
+
+@if(isset($_GET["url"]) && $_GET["url"] != "")
+<script type="text/javascript">
+	detail('{{ Helper::decodex($_GET["url"]) }}');
+</script>
+@endif
 
 @endsection

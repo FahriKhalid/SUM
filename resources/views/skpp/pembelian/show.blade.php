@@ -175,27 +175,31 @@
 
     $("body").delegate(".detail-pengajuan-so", "click", function(){
     	let url = $(this).attr("url");
-
-    	$.ajax({
-    		url : url,
-    		type : "GET",
-    		dataType : "json",
-    		beforeSend: function()
-    		{
-    			$("#modal-detail-pengajuan-so").modal("show");
-    			loader('.modal-content', true);
-    		},
-    		success : function(resp)
-    		{
-    			$("#detail-pengajuan-so").html(resp);
-    			loader('.modal-content', false);
-    		},
-    		error : function(jqXHR, exception){
-    			errorHandling(jqXHR.status, exception);
-    			loader(".modal-content", false);
-    		}
-    	})
+    	detail_pengajuan_so(url);
     });
+
+    function detail_pengajuan_so(url)
+    {
+        $.ajax({
+            url : url,
+            type : "GET",
+            dataType : "json",
+            beforeSend: function()
+            {
+                $("#modal-detail-pengajuan-so").modal("show");
+                loader('.modal-content', true);
+            },
+            success : function(resp)
+            {
+                $("#detail-pengajuan-so").html(resp);
+                loader('.modal-content', false);
+            },
+            error : function(jqXHR, exception){
+                errorHandling(jqXHR.status, exception);
+                loader(".modal-content", false);
+            }
+        });
+    }
 
     $("body").delegate(".delete-pengajuan-so", "click", function(){
     	let url = $(this).attr("url"); 
@@ -488,8 +492,11 @@
 			}
 		});
 	});
-
-
 </script>
 
+@if(isset($_GET["url"]) && $_GET["url"] != "")
+<script type="text/javascript">
+    detail_pengajuan_so('{{ Helper::decodex($_GET["url"]) }}');
+</script>
+@endif
 @endsection

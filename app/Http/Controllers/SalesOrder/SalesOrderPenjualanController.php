@@ -42,9 +42,7 @@ class SalesOrderPenjualanController extends Controller
     public function index($id)
     {
         $id_skpp = Helper::decodex($id);
-
         $info["po"] = Barang::where("id_skpp", $id_skpp)->get();
-
         $info["so"] = SO::where("id_skpp", $id_skpp)->get();  
         
         return view('salesorder.penjualan.index', compact('info', 'id'));
@@ -104,17 +102,11 @@ class SalesOrderPenjualanController extends Controller
     public function create($id)
     {
         $id_skpp = Helper::decodex($id);
-
         $info["skpp"] = SKPP::selectRaw("*, left(no_skpp, 4) as no_dokumen")->findOrFail($id_skpp);
-
         $info["no_so"] = $this->SoService->lastKodeSo();
- 
         $info["customer"] = Customer::where("is_aktif", 1)->get();
-        
         $info["po"] = Barang::with('Produk')->where("id_skpp", $id_skpp)->get();
-
         $info["supir"] = Supir::where("is_aktif", 1)->get(); 
-
         $info["status"] = Status::where("kategori", "SO")->orderBy("ordering")->get();  
 
         return view('salesorder.penjualan.create', compact('id','info'));
@@ -222,7 +214,7 @@ class SalesOrderPenjualanController extends Controller
     public function show($id) 
     {
         $id_so = Helper::decodex($id);
-
+        
         $info["so"] = SO::with("SupirAktif")->findOrFail($id_so); 
         $info["sopo"] = SOPO::with('SO','Barang')->where("id_so", $id_so)->get();  
         $info["supir"] = Supir::where("id_supir", "!=", $info["so"]->SupirAktif[0]->id_supir)->get();

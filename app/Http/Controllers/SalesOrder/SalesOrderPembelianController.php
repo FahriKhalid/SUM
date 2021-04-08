@@ -10,8 +10,7 @@ use App\Services\LogTransaksiService;
 use App\Services\PembayaranService;
 use App\Services\StokService;
 use App\Services\SkppService;
-use App\Services\SoService;
-use App\Http\Requests\StoreSalesOrderPembelian;
+use App\Services\SoService; 
 use App\BarangPengajuanSo;
 use App\PengajuanSo;
 use App\Customer;
@@ -70,18 +69,14 @@ class SalesOrderPembelianController extends Controller
     public function data(SO $SO, Request $request, $id)
     {
         $id_skpp = Helper::decodex($id);
-
         $data = $SO->query()->where("id_skpp", $id_skpp)->with('CreatedBy', 'Status', 'SupirAktif');
-
-         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){ 
-
+        return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){ 
             $aksi = '';
             if(true)
             {
                 $aksi .='<div class="dropdown-divider"></div>
                         <a class="dropdown-item hapus" show="'.url('pembelian/salesorder/show_produk/'.Helper::encodex($data->id_so)).'" url="'.url('pembelian/salesorder/destroy/'.Helper::encodex($data->id_so)).'" href="javascript:void(0);"><i class="fa fa-trash"></i> Hapus</a>';
             }
-
             return '<div class="btn-group btn-group-sm" role="group">
                     <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       Aksi
@@ -113,7 +108,6 @@ class SalesOrderPembelianController extends Controller
     public function create($id)
     {
         $id_pre_order = Helper::decodex($id);  
-
         $info["skpp"] = SKPP::selectRaw("*, left(no_skpp, 4) as no_dokumen")->where("id_pre_order", $id_pre_order)->first(); 
         $info["piutang"] = $this->PembayaranService->sisaHutang("pembelian", $info["skpp"]->id_skpp); 
         $info["no_so"] = $this->SoService->lastKodeSo();
@@ -220,6 +214,7 @@ class SalesOrderPembelianController extends Controller
     { 
         $id_pre_order = Helper::decodex($id);  
         $info["skpp"] = SKPP::where("id_pre_order", $id_pre_order)->first(); 
+    
         return view('salesorder.pembelian.show', compact('id', 'info'));
     }
 
@@ -232,7 +227,6 @@ class SalesOrderPembelianController extends Controller
     public function detail($id)
     { 
         $id_so = Helper::decodex($id);  
-
         $info["sales_order"] = SO::findOrFail($id_so);
 
         return response()->json([
@@ -249,13 +243,9 @@ class SalesOrderPembelianController extends Controller
     public function edit($id)
     {
         $id_so = Helper::decodex($id);
-
         $info["so"] = SO::with("SupirAktif", "SKPP")->findOrFail($id_so); 
-
         $info["so_po"] = SOPO::with("Barang")->where("id_so", $id_so)->get(); 
-
         $info["skpp"] = SKPP::selectRaw("*, left(no_skpp, 4) as no_dokumen")->findOrFail($info["so"]->SKPP->id_skpp);  
-
         $info["status"] = Status::whereIn("status", ["Draft", "Final"])->orderBy("id_status")->get();  
 
         return view('salesorder.pembelian.edit', compact('info', 'id'));

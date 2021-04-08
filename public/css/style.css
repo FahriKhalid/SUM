@@ -114,13 +114,7 @@ ol { margin-left: -23px !important; }
     font-weight: 500;
 }
 
-
-
-
-
-
-
-
-
-
-
+ .center-position {
+    height: calc(100vh - 200px);
+    display: flex;
+}
