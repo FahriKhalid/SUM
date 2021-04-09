@@ -74,6 +74,16 @@
                             </div> 
                         </div> --}}
                     </div> 
+
+                    <div class="mt-3">
+                        <small>
+                            <span class="text-danger font-italic">
+                                <div>Note : </div>
+                                <div>- Extensi file lampiran yang diperbolehkan hanya PNG, JPG, JPEG dan PDF.</div>
+                                <div>- Maksimal ukuran file 2 Mb.</div> 
+                            </span>
+                        </small>
+                    </div>
                     
                 </div>
                 <div class="modal-footer">

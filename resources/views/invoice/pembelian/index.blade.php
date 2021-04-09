@@ -22,37 +22,39 @@
     </div>  
     
     @if($info["skpp"] == null)
-    <div class="alert alert-warning mt-3">
-        <h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Warning</h4>
-        SKPP belum ada, tambah SKPP terlebih dahulu.
-    </div>
-    @endif
+    <div class="text-center">
+        <div>
+            <img src="{{asset('img/add_bg.png')}}" class="mt-4 mb-4" width="200px">
 
-	<div class="card mt-3 "> 
-		
-		@if($info["skpp"] != null)
+            <p>SKPP masih kosong <br> Silahkan tambah SKPP terlebih dahulu</p>
+            <a href="{{ url('pembelian/skpp/show/'.$id) }}" class="btn btn-success">SKPP</a> 
+        </div> 
+    </div> 
+    @else
+    <div class="card mt-3 ">  
+        @if($info["skpp"] != null)
         <div class="card-body bg-white d-flex justify-content-between"> 
             <a class="btn btn-success" href="javascript:void(0)" onclick="show_modal()"><i class="fa fa-plus"></i> Tambah</a>
         </div> 
         @endif
-		<div class="card-body">
-			<table class="table table-bordered" id="tabel-invoice" width="100%">
-				<thead>
-					<tr>
-						<th width="1px">No</th>
-						<th>No Invoice</th>   
-						<th>Created by</th>   
-						<th>Created at</th>   
-						<th width="1px">Aksi</th>
-					</tr>
-				</thead>
-				<tbody>
-					 
-				</tbody>
-			</table>
-		</div>
-	</div>
-  
+        <div class="card-body">
+            <table class="table table-bordered" id="tabel-invoice" width="100%">
+                <thead>
+                    <tr>
+                        <th width="1px">No</th>
+                        <th>No Invoice</th>   
+                        <th>Created by</th>   
+                        <th>Created at</th>   
+                        <th width="1px">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                     
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif 
 </div>
 
 @endsection
@@ -95,8 +97,10 @@
         {data: 'created_at',    	name: 'created_at'},   
         {data: 'action',      		name: 'action', orderable: false,},
     ];
-    
+
+    @if($info["skpp"] != null)
     table('#tabel-invoice', '{{url('pembelian/invoice/data')}}/'+'{{ Helper::encodex($info["skpp"]->id_skpp) }}', data_table);
+    @endif
 
     /*
 	|--------------------------------------------------------------------------

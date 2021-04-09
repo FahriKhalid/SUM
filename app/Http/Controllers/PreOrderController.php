@@ -85,24 +85,19 @@ class PreOrderController extends Controller
             }); 
         }
 
-        if($request->pembayaran != ""){ 
-            //dd(Helper::decodex($request->pembayaran));
+        if($request->pembayaran != ""){  
             if(Helper::decodex($request->pembayaran) == 9) {
                 $data->whereHas("SKPP", function($query) use ($request){
                     $query->whereDoesntHave("PembayaranTerakhir");
                 });
             } else { 
-                if(Helper::decodex($request->pembayaran) == 10){  
-                    $data->whereHas("SKPP", function($query) use ($request){
-                        $query->whereHas("Pembayaran", function($query) use ($request){
-                             $query->where("id_pembayaran", 27);
-                        });
-                    });
+                if(Helper::decodex($request->pembayaran) == 10){   
+                    $data->whereHas("SKPP.PembayaranTerakhir", function($query) use ($request){ 
+                        $query->where("sisa_hutang", ">", 0.00); 
+                    }); 
                 } else {
-                    $data->whereHas("SKPP", function($query) use ($request){
-                        $query->whereHas("PembayaranTerakhir", function($query) use ($request){
-                            $query->where("sisa_hutang", 0.00); 
-                        });
+                    $data->whereHas("SKPP.PembayaranTerakhir", function($query) use ($request){ 
+                        $query->where("sisa_hutang", 0.00); 
                     });
                 }
             } 
@@ -120,13 +115,6 @@ class PreOrderController extends Controller
         }
 
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){ 
-            $aksi = '';
-            // if($data->id_status < 2){
-                $aksi .= '<div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="'.url("pembelian/pre_order/edit/".Helper::encodex($data->id_pre_order)).'"><i class="fa fa-edit"></i> Edit</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item hapus" url="'.url('pembelian/pre_order/destroy/'.Helper::encodex($data->id_pre_order)).'"  href="javascript:void(0);"><i class="fa fa-trash"></i> Hapus</a>';
-            //}
             return '<div class="btn-group btn-group-sm" role="group">
                     <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       Aksi
@@ -135,12 +123,14 @@ class PreOrderController extends Controller
                         <a class="dropdown-item detail" href="'.url('pembelian/pre_order/show/'.Helper::encodex($data->id_pre_order)).'"><i class="fa fa-search"></i> Detail</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" target="_blank" href="'.url('pembelian/pre_order/surat_po/'.Helper::encodex($data->id_pre_order)).'"><i class="fa fa-download"></i> Download</a>
-                        
-                        '.$aksi.'
-                        
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="'.url("pembelian/pre_order/edit/".Helper::encodex($data->id_pre_order)).'"><i class="fa fa-edit"></i> Edit</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item hapus" url="'.url('pembelian/pre_order/destroy/'.Helper::encodex($data->id_pre_order)).'"  href="javascript:void(0);"><i class="fa fa-trash"></i> Hapus</a>
                     </div>
                   </div>';
-
+        })->addColumn('no_po', function($data){ 
+            return '<a href="'.url('pembelian/pre_order/show/'.Helper::encodex($data->id_pre_order)).'">'.$data->no_po.'</a>';            
         })->addColumn('produsen', function($data){ 
             return $data->Produsen->perusahaan;            
         })->addColumn('skpp', function($data){ 
@@ -167,7 +157,7 @@ class PreOrderController extends Controller
             }             
         })->addColumn('created_by', function($data){ 
             return $data->CreatedBy->nama;            
-        })->rawColumns(['action','pembayaran'])->make(true);
+        })->rawColumns(['action','pembayaran', 'no_po'])->make(true);
     } 
     
 
@@ -242,7 +232,6 @@ class PreOrderController extends Controller
 
         DB::beginTransaction();
         try {
-
             // insert SKPP
             $po = new PreOrder;
             $po->no_po = $request->no_po;
@@ -320,15 +309,10 @@ class PreOrderController extends Controller
     public function edit($id)
     {
         $id_pre_order = Helper::decodex($id); 
-
         $info["produsen"] = Produsen::get();
-
         $info["produk"] = Produk::where("is_aktif", 1)->get(); 
-
         $info["barang"] = Barang::where("id_pre_order", $id_pre_order)->get(); 
-
         $info["pre_order"] = PreOrder::findOrFail($id_pre_order);   
-        
         $info["piutang"] = $this->PembayaranService->sisaHutang("pembelian", $info["pre_order"]->SKPP->id_skpp);   
 
         return view('pre_order.edit', compact('info', 'id'));

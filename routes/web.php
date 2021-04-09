@@ -112,6 +112,7 @@ Route::group(['middleware' => ['auth']], function ()
 
         Route::group(['prefix' => 'pembayaran'], function() {   
             Route::post('store/{id}', 'Pembayaran\PembayaranPembelianController@store');
+            Route::get('data/{id}', 'Pembayaran\PembayaranPembelianController@data');
             Route::delete('destroy/{id}/{id_header}', 'Pembayaran\PembayaranPembelianController@destroy');
         });
 

@@ -49,15 +49,14 @@
 			<table class="table table-sm table-bordered" id="tabel-pembayaran" width="100%">
 				<thead>
 					<tr>
-						<th width="1px">No</th>
-						<th width="200px">Bukti pembayaran</th>
+						<th width="1px">No</th> 
 						<th>Jumlah pembayaran</th> 
 						<th>Sisa hutang</th>
 						<th>Keterangan</th>
 						<th>Status</th>
 						<th>Created at</th>
 						<th>Created by</th>
-						<th>Aksi</th>
+						<th width="70px">Aksi</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -93,8 +92,7 @@
     */ 
 
 	var data_table = [
-        {data: 'DT_RowIndex', 		name: 'DT_RowIndex', orderable: false, searchable: false}, 
-        {data: 'bukti_pembayaran',  name: 'bukti_pembayaran'},
+        {data: 'DT_RowIndex', 		name: 'DT_RowIndex', orderable: false, searchable: false},  
         {data: 'jumlah_pembayaran', name: 'jumlah_pembayaran'}, 
         {data: 'sisa_hutang',      	name: 'sisa_hutang'}, 
         {data: 'keterangan',  		name: 'keterangan'},
@@ -259,29 +257,11 @@
 	});
 
 	$("body").delegate(".detail-pembayaran", "click", function(e){
-		e.preventDefault();
-		var id = $(this).attr("did");
+		e.preventDefault(); 
 
-		$.ajax({
-	        url : '{{ url('penjualan/pembayaran/detail') }}/'+id,
-	        type : 'GET', 
-			dataType : "json", 
-			beforeSend: function(resp){
-				loader(".modal-content", true);
-			},
-	        success : function(resp)
-	        { 
-	            $("#foto-bukti-pembayaran").attr("src", '{{ asset('bukti_pembayaran') }}/'+resp.file_bukti_pembayaran);
-	            $("#modal-show-pembayaran").modal("show");
-	            loader(".modal-content", false);
-	        },
-	        error : function (jqXHR, exception) {
-	        	loader(".modal-content", false);
-	            errorHandling(jqXHR.status, exception); 
-	        }
-	    });
-
-		
+	 	let url = $(this).attr("attachment");
+	 	$("#view-file-lampiran").attr("data", url+"#view=FitH");
+	 	$("#modal-show-pembayaran").modal("show");
 	});
 
 </script>

@@ -18,15 +18,19 @@
         	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-truck-moving"></i> Sales Order</h6>
             <a href="{{ url("pembelian/pre_order") }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
         </div>  
-    </div>   
+    </div>    
+	
 
     @if($info["skpp"] == null)
-    <div class="alert alert-warning mt-3">
-    	<h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Warning</h4>
-        SKPP belum ada, tambah SKPP terlebih dahulu.
-    </div>
-    @endif
+    <div class="text-center">
+		<div>
+			<img src="{{asset('img/add_bg.png')}}" class="mt-4 mb-4" width="200px">
 
+			<p>SKPP masih kosong <br> Silahkan tambah SKPP terlebih dahulu</p>
+			<a href="{{ url('pembelian/skpp/show/'.$id) }}" class="btn btn-success">SKPP</a> 
+		</div> 
+	</div> 
+	@else
 	<div class="card mt-3 "> 
 		<div class="card-body bg-white">   
 			@if($info["skpp"] != null)
@@ -49,6 +53,7 @@
 			</table>
 		</div>
 	</div>
+    @endif  
 </div>
 
 @endsection
@@ -79,8 +84,7 @@
     
     @if($info["skpp"] != null)
     var table_so = table('#tabel-so', '{{url('pembelian/salesorder/data')}}/'+'{{Helper::encodex($info["skpp"]->id_skpp)}}', data_table);
-    @else
-    var table_so = table('#tabel-so', '{{url('pembelian/salesorder/data')}}/'+'{{ $id }}', data_table);
+     
     @endif
 	
 

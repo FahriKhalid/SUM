@@ -12,6 +12,7 @@
 @include('skpp.pembelian.modal_detail_booking') 
 @include('skpp.pembelian.modal_form_pembayaran')
 @include('pengajuan_so.modal_detail') 
+@include('pembayaran.penjualan.modal_show_pembayaran')
 @include('layout.modal_email') 
 
 <div class="container-fluid mb-4 mt-4">
@@ -51,7 +52,7 @@
 					<td>{{ $info["skpp"]->no_skpp }}</td>
 				</tr>
 				<tr>
-					<th>Total pembayaran + PPN</th>
+					<th>Total pembayaran</th>
 					<th>:</th>
 					<td>Rp {{ Helper::currency($info["skpp"]->total_pembayaran) }}</td>
 				</tr>
@@ -138,10 +139,11 @@
     | Table 
     | 1. table booking & pembayaran
     | 2. table pengajuan so
+    | 3. table pembayaran
     |--------------------------------------------------------------------------
     */ 
 
-    var data_table = [
+    var kolom_booking = [
     {data: 'DT_RowIndex', 			name: 'DT_RowIndex', orderable: false, searchable: false},  
     {data: 'no_skpp', 				name: 'no_skpp'},  
     {data: 'total_pembayaran', 		name: 'total_pembayaran'}, 
@@ -151,10 +153,10 @@
     {data: 'action',      			name: 'action', orderable: false}
     ];
     
-    table('#tabel-booking', '{{url('booking/data')}}/'+'{{ $id }}', data_table);
+    table('#tabel-booking', '{{url('booking/data')}}/'+'{{ $id }}', kolom_booking);
 
     
-    var data_table_pengajuan_so = [
+    var kolom_pso = [
     {data: 'DT_RowIndex', 			name: 'DT_RowIndex', orderable: false, searchable: false},  
     {data: 'no_pengajuan_so', 		name: 'no_pengajuan_so'}, 
     {data: 'created_by',  			name: 'created_by'},
@@ -162,8 +164,23 @@
     {data: 'action',      			name: 'action', orderable: false}
     ];
 
-    table('#tabel-pengajuan-so', '{{url('pembelian/pengajuan_so/data')}}/'+'{{ $id }}', data_table_pengajuan_so);
+    table('#tabel-pengajuan-so', '{{url('pembelian/pengajuan_so/data')}}/'+'{{ $id }}', kolom_pso);
 
+
+    var kolom_pembayaran = [
+        {data: 'DT_RowIndex',       name: 'DT_RowIndex', orderable: false, searchable: false},  
+        {data: 'kode_booking', name: 'kode_booking'}, 
+        {data: 'jumlah_pembayaran', name: 'jumlah_pembayaran'}, 
+        {data: 'sisa_hutang',       name: 'sisa_hutang'}, 
+        {data: 'keterangan',        name: 'keterangan'}, 
+        {data: 'created_by',        name: 'created_by'},
+        {data: 'created_at',        name: 'created_at'}, 
+        {data: 'action',            name: 'action', orderable: false,},
+    ];
+
+    @if($info["skpp"] != null)
+    table('#tabel-pembayaran', '{{url('pembelian/pembayaran/data')}}/'+'{{ Helper::encodex($info["skpp"]->id_skpp) }}', kolom_pembayaran);
+    @endif
 
     /*
     |--------------------------------------------------------------------------
@@ -416,13 +433,9 @@
     				} else if (resp.status == "error"){
     					toastr.error(resp.message, { "closeButton": true }); 
     				} else {
-
     					$("input[name=total_pembayaran]").val(formatNumber(resp.data,2));
-
     					$("#modal-form-pembayaran").modal("hide");
-
-    					$("#layout-table-pembayaran").html(resp.html); 
-
+                        refresh_table("#tabel-pembayaran");
     					toastr.success(resp.message, { "closeButton": true });  	
     				}
 
@@ -439,7 +452,7 @@
 
 	/*
 	|--------------------------------------------------------------------------
-	| hapus data
+	| hapus data pembayaran
 	|--------------------------------------------------------------------------
 	*/
 
@@ -453,7 +466,6 @@
 
 	$(document).on("submit", "#form-hapus", function(e){
 		e.preventDefault();
-
 
 		$.ajax({
 			url : $(this).attr("action"),
@@ -492,6 +504,21 @@
 			}
 		});
 	});
+
+    /*
+    |--------------------------------------------------------------------------
+    | detail pembayaran
+    |--------------------------------------------------------------------------
+    */
+
+    $("body").delegate(".detail-pembayaran", "click", function(e){
+        e.preventDefault(); 
+
+        let url = $(this).attr("attachment");
+        $("#view-file-lampiran").attr("data", url+"#view=FitH");
+        $("#modal-show-pembayaran").modal("show");
+    });
+
 </script>
 
 @if(isset($_GET["url"]) && $_GET["url"] != "")

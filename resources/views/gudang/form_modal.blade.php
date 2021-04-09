@@ -18,8 +18,8 @@
                     <div class="form-group">
                         <label>Produsen <span class="text-danger">*</span></label>
                         <select class="form-control select2" name="produsen">
+                            <option value="">-- Pilih --</option>
                             @foreach($info["produsen"] as $produsen)
-                                <option value="">-- Pilih --</option>
                                 <option value="{{ $produsen->id_produsen }}">{{ $produsen->perusahaan }}</option>
                             @endforeach
                         </select>

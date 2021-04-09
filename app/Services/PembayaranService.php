@@ -62,7 +62,7 @@ class PembayaranService
         $sisa_hutang = 0;
 
         $rules = [
-            'file'          => 'required|max:2000|mimes:png,jpg,jpeg',
+            'file'          => 'required|max:2000|mimes:png,jpg,jpeg,pdf',
             'keterangan'    => 'nullable|string|max:500', 
         ]; 
  

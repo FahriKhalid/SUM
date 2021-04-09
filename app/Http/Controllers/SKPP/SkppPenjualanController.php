@@ -138,6 +138,8 @@ class SkppPenjualanController extends Controller
                     </div>
                   </div>';
 
+        })->addColumn('no_skpp', function($data){ 
+            return '<a href="'.url('penjualan/skpp/show/'.Helper::encodex($data->id_skpp)).'">'.$data->no_skpp.'</a>';
         })->addColumn('customer', function($data){ 
             return $data->Customer->perusahaan;
         })->addColumn('status', function($data){ 
@@ -156,7 +158,7 @@ class SkppPenjualanController extends Controller
             } 
         })->addColumn('created_by', function($data){ 
             return $data->CreatedBy->nama;
-        })->rawColumns(['action','pembayaran'])->make(true);
+        })->rawColumns(['action','pembayaran','no_skpp'])->make(true);
     }
 
     /**

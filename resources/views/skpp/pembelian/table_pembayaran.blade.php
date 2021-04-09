@@ -1,6 +1,6 @@
 
 
-<div class="card-body alert-warning text-center mt-3">
+<div class="card-body alert-warning text-center mt-3 mb-3">
     <div class="mt-2">
         <div id="status-piutang">
             @if($info["piutang"] == 0)
@@ -14,48 +14,17 @@
     </div>
 </div>
 
-<table class="table table-sm table-bordered">
+<table class="table table-sm table-bordered" id="tabel-pembayaran" width="100%">
     <thead>
         <tr>
-            <th>No</th>
-            <th width="200px">Bukti pembayaran</th>
+            <th width="1px">No</th> 
             <th>Kode Booking</th>
             <th>Jumlah pembayaran</th>
             <th>Sisa hutang</th>
             <th>Keterangan</th>
             <th>Created by</th>
             <th>Created at</th>
-            <th>Aksi</th>
+            <th width="75px">Aksi</th>
         </tr>
     </thead>
-    <tbody> 
-
-        @forelse($info["pembayaran"] as $pembayaran)
-        @php($option = $info["last_record"] != $pembayaran->id_pembayaran ? 'disabled' : '')
-        <tr>
-            <td>{{ $loop->iteration }}</td>
-            <td>
-                <div class="layout-overlay">
-                    <img width="100%" src="{{ asset('bukti_pembayaran/'.$pembayaran->file_bukti_pembayaran) }}">
-                </div>
-            </td>
-            <td>{{ $pembayaran->kode_booking}}</td>
-            <td>Rp {{ Helper::currency($pembayaran->jumlah_pembayaran) }}</td>
-            <td>Rp {{ Helper::currency($pembayaran->sisa_hutang) }}</td>
-            <td>{{$pembayaran->keterangan}}</td>
-            <td>{{$pembayaran->CreatedBy->nama}}</td>
-            <td>{{$pembayaran->created_at}}</td>
-            <td> 
-                <button {{ $option }} url="{{ url('pembelian/pembayaran/destroy/'.Helper::encodex($pembayaran->id_pembayaran).'/'.Helper::encodex($info["skpp"]->id_skpp)) }}" jumlah_bayar="{{ $pembayaran->jumlah_pembayaran }}" class="btn btn-sm btn-danger hapus-pembayaran"><i class="fa fa-trash"></i> </button>
-            </td>
-        </tr>
-        @empty
-        <tr>
-            <td colspan="9" class="text-center">
-                Belum ada pembayaran
-            </td>
-        </tr>
-        @endforelse
-        
-    </tbody>
 </table>

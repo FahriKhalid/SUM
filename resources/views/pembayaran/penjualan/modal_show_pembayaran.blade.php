@@ -8,7 +8,11 @@
                 </button>
             </div>
             <div class="modal-body p-0">
-            	<img id="foto-bukti-pembayaran" width="100%">
+            	<object data="" type="application/pdf" width="100%" height="800px" id="view-file-lampiran">
+                    <div class="text-center">
+                      <p>file lampiran tidak ditemukan</p>
+                    </div>
+                </object>
             </div> 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times-circle"></i> Tutup</button> 

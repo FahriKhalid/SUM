@@ -43,7 +43,8 @@ class PembayaranPenjualanController extends Controller
         $data = $pembayaran->query()->where("id_skpp", $id)->with('CreatedBy', 'Status');
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data) use ($last_record, $kategori){
             $option = $last_record != $data->id_pembayaran ? 'disabled' : '';
-            return '<a href="javascript:void(0)" did="'.Helper::encodex($data->id_pembayaran).'" class="btn btn-sm btn-primary detail-pembayaran"><i class="fa fa-search"></i></a>
+            return '<a href="javascript:void(0)" attachment="'.asset('bukti_pembayaran/'.$data->file_bukti_pembayaran).'" class="btn btn-sm btn-primary detail-pembayaran"><i class="fa fa-search"></i></a>
+
             <button url="'.url('penjualan/pembayaran/destroy/'.Helper::encodex($data->id_pembayaran).'/'.Helper::encodex($data->id_skpp)).'" '.$option.' class="btn btn-sm btn-danger hapus"><i class="fa fa-trash"></i>  </button>';
 
         })->addColumn('bukti_pembayaran', function($data){ 
@@ -137,9 +138,9 @@ class PembayaranPenjualanController extends Controller
         $id_header = Helper::decodex($id_header);
 
         try {
-            $hapus = Pembayaran::findOrFail($id)->delete();
-
-            if($hapus){
+            $hapus = Pembayaran::findOrFail($id)->findOrFail();
+            $hapus->delete();
+            if($hapus){ 
                 $sisa_hutang = $this->PembayaranService->sisaHutang("penjualan", $id_header);
                 return response()->json(['status' => 'success', 'message' => 'Hapus pembayaran berhasil', 'data' => $sisa_hutang]);  
             }
