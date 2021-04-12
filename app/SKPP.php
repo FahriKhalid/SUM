@@ -49,12 +49,12 @@ class SKPP extends Model
 
     public function Pembayaran()
     {
-        return $this->belongsTo(Pembayaran::class,'id_skpp','id_skpp')->withDefault();
+        return $this->hasOne(Pembayaran::class,'id_skpp','id_skpp')->withDefault();
     }
 
     public function PembayaranTerakhir()
     {
-        return $this->Pembayaran()->latest();
+        return $this->Pembayaran()->orderBy("id_pembayaran", "DESC")->take(1);
     }
 
     public function CreatedBy()

@@ -62,7 +62,7 @@ class PreOrderController extends Controller
      */
     public function data(PreOrder $PreOrder, Request $request)
     {
-        $data = $PreOrder->query()->with('CreatedBy','Produsen','Status','SKPP');
+        $data = $PreOrder->query()->with('CreatedBy','Produsen','Status');
 
         if($request->no_po != ""){
             $data->where("no_po", "LIKE", "%".$request->no_po."%");
@@ -87,17 +87,17 @@ class PreOrderController extends Controller
 
         if($request->pembayaran != ""){  
             if(Helper::decodex($request->pembayaran) == 9) {
-                $data->whereHas("SKPP", function($query) use ($request){
+                $data->whereHas("SKPP", function($query){
                     $query->whereDoesntHave("PembayaranTerakhir");
                 });
             } else { 
                 if(Helper::decodex($request->pembayaran) == 10){   
-                    $data->whereHas("SKPP.PembayaranTerakhir", function($query) use ($request){ 
-                        $query->where("sisa_hutang", ">", 0.00); 
-                    }); 
+                    $data->whereHas("SKPP.PembayaranTerakhir", function($query){ 
+                        $query->where("sisa_hutang", ">", 0); 
+                    });
                 } else {
-                    $data->whereHas("SKPP.PembayaranTerakhir", function($query) use ($request){ 
-                        $query->where("sisa_hutang", 0.00); 
+                    $data->whereHas("SKPP.PembayaranTerakhir", function($query){ 
+                        $query->where("sisa_hutang", 0); 
                     });
                 }
             } 
