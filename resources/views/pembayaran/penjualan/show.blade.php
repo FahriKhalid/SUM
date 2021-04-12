@@ -54,8 +54,8 @@
 						<th>Sisa hutang</th>
 						<th>Keterangan</th>
 						<th>Status</th>
-						<th>Created at</th>
 						<th>Created by</th>
+						<th>Created at</th>
 						<th width="70px">Aksi</th>
 					</tr>
 				</thead>
