@@ -60,7 +60,7 @@
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                 TOTAL HUTANG
                             </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ Helper::currency(Helper::toFixed($info["total_hutang"], 2)) }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ Helper::currency($info["total_hutang"]) }}</div>
                         </div>
                         <div class="col-auto"> 
                             <i class="fas fa-hand-holding-usd fa-2x text-gray-300"></i>
@@ -77,7 +77,7 @@
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                 TOTAL PIUTANG    
                             </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ Helper::currency(Helper::toFixed($info["total_piutang"], 2)) }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ Helper::currency($info["total_piutang"]) }}</div>
                         </div>
                         <div class="col-auto"> 
                             <i class="fas fa-credit-card fa-2x text-gray-300"></i>
