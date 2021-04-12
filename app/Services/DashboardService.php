@@ -32,7 +32,7 @@ class DashboardService
 		// return Pembayaran::whereHas("SKPP", function($query){
 		// 	$query->where("kategori", "penjualan");
 		// })->sum("sisa_hutang");  
-		return (float)self::hutang() + (float)self::belumBayarPembelian();
+		return (float) self::piutang() + (float)self::belumBayarPenjualan();
 	}
 
 	public function totalHutang()
@@ -40,7 +40,7 @@ class DashboardService
 		// return Pembayaran::whereHas("SKPP", function($query){
 		// 	$query->where("kategori", "pembelian");
 		// })->sum("sisa_hutang");  
-		return (float) self::piutang() + (float)self::belumBayarPenjualan();
+		return (float)self::hutang() + (float)self::belumBayarPembelian();
 	}
 
 	public function penjualan($from = null, $to = null)
