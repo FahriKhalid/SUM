@@ -32,7 +32,7 @@ class DashboardService
 		// return Pembayaran::whereHas("SKPP", function($query){
 		// 	$query->where("kategori", "penjualan");
 		// })->sum("sisa_hutang");  
-		return (float)self::piutang() + (float)self::belumBayarPembelian();
+		return (float)self::hutang() + (float)self::belumBayarPembelian();
 	}
 
 	public function totalHutang()
@@ -40,7 +40,7 @@ class DashboardService
 		// return Pembayaran::whereHas("SKPP", function($query){
 		// 	$query->where("kategori", "pembelian");
 		// })->sum("sisa_hutang");  
-		return (float) self::hutang() + (float)self::belumBayarPenjualan();
+		return (float) self::piutang() + (float)self::belumBayarPenjualan();
 	}
 
 	public function penjualan($from = null, $to = null)
@@ -149,9 +149,9 @@ class DashboardService
 		return SKPP::whereDoesntHave("Pembayaran")->where("kategori", "pembelian")->sum("total_pembayaran");
 	}
 
-	public function hutang()
+	public function piutang()
 	{
-		$hutang = DB::select(
+		$piutang = DB::select(
 			DB::raw("SELECT SUM(sisa_hutang) as total_hutang 
 			FROM tr_pembayaran 
 			JOIN tr_skpp ON tr_skpp.id_skpp = tr_pembayaran.id_skpp
@@ -159,16 +159,16 @@ class DashboardService
 			AND tr_skpp.kategori = 'penjualan'")
 		);
 
-		if($hutang){
-			return $hutang[0]->total_hutang;
+		if($piutang){
+			return $piutang[0]->total_hutang;
 		} else {
 			return 0;
 		}
 	}
 
-	public function piutang()
+	public function hutang()
 	{
-		$piutang = DB::select(
+		$hutang = DB::select(
 			DB::raw("SELECT SUM(sisa_hutang) as total_piutang 
 			FROM tr_pembayaran 
 			JOIN tr_skpp ON tr_skpp.id_skpp = tr_pembayaran.id_skpp
@@ -176,8 +176,8 @@ class DashboardService
 			AND tr_skpp.kategori = 'pembelian'")
 		);
 
-		if($piutang){
-			return $piutang[0]->total_piutang;
+		if($hutang){
+			return $hutang[0]->total_piutang;
 		} else {
 			return 0;
 		} 
