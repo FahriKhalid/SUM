@@ -229,9 +229,8 @@
 	<div class="container-fluid" style="position: absolute; bottom: 100px">
 		<div class="container ttd verdana ml-3"> 
 			<div class="text-green-moss"><b>{{ $info["profil_perusahaan"]->nama }}</b> </div> 
-			<div class="ml-10">
-					<img src="{{ public_path('img/ttd.png') }}" width="120px">
-				</div>
+			<br><br>
+			<img src="{{ public_path('img/ttd.png') }}" width="120px">
 			<div><b><u>{{ $info["profil_perusahaan"]->direktur }}</u></b></div>
 			<div><b>Direktur</b></div>
 		</div>
