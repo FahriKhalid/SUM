@@ -94,13 +94,13 @@ class DashboardService
 			) AS A
 			LEFT JOIN (
 			    SELECT p.created_at, s.kategori, 
-                SUM(CASE WHEN s.kategori = 'penjualan' THEN jumlah_pembayaran ELSE 0 END) AS penjualan,
-                SUM(CASE WHEN s.kategori = 'pembelian' THEN jumlah_pembayaran ELSE 0 END) AS pembelian
+		       	SUM(CASE WHEN s.kategori = 'penjualan' THEN jumlah_pembayaran ELSE 0 END) AS penjualan,
+		       	SUM(CASE WHEN s.kategori = 'pembelian' THEN jumlah_pembayaran ELSE 0 END) AS pembelian
 			    FROM tr_pembayaran as p 
 			    JOIN tr_skpp as s ON p.id_skpp = s.id_skpp
+			 	GROUP BY p.created_at	
 			) as B ON A.tanggal = DATE(B.created_at)
-
-			GROUP BY tanggal
+			GROUP BY A.tanggal ASC
 		)"));
 	}
 
