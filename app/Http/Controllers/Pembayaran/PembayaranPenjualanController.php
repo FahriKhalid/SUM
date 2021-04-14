@@ -138,8 +138,7 @@ class PembayaranPenjualanController extends Controller
         $id_header = Helper::decodex($id_header);
 
         try {
-            $hapus = Pembayaran::findOrFail($id)->findOrFail();
-            $hapus->delete();
+            $hapus = Pembayaran::findOrFail($id)->delete();
             if($hapus){ 
                 $sisa_hutang = $this->PembayaranService->sisaHutang("penjualan", $id_header);
                 return response()->json(['status' => 'success', 'message' => 'Hapus pembayaran berhasil', 'data' => $sisa_hutang]);  
