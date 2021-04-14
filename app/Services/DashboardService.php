@@ -101,7 +101,7 @@ class DashboardService
 			    GROUP BY created_at 
 			) as B ON A.tanggal = DATE(B.created_at)
 
-			GROUP BY tanggal
+			
 		)"));
 	}
 
