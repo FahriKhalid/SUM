@@ -112,7 +112,7 @@ class SkppPenjualanController extends Controller
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){ 
 
             $aksi = '';
-            if(!($data->Pembayaran != null && $data->Pembayaran->sisa_hutang == 00.0)){
+            if($data->id_status == 1){
                 $aksi .= '<div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="'.url("penjualan/skpp/edit/".Helper::encodex($data->id_skpp)).'"><i class="fa fa-edit"></i> Edit</a>
                         <div class="dropdown-divider"></div>
@@ -211,7 +211,7 @@ class SkppPenjualanController extends Controller
         if($request->is_lampiran == 1){
             $rule_lampiran = [
                 'nama_file.*'         => 'required',
-                'file.*'              => 'required|max:2000|mimes:doc,docx,pdf', 
+                'file.*'              => 'required|max:2000|mimes:doc,docx,pdf,jpg,jpeg,png', 
             ];
 
             $rules = array_merge($rules, $rule_lampiran);
@@ -220,7 +220,7 @@ class SkppPenjualanController extends Controller
                 'nama_file.*.required' => 'Nama file wajib diisi',
                 'file.*.required' => 'File wajib diisi',
                 'file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
-                'file.*.mimes' => 'Ekstensi file yang diizinkan hanya doc, docx dan pdf',
+                'file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
             ];
 
             $messages = array_merge($messages, $message_lampiran);
@@ -385,7 +385,7 @@ class SkppPenjualanController extends Controller
                 'nama_file.*.required' => 'Nama file wajib diisi',
                 'file.*.required' => 'File wajib diisi',
                 'file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
-                'file.*.mimes' => 'Ekstensi file yang diizinkan hanya doc, docx dan pdf',
+                'file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
             ];
 
             $rules = array_merge($rules, $rule_lampiran); 
@@ -394,14 +394,14 @@ class SkppPenjualanController extends Controller
             if($request->has('new_nama_file')){
                 $new_rule_lampiran = [
                     'new_nama_file.*'       => 'required',
-                    'new_file.*'            => 'required|max:2000|mimes:doc,docx,pdf', 
+                    'new_file.*'            => 'required|max:2000|mimes:doc,docx,pdf,png,jpg,jpeg', 
                 ];
 
                 $new_message_lampiran = [
                     'new_nama_file.*.required' => 'Nama file wajib diisi',
                     'new_file.*.required' => 'File wajib diisi',
                     'new_file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
-                    'new_file.*.mimes' => 'Ekstensi file yang diizinkan hanya doc, docx dan pdf',
+                    'new_file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
                 ];
 
                 $rules = array_merge($rules, $new_rule_lampiran);

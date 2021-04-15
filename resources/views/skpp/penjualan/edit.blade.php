@@ -100,7 +100,7 @@
 									<th>Nama <span class="text-danger">*</span></th>
 									<th>Keterangan</th>
 									<th width="1px">
-										<button type="button" class="btn btn-success btn-sm" onclick="addRowLampiran()"><i class="fa fa-plus"></i></button>
+										<button type="button" class="btn btn-success btn-sm" onclick="addRowLampiran()" data-toggle="tooltip" data-placement="top" title="Tambah data"><i class="fa fa-plus"></i></button>
 									</th> 
 								</tr>
 							</thead>
@@ -111,7 +111,7 @@
 						<small>
 							<span class="text-danger font-italic">
 								<div>Note : </div>
-								<div>- Extensi file lampiran yang diperbolehkan hanya DOC, DOCX, dan PDF.</div>
+								<div>- Extensi file lampiran yang diperbolehkan hanya PNG, JPG, JPEG, DOC, DOCX, dan PDF.</div>
 								<div>- Maksimal ukuran file 2 Mb.</div> 
 							</span>
 						</small>

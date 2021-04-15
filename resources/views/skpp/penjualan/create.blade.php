@@ -130,7 +130,7 @@
 		                            </div> 
 									
 								</td>
-								<td><button type="button" class="btn btn-success btn-sm" onclick="addRowPO()"><i class="fa fa-plus"></i></button></td>
+								<td><button type="button" class="btn btn-success btn-sm" onclick="addRowPO()" data-toggle="tooltip" data-placement="top" title="Tambah data"><i class="fa fa-plus"></i></button></td>
 							</tr> 
 						</tbody> 
 						<tfoot>
@@ -184,14 +184,14 @@
 									<td>
 										<textarea style="height: 38px" class="form-control lampiran" rows="1" name="keterangan_file[]"></textarea>
 									</td> 
-									<td><button type="button" class="btn btn-success btn-sm" onclick="addRowLampiran()"><i class="fa fa-plus"></i></button></td>
+									<td><button type="button" class="btn btn-success btn-sm" onclick="addRowLampiran()" data-toggle="tooltip" data-placement="top" title="Tambah data"><i class="fa fa-plus"></i></button></td>
 								</tr> 
 							</tbody>
 						</table>
 						<small>
 							<span class="text-danger font-italic">
 								<div>Note : </div>
-								<div>- Extensi file lampiran yang diperbolehkan hanya DOC, DOCX, dan PDF.</div>
+								<div>- Extensi file lampiran yang diperbolehkan hanya PNG, JPG, JPEG, DOC, DOCX, dan PDF.</div>
 								<div>- Maksimal ukuran file 2 Mb.</div> 
 							</span>
 						</small>

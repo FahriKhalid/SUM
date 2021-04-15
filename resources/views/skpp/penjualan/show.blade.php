@@ -59,7 +59,7 @@
 			</div>
 		</div> 
 		<div class="card-body"> 
-			<table class="table table-borderless" style="margin-left: -12px;">
+			<table class="table table-borderless table-sm">
 				<tr>
 					<th width="20%">Nomor SKPP</th>
 					<th width="1%">:</th>

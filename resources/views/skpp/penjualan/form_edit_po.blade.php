@@ -11,7 +11,7 @@
 			<th>Harga jual <span class="text-danger">*</span></th>
 			<th>Nilai <span class="text-danger">*</span></th>
 			<th width="1px">
-				<button type="button" class="btn btn-success btn-sm" onclick="addRowPO()"><i class="fa fa-plus"></i></button>
+				<button type="button" class="btn btn-success btn-sm" onclick="addRowPO()" data-toggle="tooltip" data-placement="top" title="Tambah data"><i class="fa fa-plus"></i></button>
 			</th>
 		</tr>
 	</thead>
@@ -64,7 +64,7 @@
 				@if(count($info["po"]) == 1)
 					<button type="button" disabled class="btn btn-dark btn-sm"><i class="fa fa-trash"></i></button>
 				@else
-					<button type="button" url="{{ url('barang/destroy/'.Helper::encodex($barang->id_barang)) }}" class="btn btn-dark btn-sm delete-po"><i class="fa fa-trash"></i></button>
+					<button type="button" url="{{ url('barang/destroy/'.Helper::encodex($barang->id_barang)) }}" class="btn btn-dark btn-sm delete-po" data-toggle="tooltip" data-placement="top" title="Hapus data"><i class="fa fa-trash"></i></button>
 				@endif 
 			</td>
 		</tr> 

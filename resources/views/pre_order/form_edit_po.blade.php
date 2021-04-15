@@ -8,7 +8,7 @@
 			<th>Harga beli <i class="text-danger">*</i></th> 
 			<th>Nilai <i class="text-danger">*</i></th>
 			<th width="1px">
-				<button type="button" class="btn btn-success btn-sm" onclick="addRowPO()"><i class="fa fa-plus"></i></button>
+				<button type="button" class="btn btn-success btn-sm" onclick="addRowPO()" {{ $info["pre_order"]->SKPP->id_skpp != null ? 'disabled' : '' }} data-toggle="tooltip" data-placement="top" title="Tambah data"><i class="fa fa-plus"></i></button>
 			</th>
 		</tr>
 	</thead>
@@ -19,20 +19,22 @@
 		<tr> 
 			<td> 
 				<input type="hidden" class="id-po" name="id_po[]" value="{{ Helper::encodex($barang->id_barang) }}">
-				<select class="form-control select2 select-produk" title="Pilih Produk" name="produk[]">
+				<select class="form-control select2 select-produk" {{ $info["pre_order"]->SKPP->id_skpp != null ? 'disabled' : '' }} title="Pilih Produk" name="produk[]">
 					<option value="">-- Pilih Produk --</option>
 
 					@foreach($info["produk"] as $produk)
-					<option {{ $barang->id_produk == $produk->id_produk ? "selected" : "" }} value="{{ $produk->id_produk }}">{{ $produk->nama.' ('.$produk->spesifikasi.')' }}</option>
+					<option {{ $barang->id_produk == $produk->id_produk ? "selected" : "" }} value="{{ $produk->id_produk }}">
+						{{ $produk->nama.' ('.$produk->spesifikasi.')' }}
+					</option>
 					@endforeach
 				</select>
 			</td>
 			<td>
-				<input type="text" value="{{ $barang->incoterm }}" class="form-control" name="incoterm[]">
+				<input type="text" value="{{ $barang->incoterm }}" {{ $info["pre_order"]->SKPP->id_skpp != null ? 'disabled' : '' }} class="form-control" name="incoterm[]">
 			</td>
 			<td>
 				<div class="input-group"> 
-					<input type="text" value="{{ $barang->kuantitas }}" min="1" class="form-control kuantitas number" name="kuantitas[]">
+					<input type="text" value="{{ $barang->kuantitas }}" {{ $info["pre_order"]->SKPP->id_skpp != null ? 'disabled' : '' }} min="1" class="form-control kuantitas number" name="kuantitas[]">
 					<div class="input-group-append">
 						<span class="input-group-text">MT</span>
 					</div>
@@ -43,7 +45,7 @@
 					<div class="input-group-prepend">
 						<span class="input-group-text">Rp</span>
 					</div>
-					<input type="text" value="{{ Helper::currency($barang->harga_jual) }}" class="form-control numeric harga-beli" name="harga_jual[]">
+					<input type="text" value="{{ Helper::currency($barang->harga_jual) }}" {{ $info["pre_order"]->SKPP->id_skpp != null ? 'disabled' : '' }} class="form-control numeric harga-beli" name="harga_jual[]">
 				</div> 
 			</td> 
 			<td>
@@ -51,15 +53,17 @@
 					<div class="input-group-prepend">
 						<span class="input-group-text">Rp</span>
 					</div>
-					<input type="text" readonly value="{{ Helper::currency($barang->nilai) }}" class="form-control nilai align-right" name="nilai[]">
+					<input type="text" readonly value="{{ Helper::currency($barang->nilai) }}" {{ $info["pre_order"]->SKPP->id_skpp != null ? 'disabled' : '' }} class="form-control nilai align-right" name="nilai[]">
 				</div> 
 
 			</td>
 			<td>
 				@if(count($info["barang"]) == 1)
-					<button type="button" disabled class="btn btn-dark btn-sm"><i class="fa fa-trash"></i></button>
+					<button type="button" disabled class="btn btn-dark btn-sm" data-toggle="tooltip" data-placement="top" title="Hapus baris"><i class="fa fa-trash"></i></button>
 				@else
-					<button type="button" url="{{ url('barang/destroy/'.Helper::encodex($barang->id_barang)) }}" class="btn btn-dark btn-sm delete-po"><i class="fa fa-trash"></i></button>
+					<button type="button" url="{{ url('barang/destroy/'.Helper::encodex($barang->id_barang)) }}" {{ $info["pre_order"]->SKPP->id_skpp != null ? 'disabled' : '' }} class="btn btn-dark btn-sm delete-po" data-toggle="tooltip" data-placement="top" title="Hapus data">
+						<i class="fa fa-trash"></i>
+					</button>
 				@endif 
 			</td>
 		</tr> 

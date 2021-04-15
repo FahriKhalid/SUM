@@ -21,7 +21,7 @@
 		<textarea style="height: 38px" class="form-control lampiran" rows="1" name="keterangan_file[]">{{ $lampiran->keterangan }}</textarea>
 	</td> 
 	<td>
-		<button type="button" url="{{ url('lampiran/destroy/'.Helper::encodex($lampiran->id_lampiran)) }}" class="btn btn-dark btn-sm delete-lampiran"><i class="fa fa-trash"></i></button>
+		<button type="button" url="{{ url('lampiran/destroy/'.Helper::encodex($lampiran->id_lampiran)) }}" class="btn btn-dark btn-sm delete-lampiran" data-toggle="tooltip" data-placement="top" title="Hapus data"><i class="fa fa-trash"></i></button>
 	</td>
 </tr> 
 @empty
@@ -35,6 +35,6 @@
 	<td>
 		<textarea style="height: 38px" class="form-control lampiran" rows="1" name="new_keterangan_file[]"></textarea>
 	</td> 
-	<td><button type="button" class="btn btn-danger btn-sm remove-row-lampiran"><i class="fa fa-minus"></i></button></td>
+	<td><button type="button" class="btn btn-danger btn-sm remove-row-lampiran" data-toggle="tooltip" data-placement="top" title="Hapus baris"><i class="fa fa-minus"></i></button></td>
 </tr> 
 @endforelse

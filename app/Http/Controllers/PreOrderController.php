@@ -209,7 +209,7 @@ class PreOrderController extends Controller
         {
             $rule_lampiran = [
                 'nama_file.*'         => 'required',
-                'file.*'              => 'required|max:2000|mimes:doc,docx,pdf', 
+                'file.*'              => 'required|max:2000|mimes:doc,docx,pdf,jpg,jpeg,png', 
             ];
 
             $rules = array_merge($rules, $rule_lampiran);
@@ -218,7 +218,7 @@ class PreOrderController extends Controller
                 'nama_file.*.required' => 'Nama file wajib diisi',
                 'file.*.required' => 'File wajib diisi',
                 'file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
-                'file.*.mimes' => 'Ekstensi file yang diizinkan hanya doc, docx dan pdf',
+                'file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
             ];
 
             $messages = array_merge($messages, $message_lampiran);
@@ -316,7 +316,6 @@ class PreOrderController extends Controller
         $info["piutang"] = $this->PembayaranService->sisaHutang("pembelian", $info["pre_order"]->SKPP->id_skpp);   
 
         return view('pre_order.edit', compact('info', 'id'));
-
     }
 
     /**
@@ -377,14 +376,14 @@ class PreOrderController extends Controller
             if($request->has('nama_file')){
                 $rule_lampiran = [
                     'nama_file.*'       => 'required',
-                    //'file.*'            => 'nullable|max:2000|mimes:doc,docx,pdf', 
+                    //'file.*'            => 'nullable|max:2000|mimes:doc,docx,pdf,jpg,jpeg,npg', 
                 ];
                 
                 $message_lampiran = [
                     'nama_file.*.required' => 'Nama file wajib diisi',
                     'file.*.required' => 'File wajib diisi',
                     'file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
-                    'file.*.mimes' => 'Ekstensi file yang diizinkan hanya doc, docx dan pdf',
+                    'file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
                 ];
 
                 $rules = array_merge($rules, $rule_lampiran); 
@@ -394,14 +393,14 @@ class PreOrderController extends Controller
             if($request->has('new_nama_file')){
                 $new_rule_lampiran = [
                     'new_nama_file.*'       => 'required',
-                    'new_file.*'            => 'required|max:2000|mimes:doc,docx,pdf', 
+                    'new_file.*'            => 'required|max:2000|mimes:doc,docx,pdf,jpg,jpeg,png', 
                 ];
 
                 $new_message_lampiran = [
                     'new_nama_file.*.required' => 'Nama file wajib diisi',
                     'new_file.*.required' => 'File wajib diisi',
                     'new_file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
-                    'new_file.*.mimes' => 'Ekstensi file yang diizinkan hanya doc, docx dan pdf',
+                    'new_file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
                 ];
 
                 $rules = array_merge($rules, $new_rule_lampiran);

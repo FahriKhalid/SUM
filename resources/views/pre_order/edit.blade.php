@@ -15,10 +15,17 @@
 	        </div>  
 	    </div>  
 	    
-	    @if($info["pre_order"]->SKPP->id_skpp != null && $info["piutang"] == 0)
+	    {{-- @if($info["pre_order"]->SKPP->id_skpp != null && $info["piutang"] == 0)
 	    	<div class="alert alert-warning mt-3">
 		    	<h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Warning</h4>
 		        Pembayaran sudah lunas. Tidak dapat edit data pre order !
+		    </div>
+	    @endif --}}
+
+	    @if($info["pre_order"]->SKPP->id_skpp != null)
+	    	<div class="alert alert-warning mt-3">
+		    	<h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Warning</h4>
+		        SKPP sudah di buat. Tidak dapat melakukan edit produk pre order !
 		    </div>
 	    @endif
 
@@ -68,7 +75,7 @@
 									<th>Nama <span class="text-danger">*</span></th>
 									<th>Keterangan</th>
 									<th width="1px">
-										<button type="button" class="btn btn-success btn-sm" onclick="addRowLampiran()"><i class="fa fa-plus"></i></button>
+										<button type="button" class="btn btn-success btn-sm" onclick="addRowLampiran()" data-toggle="tooltip" data-placement="top" title="Tambah data"><i class="fa fa-plus"></i></button>
 									</th> 
 								</tr>
 							</thead>
@@ -79,7 +86,7 @@
 						<small>
 							<span class="text-danger font-italic">
 								<div>Note : </div>
-								<div>- Extensi file lampiran yang diperbolehkan hanya DOC, DOCX, dan PDF.</div>
+								<div>- Extensi file lampiran yang diperbolehkan hanya PNG, JPG, JPEG, DOC, DOCX, dan PDF.</div>
 								<div>- Maksimal ukuran file 2 Mb.</div> 
 							</span>
 						</small>
@@ -131,11 +138,11 @@
 				.attr("onclick", "")
 				.find('i').removeClass("fa-trash").addClass("fa-minus");
 
-		clone.find("select[name='produk[]']").attr("name", "new_produk[]");
-		clone.find("input[name='incoterm[]']").attr("name", "new_incoterm[]");
-		clone.find("input[name='kuantitas[]']").attr("name", "new_kuantitas[]");
-		clone.find("input[name='harga_jual[]']").attr("name", "new_harga_jual[]"); 
-		clone.find("input[name='nilai[]']").attr("name", "new_nilai[]");
+		clone.find("select[name='produk[]']").attr("name", "new_produk[]").prop("disabled", false);
+		clone.find("input[name='incoterm[]']").attr("name", "new_incoterm[]").prop("disabled", false);
+		clone.find("input[name='kuantitas[]']").attr("name", "new_kuantitas[]").prop("disabled", false);
+		clone.find("input[name='harga_jual[]']").attr("name", "new_harga_jual[]").prop("disabled", false); 
+		clone.find("input[name='nilai[]']").attr("name", "new_nilai[]").prop("disabled", false);
 
 		clone.find("input").val("");
 		clone.find("select").val("");
