@@ -62,7 +62,7 @@ class SalesOrderPenjualanController extends Controller
                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                         <a class="dropdown-item detail" href="'.url('penjualan/salesorder/show/'.Helper::encodex($data->id_so)).'"><i class="fa fa-search"></i> Detail</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" target="_blank" href="'.url('penjualan/salesorder/surat_so/'.Helper::encodex($data->id_so)).'"><i class="fa fa-file"></i> Surat SO</a>
+                        <a class="dropdown-item" target="_blank" href="'.url('penjualan/salesorder/surat_so/'.Helper::encodex($data->id_so)).'"><i class="fa fa-download"></i> Download</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="'.url("penjualan/salesorder/edit/".Helper::encodex($data->id_so)).'"><i class="fa fa-edit"></i> Edit</a>
                         <div class="dropdown-divider"></div>

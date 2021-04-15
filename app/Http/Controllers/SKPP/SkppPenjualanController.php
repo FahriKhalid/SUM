@@ -76,20 +76,16 @@ class SkppPenjualanController extends Controller
         if($request->no_skpp != ""){
             $data->where("no_skpp", "LIKE", "%".$request->no_skpp."%");
         }
-
         if($request->customer != ""){ 
             $data->where("id_customer", Helper::decodex($request->customer));
         }
-
         if($request->terakhir_pembayaran != ""){ 
             $tanggal = Helper::dateFormat($request->terakhir_pembayaran, true, 'Y-m-d');
             $data->where("terakhir_pembayaran", $tanggal);
         }
-
         if($request->status != ""){ 
             $data->where("id_status", Helper::decodex($request->status));
         }
-
         if($request->pembayaran != ""){ 
 
             if(Helper::decodex($request->pembayaran) == 9) {
@@ -104,18 +100,15 @@ class SkppPenjualanController extends Controller
                 });
             } 
         }
-
         if($request->created_by != ""){ 
             $data->whereHas("CreatedBy", function($query) use ($request){
                 $query->where("nama", "LIKE", "%".$request->created_by."%");
             });
         }
-
         if($request->created_at != ""){ 
             $tanggal = Helper::dateFormat($request->created_at, true, 'Y-m-d');
             $data->where("created_at", "LIKE", "%".$tanggal."%");
         }
-
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){ 
 
             $aksi = '';
@@ -194,7 +187,7 @@ class SkppPenjualanController extends Controller
             'kuantitas.*'           => 'required|numeric|min:1',
             'harga_jual.*'          => 'required',
             'nilai.*'               => 'required',
-            'atm.*'                   => 'required',
+            'atm.*'                 => 'required',
         ]; 
  
         $messages = [
@@ -285,7 +278,6 @@ class SkppPenjualanController extends Controller
     public function show($id)
     {
         $id_skpp = Helper::decodex($id); 
-
         $info["kategori"]   = "penjualan";
         $info["skpp"]       = SKPP::with('CreatedBy','Customer','Status', 'SKPPATM')->findOrFail($id_skpp);
         $info["po"]         = Barang::with('Produk')->where("id_skpp", $id_skpp)->get();
@@ -304,7 +296,6 @@ class SkppPenjualanController extends Controller
     public function edit($id)
     {
         $id_skpp = Helper::decodex($id);
-
         $info["skpp"]  = SKPP::with('CreatedBy','Customer','Status')->findOrFail($id_skpp);
         $info["customer"] = Customer::get();
         $info["produk"] = Produk::where("is_aktif", 1)->get();

@@ -3,7 +3,7 @@
     <a href="{{ url('surat_kuasa/surat_kuasa/'.$id) }}" target="_blank" class="btn btn-warning"><i class="fa fa-download"></i> Surat kuasa</a>
     <button class="btn btn-warning"onclick="show_form_email('dokumen Surat Kuasa', '{{ url('surat_kuasa/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email</button>
 </div>
-<table class="table table-borderless">
+<table class="table table-sm table-borderless">
     <tr>
         <th width="180px">Nomor surat kuasa</th>
         <th width="1px">:</th>

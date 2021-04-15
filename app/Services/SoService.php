@@ -67,7 +67,7 @@ class SoService
         $info["so"] = SO::with('SKPP')->findOrFail($id);
         $info["sopo"] = SOPO::with('SO','Barang')->where("id_so", $id)->get();  
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
-        $pdf = PDF::loadview('salesorder.penjualan.surat_so', compact('info', 'id')); 
+        $pdf = PDF::loadview('surat.penjualan.surat_so', compact('info', 'id')); 
         return $pdf;
     }
 }

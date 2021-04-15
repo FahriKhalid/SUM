@@ -13,7 +13,7 @@
             <button class="btn btn-warning"onclick="show_form_email('dokumen Pengajuan Sales Order', '{{ url('pembelian/pengajuan_so/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email</button>
         </div>
         <div class="modal-body"> 
-            <table class="table table-borderless" style="margin-left: -10px"> 
+            <table class="table table-borderless table-sm"> 
                 <tr>
                     <th width="250px">Nomor Pengajuan Sales Order</th>
                     <th width="1px">:</th>

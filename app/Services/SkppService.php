@@ -95,7 +95,7 @@ class SkppService
         $info["po"]                 = Barang::with('Produk')->where("id_skpp", $id)->get();
         $info["lampiran"]           = Lampiran::where("id_skpp", $id)->get();
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
-        $pdf = PDF::loadview('skpp.penjualan.surat_skpp', compact('info')); 
+        $pdf = PDF::loadview('surat.penjualan.surat_skpp', compact('info')); 
         return $pdf;
 	}
 

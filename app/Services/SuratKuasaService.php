@@ -69,7 +69,7 @@ class SuratKuasaService
         $info["surat_kuasa"] = SuratKuasa::with('Gudang','Supir')->findOrFail($id);
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
         $info["skso"] = SKSO::with('SOPO')->where("id_sk", $id)->get();   
-        $pdf = PDF::loadview('surat_kuasa.surat_kuasa', compact('info', 'id')); 
+        $pdf = PDF::loadview('surat.penjualan.surat_kuasa', compact('info', 'id')); 
         return $pdf;
     }
 }

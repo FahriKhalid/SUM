@@ -51,7 +51,7 @@ class InvoicePenjualanController extends Controller
                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                         <a class="dropdown-item detail" url="'.url('penjualan/invoice/show/'.Helper::encodex($data->id_invoice)).'"><i class="fa fa-search"></i> Detail</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" target="_blank" href="'.url('penjualan/invoice/surat/'.Helper::encodex($data->id_invoice)).'"><i class="fa fa-file"></i> Invoice</a>
+                        <a class="dropdown-item" target="_blank" href="'.url('penjualan/invoice/surat/'.Helper::encodex($data->id_invoice)).'"><i class="fa fa-download"></i> Download</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="'.url("penjualan/invoice/edit/".Helper::encodex($data->id_invoice)).'"><i class="fa fa-edit"></i> Edit</a>
                         <div class="dropdown-divider"></div>
@@ -301,7 +301,7 @@ class InvoicePenjualanController extends Controller
 
         $info["invoice"] = Invoice::with("SKPP")->findOrFail($id_invoice);  
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
-        $pdf = PDF::loadview('invoice.penjualan.surat_invoice', compact('info')); 
+        $pdf = PDF::loadview('surat.penjualan.surat_invoice', compact('info')); 
         return $pdf->setPaper('a4')->stream();  
     }
 }

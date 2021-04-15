@@ -14,7 +14,7 @@
         </div>
         @endif
         <div class="modal-body"> 
-            <table class="table table-borderless" style="margin-left: -10px"> 
+            <table class="table table-sm table-borderless"> 
                 <tr>
                     <th width="180px">Nomor SKPP</th>
                     <th width="1px">:</th>

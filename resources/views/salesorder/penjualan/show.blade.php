@@ -65,21 +65,21 @@
 		<div class="card-body">
 			<div class="row">
 				<div class="col-md-12">
-					<table class="table table-sm table-borderless" style="margin-left: -12px;">
+					<table class="table table-sm table-borderless">
 						<tbody>
 							<tr>
-								<th width="15%">Nomor SKPP</th>
+								<th width="20%">Nomor SKPP</th>
 								<th width="1%">:</th>
 								<td> {{ $info["so"]->SKPP->no_skpp }}</td>
 							</tr> 
 							<tr>
-								<th width="15%">Nomor SO</th>
-								<th width="1%">:</th>
+								<th>Nomor SO</th>
+								<th>:</th>
 								<td>{{ $info["so"]->no_so }}</td>
 							</tr>
 							<tr>
-								<th width="15%">Nomor SO pengambilan</th>
-								<th width="1%">:</th>
+								<th>Nomor SO pengambilan</th>
+								<th>:</th>
 								<td>{{ $info["so"]->no_so_pengambilan }}</td>
 							</tr> 
 							<tr>

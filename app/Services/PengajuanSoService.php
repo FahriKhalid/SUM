@@ -44,7 +44,7 @@ class PengajuanSoService
     {
     	$info["pengajuan_so"] = PengajuanSo::with("PreOrder")->findOrFail($id);
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
-        $pdf = PDF::loadview('pengajuan_so.surat_pengajuan_so', compact('info', 'id')); 
+        $pdf = PDF::loadview('surat.pembelian.surat_pengajuan_so', compact('info', 'id')); 
         return $pdf;
     }
  

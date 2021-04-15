@@ -10,7 +10,7 @@
         <div class="modal-body">
             <a href="{{ url('penjualan/invoice/edit/'.$id) }}" class="btn btn-primary"><i class="fa fa-edit"></i> Edit</a>
             <a href="{{ url('penjualan/invoice/surat/'.Helper::encodex($info["invoice"]->id_invoice)) }}" target="_blank" class="btn btn-warning"><i class="fa fa-download"></i> Invoice</a>
-            <table class="table table-borderless mt-2" style="margin-left: -10px"> 
+            <table class="table table-sm table-borderless mt-2"> 
                 <tr>
                     <th width="200px">Customer</th>
                     <th width="1px">:</th>
@@ -64,13 +64,13 @@
                             <td> 
                                 <div class="d-flex justify-content-between">
                                     <div>IDR</div>
-                                    <div>{{ Helper::currency(floor(($sopo->Barang->harga_jual / 1.1))) }}</div> 
+                                    <div>{{ Helper::currency(Helper::toFixed(floor(($sopo->Barang->harga_jual / 1.1)), 2)) }}</div> 
                                 </div>
                             </td>
                             <td width="250px">
                                 <div class="d-flex justify-content-between">
                                     <div>IDR</div>
-                                    <div>{{ Helper::currency(floor((($sopo->Barang->harga_jual / 1.1) * $sopo->kuantitas)))  }}</div>
+                                    <div>{{ Helper::currency(Helper::toFixed(floor((($sopo->Barang->harga_jual / 1.1) * $sopo->kuantitas)), 2))  }}</div>
                                 </div>
                             </td>
                         </tr>
@@ -80,7 +80,7 @@
                             <td>
                                 <div class="d-flex justify-content-between">
                                     <div>IDR</div>
-                                    <div>{{ Helper::currency(floor($sub_total)) }}</div>
+                                    <div>{{ Helper::currency(Helper::toFixed($sub_total, 2)) }}</div>
                                 </div> 
                             </td>
                         </tr>
@@ -89,7 +89,7 @@
                             <td>
                                 <div class="d-flex justify-content-between">
                                     <div>IDR</div> 
-                                    <div>{{ Helper::currency(floor($info["invoice"]->ppn)) }}</div>
+                                    <div>{{ Helper::currency(Helper::toFixed($info["invoice"]->ppn, 2)) }}</div>
                                 </div>
                             </td>
                         </tr>
@@ -98,7 +98,7 @@
                             <td> 
                                 <div class="d-flex justify-content-between">
                                     <div>IDR</div> 
-                                    <div>{{ Helper::currency(floor($info["invoice"]->total)) }}</div>
+                                    <div>{{ Helper::currency(Helper::toFixed($info["invoice"]->total, 2)) }}</div>
                                 </div>
                             </td>
                         </tr>
