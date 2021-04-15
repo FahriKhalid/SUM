@@ -279,7 +279,6 @@ class PengajuanSoController extends Controller
     public function table_view($id)
     {
         $id_pengajuan_so = Helper::decodex($id);
-
         $info["pengajuan_so"] = PengajuanSo::with("PreOrder")->findOrFail($id_pengajuan_so);
 
         return response()->json(view("pengajuan_so.table_view", compact("info", "id"))->render());

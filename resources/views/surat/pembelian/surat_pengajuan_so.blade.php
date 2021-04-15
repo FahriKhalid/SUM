@@ -2,7 +2,7 @@
 @section('content')
 
 @section('title')
-<b><u>SURAT PRE-ORDER</u></b>
+<b><u>SURAT PENGAJUAN SO</u></b>
 @endsection
 
 <div class="container">
