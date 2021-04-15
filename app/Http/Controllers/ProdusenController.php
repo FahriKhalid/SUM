@@ -34,6 +34,14 @@ class ProdusenController extends Controller
 
              $query->orderBy('id_produsen', $order);
 
+        })->addColumn('created_by', function($data){ 
+
+            return $data->CreatedBy->nama;
+            
+        })->addColumn('created_on', function($data){ 
+
+            return $data->created_on;
+            
         })->rawColumns(['action'])->make(true);
     }
 

@@ -28,6 +28,8 @@
                                 <th>Nama perusahaan</th>  
                                 <th>Nama</th>
                                 <th>Email</th> 
+                                <th>Created by</th>
+                                <th width="130px">Created at</th>
                                 <th width="70px">Aksi</th>
                             </tr>
                         </thead> 
@@ -68,6 +70,8 @@
         {data: 'perusahaan',  name: 'perusahaan'}, 
         {data: 'nama',		  name: 'nama'},
         {data: 'email',    	  name: 'email'}, 
+        {data: 'created_by',  name: 'created_by'},
+        {data: 'created_at',  name: 'created_at'}, 
         {data: 'action',      name: 'action', orderable: false,},
     ];
     
