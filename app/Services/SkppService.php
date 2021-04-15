@@ -96,7 +96,11 @@ class SkppService
         $info["lampiran"]           = Lampiran::where("id_skpp", $id)->get();
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
         $pdf = PDF::loadview('surat.penjualan.surat_skpp', compact('info')); 
-        return $pdf;
+
+        return [
+        	'info' => $info,
+        	'pdf' => $pdf
+        ];
 	}
 
 	public function requestTotalPembayaran($request)

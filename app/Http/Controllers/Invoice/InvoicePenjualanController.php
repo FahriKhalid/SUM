@@ -302,6 +302,7 @@ class InvoicePenjualanController extends Controller
         $info["invoice"] = Invoice::with("SKPP")->findOrFail($id_invoice);  
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
         $pdf = PDF::loadview('surat.penjualan.surat_invoice', compact('info')); 
-        return $pdf->setPaper('a4')->stream();  
+
+        return $pdf->setPaper('a4')->stream(Helper::RemoveSpecialChar($info["invoice"]->no_tagihan).'.pdf');  
     }
 }

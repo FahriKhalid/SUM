@@ -32,7 +32,10 @@ class PreOrderService
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
         $pdf = PDF::loadview('surat.pembelian.surat_po', compact('info')); 
         
-        return $pdf;
+        return [
+        	'info' => $info,
+        	'pdf' => $pdf
+        ];
 	}
  
 }

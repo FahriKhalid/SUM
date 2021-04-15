@@ -297,7 +297,7 @@ class SuratKuasaController extends Controller
         $id = Helper::decodex($id); 
         $pdf = $this->SuratKuasaService->suratKuasa($id);
 
-        return $pdf->setPaper('a4')->stream();
+        return $pdf["pdf"]->setPaper('a4')->stream(Helper::RemoveSpecialChar($pdf["info"]["surat_kuasa"]->no_sk).'.pdf');
     }
 
 
@@ -315,7 +315,7 @@ class SuratKuasaController extends Controller
             $email_tujuan = $sk->SO->SKPP->Customer->email;
 
             $pdf = $this->SuratKuasaService->suratKuasa($id_sk); 
-            Mail::to($email_tujuan)->send(new SendEmail("SURAT KUASA", $pdf)); 
+            Mail::to($email_tujuan)->send(new SendEmail("SURAT KUASA", $pdf["pdf"])); 
 
             return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
         } catch (\Exception $e) {

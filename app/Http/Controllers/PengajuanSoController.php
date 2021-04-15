@@ -273,7 +273,7 @@ class PengajuanSoController extends Controller
         $id_pengajuan_so = Helper::decodex($id);
         $pdf = $this->PengajuanSoService->suratPengajuanSo($id_pengajuan_so);
 
-        return $pdf->setPaper('a4')->stream();
+        return $pdf["pdf"]->setPaper('a4')->stream(Helper::RemoveSpecialChar($pdf["info"]["pengajuan_so"]->no_pengajuan_so).'.pdf');
     }
 
     public function table_view($id)
@@ -298,7 +298,7 @@ class PengajuanSoController extends Controller
             $email_tujuan = $po->PreOrder->Produsen->email;
 
             $pdf = $this->PengajuanSoService->suratPengajuanSo($id_pengajuan_so);
-            Mail::to($email_tujuan)->send(new SendEmail("PRE ORDER", $pdf)); 
+            Mail::to($email_tujuan)->send(new SendEmail("PRE ORDER", $pdf["pdf"])); 
 
             return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
         } catch (\Exception $e) {

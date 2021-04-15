@@ -70,7 +70,10 @@ class SuratKuasaService
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
         $info["skso"] = SKSO::with('SOPO')->where("id_sk", $id)->get();   
         $pdf = PDF::loadview('surat.penjualan.surat_kuasa', compact('info', 'id')); 
-        return $pdf;
+        return [
+            'info' => $info,
+            'pdf' => $pdf
+        ];
     }
 }
 

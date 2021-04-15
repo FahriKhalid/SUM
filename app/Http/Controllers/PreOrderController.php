@@ -485,7 +485,7 @@ class PreOrderController extends Controller
         $id = Helper::decodex($id); 
         $pdf = $this->PreOrderService->suratPreOrder($id);
         
-        return $pdf->setPaper('a4')->stream(); 
+        return $pdf["pdf"]->setPaper('a4')->stream(Helper::RemoveSpecialChar($pdf["info"]["pre_order"]->no_po).'.pdf'); 
     }
 
     /**
@@ -512,7 +512,7 @@ class PreOrderController extends Controller
 
 
             $pdf = $this->PreOrderService->suratPreOrder($id_po);
-            Mail::to($email_tujuan)->send(new SendEmail("PRE ORDER", $pdf, $lampiran)); 
+            Mail::to($email_tujuan)->send(new SendEmail("PRE ORDER", $pdf["pdf"], $lampiran)); 
 
             return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
         } catch (\Exception $e) {

@@ -51,10 +51,11 @@
 	<table class="ml-3 mt-20 table">
 		<thead>
 			<tr>
-				<th align="center">Jenis Pupuk</th>
-				<th align="center">Harga per ton</th>
-				<th align="center">Kuantum</th>
-				<th align="center">Incoterm</th> 
+				<th align="center">JENIS PUPUK</th>
+				<th align="center">SPESIFIKASI</th>
+				<th align="center">HARGA PER TON</th>
+				<th align="center">KUANTUM</th>
+				<th align="center">INCOTERM</th> 
 			</tr>
 		</thead>
 		<tbody>
@@ -66,6 +67,7 @@
 			?> --}}
 			<tr>
 				<td align="center">{{ $po->Produk->nama }}</td> 
+				<td align="center">{{ $po->Produk->spesifikasi }}</td> 
 				<td align="center">{{ Helper::currency($po->harga_jual) }}</td>
 				<td align="center">{{ $po->kuantitas }} MT</td> 
 				<td align="center">{{ $po->incoterm }}</td>  

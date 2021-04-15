@@ -362,8 +362,7 @@ class SalesOrderPenjualanController extends Controller
     {
         $id = Helper::decodex($id);
         $pdf = $this->SoService->suratSo($id);
-
-        return $pdf->setPaper('a4')->stream();
+        return $pdf["pdf"]->setPaper('a4')->stream(Helper::RemoveSpecialChar($pdf["info"]["so"]->no_so.'.pdf'));
     }
     
     /**
@@ -440,7 +439,7 @@ class SalesOrderPenjualanController extends Controller
             $email_tujuan = $so->SKPP->Customer->email;
 
             $pdf = $this->SoService->suratSo($id_so);
-            Mail::to($email_tujuan)->send(new SendEmail("SALES ORDER", $pdf)); 
+            Mail::to($email_tujuan)->send(new SendEmail("SALES ORDER", $pdf["pdf"])); 
 
             return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
         } catch (\Exception $e) {

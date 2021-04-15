@@ -505,7 +505,7 @@ class SkppPenjualanController extends Controller
     public function preview($id)
     { 
         $pdf = $this->SkppService->suratSKPP(Helper::decodex($id));
-        return $pdf->setPaper('a4')->stream(); 
+        return $pdf["pdf"]->setPaper('a4')->stream(Helper::RemoveSpecialChar($pdf["info"]["skpp"]->no_skpp).'.pdf'); 
     }
 
     public function confirm($id)
@@ -636,7 +636,7 @@ class SkppPenjualanController extends Controller
 
             $pdf = $this->SkppService->suratSKPP($id_skpp); 
 
-            Mail::to($email_tujuan)->send(new SendEmail("SKPP", $pdf, $lampiran)); 
+            Mail::to($email_tujuan)->send(new SendEmail("SKPP", $pdf["pdf"], $lampiran)); 
 
             return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
         } catch (\Exception $e) {
