@@ -45,7 +45,7 @@
 				<th align="center">SPESIFIKASI</th>
 				<th align="center">INCOTERM</th> 
 				<th align="center">KUANTUM</th>
-				<th align="center">HARGA + PPN</th>
+				<th align="center">HARGA</th>
 			</tr>
 		</thead>
 		<tbody>
