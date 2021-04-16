@@ -92,7 +92,7 @@ class InvoicePenjualanController extends Controller
 
         $info["skpp"] = SKPP::selectRaw("*, left(no_skpp, 4) as no_dokumen")->findOrFail($id_skpp);   
 
-        $info["so"] = SO::where("id_skpp", $id_skpp)->where("id_status", $this->status_delivered)->get();
+        $info["so"] = SO::where("id_skpp", $id_skpp)->get();
 
         return view('invoice.penjualan.create', compact('info', 'id'));
     }
