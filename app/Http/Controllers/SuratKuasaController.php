@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables; 
 use App\Services\SuratKuasaService;
+use App\Services\AppService;
 use App\Mail\SendEmail;
+use App\RiwayatEmail;
 use App\SuratKuasa;
 use App\Gudang;
 use App\Supir;
@@ -22,9 +24,14 @@ use DB;
 class SuratKuasaController extends Controller
 {
     protected $SuratKuasaService;
+    protected $AppService;
 
-    public function __construct(SuratKuasaService $SuratKuasaService){
+    public function __construct(
+        SuratKuasaService $SuratKuasaService,
+        AppService $AppService
+    ){
         $this->SuratKuasaService = $SuratKuasaService;
+        $this->AppService = $AppService;
     }
 
     /**
@@ -181,6 +188,7 @@ class SuratKuasaController extends Controller
         $id_sk = Helper::decodex($id);
         $info["sk"] = SuratKuasa::with('Supir', 'Gudang')->findOrFail($id_sk);   
         $info["skso"] = SKSO::where("id_sk", $id_sk)->get();
+        $info["riwayat_email"] = RiwayatEmail::with('UpdatedBy')->where("id_reference", $id_sk)->where("kategori", "surat kuasa")->first();
 
         return response()->json(['html' => view('surat_kuasa.detail', compact('info', 'id'))->render()]);
     }
@@ -309,6 +317,7 @@ class SuratKuasaController extends Controller
      */
     public function send_email($id)
     {
+        DB::beginTransaction();
         try {
             $id_sk = Helper::decodex($id);
             $sk = SuratKuasa::findOrFail($id_sk);
@@ -316,11 +325,13 @@ class SuratKuasaController extends Controller
 
             $pdf = $this->SuratKuasaService->suratKuasa($id_sk); 
             Mail::to($email_tujuan)->send(new SendEmail("SURAT KUASA", $pdf["pdf"])); 
+            $this->AppService->storeRiwayatEmail($id_sk, "surat kuasa");
 
+            DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
         } catch (\Exception $e) {
+            DB::rollback();
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
         }
-    }
-
+    } 
 }

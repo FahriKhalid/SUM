@@ -10,7 +10,7 @@
         <div class="modal-body">
             <a href="{{ url('pembelian/pengajuan_so/edit/'.$id) }}" class="btn btn-primary"><i class="fa fa-edit"></i> Edit</a>  
             <button type="button" url="{{ url('pembelian/pengajuan_so/destroy/'.$id) }}" class="btn btn-danger delete-pengajuan-so"><i class="fa fa-trash"></i> Hapus</button>
-            <button class="btn btn-warning"onclick="show_form_email('dokumen Pengajuan Sales Order', '{{ url('pembelian/pengajuan_so/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email</button>
+            <button class="btn btn-warning"onclick="show_form_email('dokumen Pengajuan Sales Order', '{{ url('pembelian/pengajuan_so/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email ({{ isset($info["riwayat_email"]) ? $info["riwayat_email"]->jumlah : '0' }})</button>
         </div>
         <div class="modal-body"> 
             <table class="table table-borderless table-sm"> 

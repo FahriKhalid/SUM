@@ -155,7 +155,6 @@ class SalesOrderPembelianController extends Controller
             'file.required'         => 'File sales order wajib diisi',
             'file.max'              => 'Ukuran file sales order terlalu besar. Maks 2 Mb',
             'file.mimes'            => 'Ekstensi file sales order tidak valid'
-
         ];
 
         if($request->is_pengajuan_so == 1)

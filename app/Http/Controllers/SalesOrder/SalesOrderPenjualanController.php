@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables; 
 use App\Services\SkppService;
 use App\Services\SoService;
+use App\Services\AppService;
 use App\Mail\SendEmail;
+use App\RiwayatEmail;
 use App\Customer;
 use App\SupirSO;
 use App\Barang;
@@ -27,11 +29,16 @@ use DB;
 
 class SalesOrderPenjualanController extends Controller
 {
-    protected $SoService, $SkppService; 
+    protected $SoService, $SkppService, $AppService; 
 
-    public function __construct(SoService $SoService, SkppService $SkppService){
-        $this->SoService = $SoService; 
+    public function __construct( 
+        SkppService $SkppService,
+        AppService $AppService,
+        SoService $SoService)
+    {
         $this->SkppService = $SkppService;
+        $this->SoService = $SoService; 
+        $this->AppService = $AppService;
     }
 
     /**
@@ -220,7 +227,8 @@ class SalesOrderPenjualanController extends Controller
         $info["supir"] = Supir::where("id_supir", "!=", $info["so"]->SupirAktif[0]->id_supir)->get();
         $info["riwayat_supir"] = SupirSO::where("id_so", $id_so)->where("is_aktif", "0")->get();
         $info["email"] = $info["so"]->SKPP->Customer->email;
-
+        $info["riwayat_email"] = RiwayatEmail::with('UpdatedBy')->where("id_reference", $id_so)->where("kategori", "sales order")->first();
+       
         return view('salesorder.penjualan.show', compact('id', 'info'));
     }
 
@@ -432,17 +440,21 @@ class SalesOrderPenjualanController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function send_email($id)
-    {   
-       try {
+    {  
+        DB::beginTransaction();
+        try {
             $id_so = Helper::decodex($id);
             $so = SO::findOrFail($id_so);
             $email_tujuan = $so->SKPP->Customer->email;
 
             $pdf = $this->SoService->suratSo($id_so);
             Mail::to($email_tujuan)->send(new SendEmail("SALES ORDER", $pdf["pdf"])); 
+            $this->AppService->storeRiwayatEmail($id_so, "sales order");
 
+            DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
         } catch (\Exception $e) {
+            DB::rollback();
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
         }
     }

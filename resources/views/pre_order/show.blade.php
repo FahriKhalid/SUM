@@ -28,13 +28,9 @@
 	<div class="card mt-3 ">
 		<div class="card-header bg-white d-flex justify-content-between"> 
 			<div>
-
 				<a href="{{ url('pembelian/pre_order/edit/'.Helper::encodex($info["pre_order"]->id_pre_order)) }}" class="btn btn-primary"><i class="fa fa-edit"></i> Edit</a>
-
 				<a target="_blank" href="{{ url('pembelian/pre_order/surat_po/'.Helper::encodex($info["pre_order"]->id_pre_order)) }}" class="btn btn-warning"><i class="fa fa-download"></i> Pre Order</a>
-
-				<button class="btn btn-warning"onclick="show_form_email('dokumen Pre Order', '{{ url('pembelian/pre_order/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email</button>
-
+				<button class="btn btn-warning"onclick="show_form_email('dokumen Pre Order', '{{ url('pembelian/pre_order/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email ({{ isset($info["riwayat_email"]) ? $info["riwayat_email"]->jumlah : '0' }})</button>
 			</div>
 			<div>
 				@if($info["pre_order"]->id_status == 1)

@@ -8,6 +8,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Services\SkppService;
 use App\SKPP;
+use App\RiwayatEmail;
 
 class SendEmail extends Mailable
 {

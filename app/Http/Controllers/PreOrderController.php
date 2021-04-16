@@ -11,6 +11,8 @@ use App\Services\PembayaranService;
 use App\Services\PreOrderService;
 use App\Services\LampiranService;
 use App\Services\BarangService;
+use App\Services\AppService;
+use App\RiwayatEmail;
 use App\Lampiran;
 use App\PreOrder;
 use App\Produsen;
@@ -27,18 +29,25 @@ use DB;
 class PreOrderController extends Controller
 {
 
-    public $PreOrderService, $LampiranService, $BarangService, $PembayaranService;
+    public  $PembayaranService,
+            $LampiranService, 
+            $PreOrderService, 
+            $BarangService, 
+            $AppService;
 
     public function __construct(
-        PreOrderService $PreOrderService, 
+        PembayaranService $PembayaranService,
         LampiranService $LampiranService, 
+        PreOrderService $PreOrderService, 
         BarangService $BarangService, 
-        PembayaranService $PembayaranService)
+        AppService $AppService
+    )
     {
-        $this->PreOrderService = $PreOrderService;
-        $this->LampiranService = $LampiranService;
-        $this->BarangService = $BarangService;
         $this->PembayaranService = $PembayaranService;
+        $this->LampiranService = $LampiranService;
+        $this->PreOrderService = $PreOrderService;
+        $this->BarangService = $BarangService;
+        $this->AppService = $AppService;
     }
 
     /**
@@ -296,6 +305,7 @@ class PreOrderController extends Controller
         $info["po"]         = Barang::with('Produk')->where("id_pre_order", $id_pre_order)->get();
         $info["lampiran"]   = Lampiran::where("id_pre_order", $id_pre_order)->get(); 
         $info["email"] = $info["pre_order"]->Produsen->email;
+        $info["riwayat_email"] = RiwayatEmail::with('UpdatedBy')->where("id_reference", $id_pre_order)->where("kategori", "pre order")->first();
         
         return view('pre_order.show', compact('id', 'info'));
     }
@@ -495,6 +505,7 @@ class PreOrderController extends Controller
      */
     public function send_email($id)
     {   
+        DB::beginTransaction();
         try {
             $id_po = Helper::decodex($id);
             $po = PreOrder::findOrFail($id_po);
@@ -509,12 +520,14 @@ class PreOrderController extends Controller
                 }  
             }
 
-
             $pdf = $this->PreOrderService->suratPreOrder($id_po);
             Mail::to($email_tujuan)->send(new SendEmail("PRE ORDER", $pdf["pdf"], $lampiran)); 
+            $this->AppService->storeRiwayatEmail($id_po, "pre order");
 
+            DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
         } catch (\Exception $e) {
+            DB::rollback();
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
         }
     }

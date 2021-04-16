@@ -45,7 +45,7 @@
 					<button onclick="approve('{{ url('penjualan/skpp/approve/'.Helper::encodex($info["skpp"]->id_skpp)) }}')" class="btn btn-success"><i class="fa fa-check-double"></i> Approve</button>
 				@elseif($info["skpp"]->id_status == 3) 
 					<button onclick="revisi('{{ url('penjualan/skpp/revisi/'.Helper::encodex($info["skpp"]->id_skpp)) }}')" class="btn btn-warning"><i class="fa fa-edit"></i> Revisi</button>
-					<button class="btn btn-warning" onclick="show_form_email('dokumen SKPP', '{{ url('penjualan/skpp/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email</button>
+					<button class="btn btn-warning" onclick="show_form_email('dokumen SKPP', '{{ url('penjualan/skpp/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email ({{ isset($info["riwayat_email"]) ? $info["riwayat_email"]->jumlah : '0' }})</button>  
 				@endif
 			</div>
 			<div>

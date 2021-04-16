@@ -14,7 +14,9 @@ use App\Services\SkppAtmService;
 use App\Services\BarangService;
 use App\Services\StokService;
 use App\Services\SkppService;
+use App\Services\AppService;
 use App\Mail\SendEmail;
+use App\RiwayatEmail;
 use App\Customer;
 use App\Lampiran;
 use App\Produk;
@@ -30,7 +32,15 @@ use DB;
 
 class SkppPenjualanController extends Controller
 {
-    protected $LogTransaksiService, $PembayaranService, $LampiranService, $SkppAtmService, $BarangService, $SkppService, $StokService;
+    protected $LogTransaksiService, 
+                $PembayaranService, 
+                $LampiranService, 
+                $SkppAtmService, 
+                $BarangService, 
+                $SkppService, 
+                $StokService, 
+                $AppService;
+
     protected $draft, $confirm, $approve, $unapprove;
 
     public function __construct(
@@ -40,7 +50,8 @@ class SkppPenjualanController extends Controller
         SkppAtmService $SkppAtmService,
         BarangService $BarangService, 
         SkppService $SkppService,
-        StokService $StokService
+        StokService $StokService,
+        AppService $AppService
     ){
         $this->LogTransaksiService = $LogTransaksiService;
         $this->PembayaranService = $PembayaranService;
@@ -49,6 +60,7 @@ class SkppPenjualanController extends Controller
         $this->BarangService = $BarangService;
         $this->SkppService = $SkppService;
         $this->StokService = $StokService;
+        $this->AppService = $AppService;
         $this->draft = 1;
         $this->confirm = 2;
         $this->approve = 3;
@@ -283,6 +295,7 @@ class SkppPenjualanController extends Controller
         $info["po"]         = Barang::with('Produk')->where("id_skpp", $id_skpp)->get();
         $info["lampiran"]   = Lampiran::where("id_skpp", $id_skpp)->get();
         $info["email"]      = $info["skpp"]->Customer->email;
+        $info["riwayat_email"] = RiwayatEmail::with('UpdatedBy')->where("id_reference", $id_skpp)->where("kategori", "skpp")->first();
 
         return view('skpp.penjualan.show', compact('info','id'));
     }
@@ -620,6 +633,7 @@ class SkppPenjualanController extends Controller
      */
     public function send_email($id)
     {   
+        DB::beginTransaction();
         try {
             $id_skpp = Helper::decodex($id);
             $skpp = SKPP::findOrFail($id_skpp);
@@ -633,13 +647,14 @@ class SkppPenjualanController extends Controller
                     $lampiran[] = $x;
                 }  
             }
-
             $pdf = $this->SkppService->suratSKPP($id_skpp); 
-
             Mail::to($email_tujuan)->send(new SendEmail("SKPP", $pdf["pdf"], $lampiran)); 
+            $this->AppService->storeRiwayatEmail($id_skpp, "skpp");
 
+            DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
         } catch (\Exception $e) {
+            DB::rollback();
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
         }
     }

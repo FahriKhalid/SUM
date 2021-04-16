@@ -33,9 +33,9 @@
 				  	<button class="btn btn-warning action" {{ $info["so"]->Status->id_status == 7 ? 'disabled' : '' }} onclick="update_status('Hold', '{{ Helper::encodex(7) }}')"><i class="fas fa-box"></i> Hold</button>
 					<button class="btn btn-warning action" {{ $info["so"]->Status->id_status == 6 ? 'disabled' : '' }} onclick="update_status('On Process', '{{ Helper::encodex(6) }}')"><i class="fas fa-truck-moving"></i> On process</button>
 					<button class="btn btn-warning action" {{ $info["so"]->Status->id_status == 5 ? 'disabled' : '' }} onclick="update_status('Delivered', '{{ Helper::encodex(5) }}')"><i class="fas fa-truck-loading"></i> Delivered</button>
-				</div>
-
-				<button class="btn btn-warning"onclick="show_form_email('dokumen Sales Order', '{{ url('penjualan/salesorder/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email</button>
+				</div> 
+ 
+				  	<button class="btn btn-warning"onclick="show_form_email('dokumen Sales Order', '{{ url('penjualan/salesorder/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email ({{ isset($info["riwayat_email"]) ? $info["riwayat_email"]->jumlah : '0' }})</button>  
 			</div>
 
 			<div>

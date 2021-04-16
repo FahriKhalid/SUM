@@ -10,7 +10,7 @@
         @if($info["sales_order"]->Status->status != "Final")
         <div class="modal-body">
             <a href="{{ url('pembelian/salesorder/edit/'.$id) }}" class="btn btn-primary"><i class="fa fa-edit"></i> Edit</a> 
-            <a href="{{ url('pembelian/salesorder/edit/'.$id) }}" class="btn btn-danger"><i class="fa fa-trash"></i> Hapus</a> 
+            <a href="javascript:void(0)" show="{{ url('pembelian/salesorder/show_produk/'.$id) }}" url="{{ url('pembelian/salesorder/destroy/'.$id) }}" class="btn btn-danger hapus"><i class="fa fa-trash"></i> Hapus</a> 
         </div>
         @endif
         <div class="modal-body"> 

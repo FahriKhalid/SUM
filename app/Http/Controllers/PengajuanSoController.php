@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables;
-use App\Mail\SendEmail;
 use App\Services\PengajuanSoService;
+use App\Services\AppService;
+use App\Mail\SendEmail;
 use App\BarangPengajuanSo;
+use App\RiwayatEmail;
 use App\PengajuanSo;
 use App\Barang;
 use App\SKPP;
@@ -20,10 +22,13 @@ use DB;
 
 class PengajuanSoController extends Controller
 {
-    public $PengajuanSoService;
+    public $PengajuanSoService, $AppService;
 
-    public function __construct(PengajuanSoService $PengajuanSoService)
-    {
+    public function __construct(
+        PengajuanSoService $PengajuanSoService,
+        AppService $AppService
+    ){
+        $this->AppService = $AppService;
         $this->PengajuanSoService = $PengajuanSoService;
     }
 
@@ -174,8 +179,8 @@ class PengajuanSoController extends Controller
     public function detail($id)
     {
         $id_pengajuan_so = Helper::decodex($id);
-
         $info["pengajuan_so"] = PengajuanSo::with("PreOrder")->findOrFail($id_pengajuan_so);
+        $info["riwayat_email"] = RiwayatEmail::with('UpdatedBy')->where("id_reference", $id_pengajuan_so)->where("kategori", "pengajuan so")->first();
 
         return response()->json(view("pengajuan_so.detail", compact("info", "id"))->render());
     }
@@ -190,6 +195,7 @@ class PengajuanSoController extends Controller
     {
         $id_pengajuan_so = Helper::decodex($id);  
         $info["pengajuan_so"] = PengajuanSo::with("PreOrder")->findOrFail($id_pengajuan_so); 
+
         return view('pengajuan_so.edit', compact('info', 'id'));
     }
 
@@ -245,7 +251,6 @@ class PengajuanSoController extends Controller
             }
 
             return response()->json(['status' => 'success', 'message' => 'Update pengajuan sales order berhasil']); 
-
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
         }
@@ -292,6 +297,7 @@ class PengajuanSoController extends Controller
      */
     public function send_email($id)
     {   
+        DB::beginTransaction();
         try {
             $id_pengajuan_so = Helper::decodex($id);
             $po = PengajuanSo::findOrFail($id_pengajuan_so);
@@ -299,9 +305,12 @@ class PengajuanSoController extends Controller
 
             $pdf = $this->PengajuanSoService->suratPengajuanSo($id_pengajuan_so);
             Mail::to($email_tujuan)->send(new SendEmail("PRE ORDER", $pdf["pdf"])); 
+            $this->AppService->storeRiwayatEmail($id_pengajuan_so, "pengajuan so");
 
+            DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Kirim email ke '.$email_tujuan.' berhasil']); 
         } catch (\Exception $e) {
+            DB::rollback();
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
         }
     }
