@@ -53,7 +53,7 @@
 			@foreach($info["pengajuan_so"]->BarangPengajuanSo as $barang)
 			{{-- @php($total += $barang->nilai) --}}
 			<?php 
-			$nilai = Helper::PPN($barang->harga_jual) * $barang->kuantitas;
+			$nilai = $barang->harga_jual * $barang->kuantitas;
 			$total += $nilai;
 			?>
 			
@@ -63,7 +63,7 @@
 				<td align="center">{{ $barang->Produk->spesifikasi }}</td> 
 				<td align="center">{{ $barang->Barang->incoterm }}</td> 
 				<td align="center">{{ $barang->kuantitas }} MT</td> 
-				<td align="center">{{ Helper::currency(Helper::toFixed(Helper::PPN($barang->harga_jual), 2)) }}</td>
+				<td align="center">{{ Helper::currency(Helper::toFixed($barang->harga_jual, 2)) }}</td>
 			</tr>
 			@endif
 
