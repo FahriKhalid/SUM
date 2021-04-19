@@ -67,7 +67,7 @@
 									<th width="1px">No</th>
 									<th>Produk</th>
 									<th>Spesifikasi</th>
-									<th width="300px">Kuantitas</th> 
+									<th width="300px">Kuantitas <i class="text-danger">*</i></th> 
 									<th>Incoterm</th>
 									<th>Dokumen</th>
 									{{-- <th width="1px">#</th> --}}
@@ -126,8 +126,6 @@
 
 					<div class="form-group mt-3">
 	                    <label>Status <span class="text-danger">*</span></label>
-
-
                     	<div class="form-group">
 							@foreach($info["status"] as $status)
 	                    		<div class="custom-control custom-radio custom-control-inline">
@@ -137,6 +135,8 @@
                     		@endforeach
                         </div> 
 	                </div>  
+
+	                @include('layout.form_tambah_lampiran')
 				</div>   
 
 				<div class="card-body border-top d-flex justify-content-between">  
@@ -156,7 +156,7 @@
 @endsection
 
 @section('footer')
- 
+<script type="text/javascript" src="{{ asset('js/lampiran.js') }}"></script>
 <script type="text/javascript"> 
 	$(document).on("submit", "#form-so", function(e){
 		e.preventDefault();

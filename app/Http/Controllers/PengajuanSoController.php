@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables;
 use App\Services\PengajuanSoService;
+use App\Services\LampiranService;
 use App\Services\AppService;
 use App\Mail\SendEmail;
 use App\BarangPengajuanSo;
@@ -22,14 +23,16 @@ use DB;
 
 class PengajuanSoController extends Controller
 {
-    public $PengajuanSoService, $AppService;
+    public $PengajuanSoService, $LampiranService, $AppService;
 
     public function __construct(
         PengajuanSoService $PengajuanSoService,
+        LampiranService $LampiranService,
         AppService $AppService
     ){
-        $this->AppService = $AppService;
         $this->PengajuanSoService = $PengajuanSoService;
+        $this->LampiranService = $LampiranService;
+        $this->AppService = $AppService;
     }
 
     /**
@@ -50,11 +53,8 @@ class PengajuanSoController extends Controller
     public function data(PengajuanSo $PengajuanSo, Request $request, $id)
     {
         $id_pre_order = Helper::decodex($id);
-
         $data = $PengajuanSo->query()->where("id_pre_order", $id_pre_order)->with('CreatedBy');
-
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){ 
-
             return '<div class="btn-group btn-group-sm" role="group">
                     <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       Aksi
@@ -73,9 +73,9 @@ class PengajuanSoController extends Controller
                   </div>';
 
         })->addColumn('created_by', function($data){ 
-
             return $data->CreatedBy->nama;
-            
+        })->addColumn('kuantitas', function($data){ 
+            return $data->totalKuantitasBarangPengajuanSo().' MT';  
         })->rawColumns(['action','pembayaran','no_po'])->make(true);
     }
 
@@ -120,7 +120,25 @@ class PengajuanSoController extends Controller
             'harga_beli.*.required'    => 'Harga beli wajib diisi',
             'nilai.*.required'         => 'Nilai wajib diisi', 
         ];
-         
+
+        if($request->is_lampiran == 1){
+            $rule_lampiran = [
+                'nama_file.*'         => 'required',
+                'file.*'              => 'required|max:2000|mimes:doc,docx,pdf,jpg,jpeg,png', 
+            ];
+
+            $rules = array_merge($rules, $rule_lampiran);
+
+            $message_lampiran = [
+                'nama_file.*.required' => 'Nama file wajib diisi',
+                'file.*.required' => 'File wajib diisi',
+                'file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
+                'file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
+            ];
+
+            $messages = array_merge($messages, $message_lampiran);
+        }
+
         $validator = Validator::make($request->all(), $rules, $messages);
  
         if($validator->fails()){ 
@@ -150,6 +168,10 @@ class PengajuanSoController extends Controller
                 ];
             }
             BarangPengajuanSo::insert($barang);
+
+            if($request->is_lampiran == 1){ 
+                $this->LampiranService->store($request, $pso->id_pengajuan_so, Helper::RemoveSpecialChar($pso->no_pengajuan_so), "PENGAJUAN SO");
+            } 
 
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Tambah pengajuan sales order berhasil']); 
@@ -194,7 +216,7 @@ class PengajuanSoController extends Controller
     public function edit($id)
     {
         $id_pengajuan_so = Helper::decodex($id);  
-        $info["pengajuan_so"] = PengajuanSo::with("PreOrder")->findOrFail($id_pengajuan_so); 
+        $info["pengajuan_so"] = PengajuanSo::with("PreOrder", "Lampiran")->findOrFail($id_pengajuan_so); 
 
         return view('pengajuan_so.edit', compact('info', 'id'));
     }
@@ -226,13 +248,48 @@ class PengajuanSoController extends Controller
             'harga_beli.*.required'    => 'Harga beli wajib diisi',
             'nilai.*.required'         => 'Nilai wajib diisi', 
         ];
+
+        if($request->is_lampiran == 1)
+        {
+            $rule_lampiran = [
+                'nama_file.*'       => 'required', 
+            ];
+            
+            $message_lampiran = [
+                'nama_file.*.required' => 'Nama file wajib diisi',
+                'file.*.required' => 'File wajib diisi',
+                'file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
+                'file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
+            ];
+
+            $rules = array_merge($rules, $rule_lampiran); 
+            $messages = array_merge($messages, $message_lampiran);
+
+            if($request->has('new_nama_file')){
+                $new_rule_lampiran = [
+                    'new_nama_file.*'       => 'required',
+                    'new_file.*'            => 'required|max:2000|mimes:doc,docx,pdf,png,jpg,jpeg', 
+                ];
+
+                $new_message_lampiran = [
+                    'new_nama_file.*.required' => 'Nama file wajib diisi',
+                    'new_file.*.required' => 'File wajib diisi',
+                    'new_file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
+                    'new_file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
+                ];
+
+                $rules = array_merge($rules, $new_rule_lampiran);
+                $messages = array_merge($messages, $new_message_lampiran); 
+            }
+        }
          
         $validator = Validator::make($request->all(), $rules, $messages);
  
         if($validator->fails()){ 
-            return response()->json(['status' => 'error', 'message' => $validator->errors()->all()]); 
+            return response()->json(['status' => 'error_validate', 'message' => $validator->errors()->all()]); 
         }
 
+        DB::beginTransaction();
         try {
             for($i=0; $i < count($request->id_produk); $i++)
             {
@@ -250,8 +307,30 @@ class PengajuanSoController extends Controller
                 BarangPengajuanSo::findOrFail($id_barang_pengajuan_so)->update($barang);
             }
 
+            // delete all attachment
+            if($request->is_lampiran != 1)
+            {
+                $this->LampiranService->destroy($id_pengajuan_so, "PENGAJUAN SO");
+            }
+            else if($request->is_lampiran == 1)
+            {
+                $nama_file = Helper::RemoveSpecialChar($this->PengajuanSoService->NomorPengajuanSO($id_pengajuan_so));
+
+                // update attachment
+                if($request->has('nama_file')){ 
+                    $this->LampiranService->update($request, $nama_file);
+                }
+
+                // store attachment
+                if($request->has('new_file')){
+                    $this->LampiranService->store($request, $id_pengajuan_so, $nama_file, "PENGAJUAN SO");
+                }
+            }
+
+            DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Update pengajuan sales order berhasil']); 
         } catch (\Exception $e) {
+            DB::rollback();
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
         }
     }
@@ -303,8 +382,17 @@ class PengajuanSoController extends Controller
             $po = PengajuanSo::findOrFail($id_pengajuan_so);
             $email_tujuan = $po->PreOrder->Produsen->email;
 
+            $lampiran = [];
+            if($po->Lampiran != null && count($po->Lampiran) > 0){
+                foreach ($po->Lampiran as $value) {
+                    $x["name_file"] = $value->file;
+                    $x["url_file"] = asset('lampiran/'.$value->file);
+                    $lampiran[] = $x;
+                }  
+            }
+
             $pdf = $this->PengajuanSoService->suratPengajuanSo($id_pengajuan_so);
-            Mail::to($email_tujuan)->send(new SendEmail("PRE ORDER", $pdf["pdf"])); 
+            Mail::to($email_tujuan)->send(new SendEmail("PRE ORDER", $pdf["pdf"], $lampiran)); 
             $this->AppService->storeRiwayatEmail($id_pengajuan_so, "pengajuan so");
 
             DB::commit();

@@ -159,6 +159,7 @@
     var kolom_pso = [
     {data: 'DT_RowIndex', 			name: 'DT_RowIndex', orderable: false, searchable: false},  
     {data: 'no_pengajuan_so', 		name: 'no_pengajuan_so'}, 
+    {data: 'kuantitas',             name: 'kuantitas'}, 
     {data: 'created_by',  			name: 'created_by'},
     {data: 'created_at',  			name: 'created_at'}, 
     {data: 'action',      			name: 'action', orderable: false}

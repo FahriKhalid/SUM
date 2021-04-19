@@ -6,7 +6,7 @@
 
 	    <div class="row">
 	        <div class="col-md-12 d-flex justify-content-between">
-	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-plus-circle"></i> Form tambah SKPP</h6>
+	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-plus-circle"></i> FORM TAMBAH SKPP</h6>
 	            <a href="{{ url("penjualan/skpp") }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
 	        </div>  
 	    </div> 
@@ -155,49 +155,8 @@
 							</tr>
 						</tfoot>
 					</table>
-	 				
-
-	 				{{-- Form Lampiran --}}
-
-					<div class="custom-control custom-checkbox mb-2 mt-4">
-				        <input type="checkbox" class="custom-control-input" name="is_lampiran" value="1" id="show-form-lampiran">
-				        <label class="custom-control-label" for="show-form-lampiran">Centang jika ada lampiran</label>
-				    </div>
-					<div class="d-none" id="form-lampiran">
-						<table class="table table-sm table-bordered">
-							<thead>
-								<tr> 
-									<th width="200px">File <i class="text-danger">*</i></th> 
-									<th>Nama <i class="text-danger">*</i></th>
-									<th>Keterangan</th>
-									<th width="1px"></th> 
-								</tr>
-							</thead>
-							<tbody id="form-parent-lampiran">
-								<tr> 
-									<td> 
-										<input type="file" class="lampiran" name="file[]">
-									</td> 
-									<td>
-										<input type="text" class="form-control lampiran" name="nama_file[]">
-									</td>
-									<td>
-										<textarea style="height: 38px" class="form-control lampiran" rows="1" name="keterangan_file[]"></textarea>
-									</td> 
-									<td><button type="button" class="btn btn-success btn-sm" onclick="addRowLampiran()" data-toggle="tooltip" data-placement="top" title="Tambah data"><i class="fa fa-plus"></i></button></td>
-								</tr> 
-							</tbody>
-						</table>
-						<small>
-							<span class="text-danger font-italic">
-								<div>Note : </div>
-								<div>- Extensi file lampiran yang diperbolehkan hanya PNG, JPG, JPEG, DOC, DOCX, dan PDF.</div>
-								<div>- Maksimal ukuran file 2 Mb.</div> 
-							</span>
-						</small>
-					</div>
+					@include('layout.form_tambah_lampiran')
 				</div> 
-
 				<div class="card-body border-top d-flex justify-content-between">  
 					<div>
 						<div class="legend bg-red"></div> Stok Habis
@@ -215,7 +174,7 @@
 @endsection
 
 @section('footer')
- 
+<script type="text/javascript" src="{{ asset('js/lampiran.js') }}"></script>
 <script type="text/javascript">
 
 	$('input[name=batas_akhir_pembayaran]').datepicker({
@@ -229,15 +188,7 @@
 	    uiLibrary: 'bootstrap4',
 	    format: 'dd/mm/yyyy'
 	});
-
-	$("body").delegate("#show-form-lampiran", "click", function(){
-		if($(this).is(":checked")){
-            $("#form-lampiran").removeClass("d-none"); 
-        }else{
-            $("#form-lampiran").addClass("d-none");
-        }
-	});
-
+ 
 	$("body").delegate("#show-form-ongkir", "click", function(){
 		if($(this).is(":checked")){
             $("#form-ongkir").removeClass("d-none"); 
@@ -270,19 +221,7 @@
 		input_number();
 		total_harga();
 	}
-
-	function addRowLampiran(){
-		var clone = $("#form-parent-lampiran").find("tr:last").clone();	
-
-		clone.find('button:last').addClass("remove-row-po").removeClass("btn-success")
-				.addClass("btn-danger")
-				.attr("onclick", "")
-				.find('i').removeClass("fa-plus").addClass("fa-minus");
-
-		clone.find("input").val("");
-
-		$("#form-parent-lampiran").append(clone);
-	}
+ 
 
 	$("body").delegate(".remove-row-po", "click", function(){
 		$(this).closest("tr").remove();
@@ -460,13 +399,13 @@
 		$.each($(".nilai"), function(){
 			data.append("new_nilai[]", $(this).val()); 
 		});
-		$.each($('input[type=file]'), function(i, value){ 
+		$.each($("input[name='new_file[]']"), function(i, value){
 		    data.append('new_file['+i+']', value.files[0]);
 		});
-		$.each($("input[name='nama_file[]']"), function(){
+		$.each($("input[name='new_nama_file[]']"), function(){
 			data.append("new_nama_file[]", $(this).val()); 
 		});
-		$.each($("textarea[name='keterangan_file[]']"), function(){
+		$.each($("textarea[name='new_keterangan_file[]']"), function(){
 			data.append("new_keterangan_file[]", $(this).val()); 
 		});
 

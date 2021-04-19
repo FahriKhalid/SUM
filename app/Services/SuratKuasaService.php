@@ -11,6 +11,11 @@ use DB;
 
 class SuratKuasaService 
 {
+    public function nomor($id)
+    {
+        return SuratKuasa::findOrFail($id)->no_sk;
+    }
+
     public function lastKodeSk()
     {
         $so = SuratKuasa::selectRaw('left(no_sk, 4) as last')->orderBy('last', 'desc')->first();

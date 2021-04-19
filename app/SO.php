@@ -90,4 +90,9 @@ class SO extends Model
     {
         return $this->hasOne(Invoice::class, 'id_so', 'id_so');
     }
+
+    public function Lampiran()
+    {
+        return $this->hasMany(Lampiran::class,'id_reference','id_so')->where("kategori", "SALES ORDER");   
+    }
 }

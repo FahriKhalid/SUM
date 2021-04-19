@@ -62,7 +62,7 @@ class PreOrder extends Model
 
     public function Lampiran()
     {
-        return $this->hasMany(Lampiran::class,'id_pre_order','id_pre_order');   
+        return $this->hasMany(Lampiran::class,'id_reference','id_pre_order')->where("kategori", "PRE ORDER");   
     }
 
     public function Barang()

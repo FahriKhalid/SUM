@@ -72,4 +72,9 @@ class SuratKuasa extends Model
     {
         return $this->SKSO()->sum("kuantitas");
     }
+
+    public function Lampiran()
+    {
+        return $this->hasMany(Lampiran::class,'id_reference','id_sk')->where("kategori", "SURAT KUASA");   
+    }
 }

@@ -5,13 +5,18 @@ namespace App\Http\Controllers\SalesOrder;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request; 
-use Yajra\Datatables\Datatables; 
+use Yajra\Datatables\Datatables;
+use App\Services\RiwayatEmailService; 
+use App\Services\LampiranService;
+use App\Services\SupirSoService;
 use App\Services\SkppService;
-use App\Services\SoService;
+use App\Services\SoPoService;
 use App\Services\AppService;
+use App\Services\SoService;
 use App\Mail\SendEmail;
 use App\RiwayatEmail;
 use App\Customer;
+use App\Lampiran;
 use App\SupirSO;
 use App\Barang;
 use App\Gudang;
@@ -29,16 +34,24 @@ use DB;
 
 class SalesOrderPenjualanController extends Controller
 {
-    protected $SoService, $SkppService, $AppService; 
+    protected $RiwayatEmailService, $LampiranService, $SupirSoService, $SoPoService, $SoService, $SkppService, $AppService; 
 
-    public function __construct( 
+    public function __construct(
+        RiwayatEmailService $RiwayatEmailService,
+        LampiranService $LampiranService, 
+        SupirSoService $SupirSoService,
+        SoPoService $SoPoService,
         SkppService $SkppService,
         AppService $AppService,
-        SoService $SoService)
-    {
+        SoService $SoService
+    ){
+        $this->RiwayatEmailService = $RiwayatEmailService;
+        $this->LampiranService = $LampiranService;
+        $this->SupirSoService = $SupirSoService;
+        $this->SoPoService = $SoPoService;
         $this->SkppService = $SkppService;
-        $this->SoService = $SoService; 
         $this->AppService = $AppService;
+        $this->SoService = $SoService; 
     }
 
     /**
@@ -60,9 +73,8 @@ class SalesOrderPenjualanController extends Controller
         $id_skpp = Helper::decodex($id);
 
         $data = $SO->query()->where("id_skpp", $id_skpp)->with('CreatedBy', 'Status', 'SupirAktif');
-
-         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){ 
-            return '<div class="btn-group btn-group-sm" role="group">
+            return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){ 
+                return '<div class="btn-group btn-group-sm" role="group">
                     <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       Aksi
                     </button>
@@ -152,6 +164,24 @@ class SalesOrderPenjualanController extends Controller
             'kuantitas.required'    => 'kuantitas wajib diisi',
         ];
 
+        if($request->is_lampiran == 1){
+            $rule_lampiran = [
+                'nama_file.*'         => 'required',
+                'file.*'              => 'required|max:2000|mimes:doc,docx,pdf,jpg,jpeg,png', 
+            ];
+
+            $rules = array_merge($rules, $rule_lampiran);
+
+            $message_lampiran = [
+                'nama_file.*.required' => 'Nama file wajib diisi',
+                'file.*.required' => 'File wajib diisi',
+                'file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
+                'file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
+            ];
+
+            $messages = array_merge($messages, $message_lampiran);
+        }
+
         $validator = Validator::make($request->all(), $rules, $messages);
  
         if($validator->fails()){ 
@@ -175,41 +205,22 @@ class SalesOrderPenjualanController extends Controller
             $so->save();
 
             // insert SOPO
-            $data_sopo = [];
-  
-            for ($i=0; $i < count($request->id_po) ; $i++) 
-            { 
-                if($request->kuantitas[$i] != 0)
-                {
-                    $id_po = Helper::decodex($request->id_po[$i]);
-                    $this->SoService->validateMaxKuantitasPO($id_po, $request->kuantitas[$i]);
-
-                    $data_sopo[] = [
-                        "id_barang" => $id_po,
-                        "id_so" => $so->id_so,
-                        "kuantitas" => $request->kuantitas[$i],
-                        "created_by" => Auth::user()->id_user
-                    ];
-                } 
-            }
-
-            SOPO::insert($data_sopo);
+            $this->SoPoService->store($so->id_so, $request);
 
             // insert Supir PO
-            $supir = new SupirSO();
-            $supir->id_so = $so->id_so;
-            $supir->id_supir = $request->supir;
-            $supir->created_by = Auth::user()->id_user;
-            $supir->save();
+            $this->SupirSoService->store($so->id_so, $request);
+
+            // insert lampiran
+            if($request->is_lampiran == 1){
+                $this->LampiranService->store($request, $so->id_so, Helper::RemoveSpecialChar($so->no_so), "SALES ORDER");
+            } 
 
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Tambah sales order berhasil']); 
-
         } catch (\Exception $e) { 
             DB::rollback();
             return response()->json(['status' => 'error', 'message' => 'Error. '. $e->getMessage()]); 
         }
-        
     }
 
     /**
@@ -222,12 +233,12 @@ class SalesOrderPenjualanController extends Controller
     {
         $id_so = Helper::decodex($id);
         
-        $info["so"] = SO::with("SupirAktif")->findOrFail($id_so); 
-        $info["sopo"] = SOPO::with('SO','Barang')->where("id_so", $id_so)->get();  
+        $info["so"] = SO::with("SupirAktif", "Lampiran")->findOrFail($id_so); 
+        $info["sopo"] = $this->SoPoService->get($id_so);
         $info["supir"] = Supir::where("id_supir", "!=", $info["so"]->SupirAktif[0]->id_supir)->get();
-        $info["riwayat_supir"] = SupirSO::where("id_so", $id_so)->where("is_aktif", "0")->get();
+        $info["riwayat_supir"] = $this->SupirSoService->get($id_so);
         $info["email"] = $info["so"]->SKPP->Customer->email;
-        $info["riwayat_email"] = RiwayatEmail::with('UpdatedBy')->where("id_reference", $id_so)->where("kategori", "sales order")->first();
+        $info["riwayat_email"] = $this->RiwayatEmailService->first($id_so, "SALES ORDER");
        
         return view('salesorder.penjualan.show', compact('id', 'info'));
     }
@@ -241,15 +252,10 @@ class SalesOrderPenjualanController extends Controller
     public function edit($id)
     {
         $id_so = Helper::decodex($id);
-
         $info["so"] = SO::with("SupirAktif", "SKPP")->findOrFail($id_so);
-
-        $info["so_po"] = SOPO::with("Barang")->where("id_so", $id_so)->get(); 
-
+        $info["so_po"] = $this->SoPoService->get($id_so);
         $info["skpp"] = SKPP::selectRaw("*, left(no_skpp, 4) as no_dokumen")->findOrFail($info["so"]->SKPP->id_skpp);
-
         $info["customer"] = Customer::where("is_aktif", 1)->get(); 
-
         $info["supir"] = Supir::where("is_aktif", 1)->get();  
 
         return view('salesorder.penjualan.edit', compact('info', 'id'));
@@ -288,6 +294,40 @@ class SalesOrderPenjualanController extends Controller
 
         ];
 
+        if($request->is_lampiran == 1)
+        {
+            $rule_lampiran = [
+                'nama_file.*'       => 'required', 
+            ];
+            
+            $message_lampiran = [
+                'nama_file.*.required' => 'Nama file wajib diisi',
+                'file.*.required' => 'File wajib diisi',
+                'file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
+                'file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
+            ];
+
+            $rules = array_merge($rules, $rule_lampiran); 
+            $messages = array_merge($messages, $message_lampiran);
+
+            if($request->has('new_nama_file')){
+                $new_rule_lampiran = [
+                    'new_nama_file.*'       => 'required',
+                    'new_file.*'            => 'required|max:2000|mimes:doc,docx,pdf,png,jpg,jpeg', 
+                ];
+
+                $new_message_lampiran = [
+                    'new_nama_file.*.required' => 'Nama file wajib diisi',
+                    'new_file.*.required' => 'File wajib diisi',
+                    'new_file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
+                    'new_file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
+                ];
+
+                $rules = array_merge($rules, $new_rule_lampiran);
+                $messages = array_merge($messages, $new_message_lampiran); 
+            }
+        }
+
         $validator = Validator::make($request->all(), $rules, $messages);
  
         if($validator->fails()){ 
@@ -321,18 +361,18 @@ class SalesOrderPenjualanController extends Controller
                     $sopo->save();
                 } 
             }
- 
-            if($so->SupirAktif[0]->Supir->id_supir != $request->supir){
-                // update Supir PO
-                $supir = SupirSO::findOrFail(Helper::decodex($request->id_supir_so));
-                $supir->id_supir = $request->supir;
-                $supir->updated_by = Auth::user()->id_user;
-                $supir->save();
+            
+            // update Supir PO
+            if($so->SupirAktif[0]->Supir->id_supir != $request->supir){ 
+                $this->SupirSoService->update($request);
             }
+            
+            // lampiran
+            $nama_file = Helper::RemoveSpecialChar($this->SoService->nomor($id_so));
+            $this->LampiranService->call($request, $id_so, $nama_file, "SALES ORDER"); 
             
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Update sales order berhasil']); 
-
         } catch (\Exception $e) { 
             DB::rollback();
             return response()->json(['status' => 'error', 'message' => 'Error. '. $e->getMessage()]); 
@@ -447,8 +487,17 @@ class SalesOrderPenjualanController extends Controller
             $so = SO::findOrFail($id_so);
             $email_tujuan = $so->SKPP->Customer->email;
 
+            $lampiran = [];
+            if($so->Lampiran != null && count($so->Lampiran) > 0){
+                foreach ($so->Lampiran as $value) {
+                    $x["name_file"] = $value->file;
+                    $x["url_file"] = asset('lampiran/'.$value->file);
+                    $lampiran[] = $x;
+                }  
+            }
+
             $pdf = $this->SoService->suratSo($id_so);
-            Mail::to($email_tujuan)->send(new SendEmail("SALES ORDER", $pdf["pdf"])); 
+            Mail::to($email_tujuan)->send(new SendEmail("SALES ORDER", $pdf["pdf"], $lampiran)); 
             $this->AppService->storeRiwayatEmail($id_so, "sales order");
 
             DB::commit();

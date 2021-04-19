@@ -12,8 +12,19 @@ use DB;
 
 class PengajuanSoService 
 {
+    protected $model;
+
+    public function __construct(PengajuanSo $PengajuanSo){
+        $this->model = $PengajuanSo;
+    }
+
+    public function NomorPengajuanSO($id)
+    {   
+        return $this->model::findOrFail($id)->no_pengajuan_so;
+    }
+
 	public function lastKodePengajuanPo(){
-		$pso = PengajuanSo::selectRaw('left(no_pengajuan_so, 4) as last')->orderBy('last', 'desc')->first();
+		$pso = $this->model::selectRaw('left(no_pengajuan_so, 4) as last')->orderBy('last', 'desc')->first();
 		 
 		if($pso){
 			$last_number = sprintf("%04d", ((int)substr($pso->last, 0, 4) + 1));
@@ -42,7 +53,7 @@ class PengajuanSoService
 
     public function suratPengajuanSo($id)
     {
-    	$info["pengajuan_so"] = PengajuanSo::with("PreOrder")->findOrFail($id);
+    	$info["pengajuan_so"] = $this->model::with("PreOrder")->findOrFail($id);
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
         $pdf = PDF::loadview('surat.pembelian.surat_pengajuan_so', compact('info', 'id')); 
 

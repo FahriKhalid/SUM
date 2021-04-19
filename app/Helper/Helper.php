@@ -246,7 +246,7 @@ class Helper {
 
 	public static function RemoveSpecialChar($str) 
 	{ 
-    	$res = str_replace([ '\'', '"', '/' , ':', '*', '?', '<', '>', '|' ], ' ', $str); 
+    	$res = str_replace([ '\'', '"', '/' , ':', '*', '?', '<', '>', '|', '.', ',', '#', '$', '^'], ' ', $str); 
       
     	return $res; 
     } 

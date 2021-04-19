@@ -17,8 +17,10 @@
     </div> 
 	
 	<div class="card mt-3">
+        <div class="card-header bg-white">
+            <a href="{{ url('pembelian/pre_order/create') }}" class="btn btn-success"><i class="fa fa-plus"></i> Tambah</a>
+        </div>
 		<div class="card-body">
-			<a href="{{ url('pembelian/pre_order/create') }}" class="btn btn-success mb-3"><i class="fa fa-plus"></i> Tambah</a>
 			<div class="table-responsive">
                 <table class="table table-bordered" id="tabel-pre-order" style="width:100%">
                     <thead>
@@ -44,7 +46,7 @@
                             	<select class="form-control select2" id="filter-produsen" title="produsen">
                             		<option value="">Semua</option>
                             		@foreach($info["produsen"] as $produsen)
-                            		<option value="{{ Helper::encodex($produsen->id_produsen) }}">{{ $produsen->perusahaan }}</option>
+                            		<option value="{{ Helper::encodex($produsen->id_produsen) }}">{{ $produsen->perusahaan.' - '.$produsen->nama }}</option>
                             		@endforeach
                             	</select>
                             </td> 

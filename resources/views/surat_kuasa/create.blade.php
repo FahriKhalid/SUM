@@ -8,7 +8,7 @@
 
 	    <div class="row">
 	        <div class="col-md-12 d-flex justify-content-between">
-	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-plus-circle"></i> Form tambah surat kuasa </h6>
+	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-plus-circle"></i> FORM TAMBAH SURAT KUASA </h6>
 	            <a href="{{ url("surat_kuasa/index/".Helper::encodex($info["so"]->id_so)) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
 	        </div>  
 	    </div> 
@@ -117,10 +117,9 @@
 							</tfoot>			
 						</table>
 					</div> 
-				</div>  
 
-				
-
+					@include('layout.form_tambah_lampiran')
+				</div>   
 				<div class="card-body border-top d-flex justify-content-between"> 
 					<div>
 						<div class="legend bg-red"></div> Stok Habis 
@@ -135,7 +134,7 @@
 @endsection
 
 @section('footer')
- 
+<script type="text/javascript" src="{{ asset('js/lampiran.js') }}"></script>
 <script type="text/javascript"> 
 	$(document).on("submit", "#form-so", function(e){
 		e.preventDefault();

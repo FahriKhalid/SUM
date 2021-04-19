@@ -17,14 +17,14 @@
 				<td>Lampiran</td>
 				<td>:</td>
 				<td>
-					@if(count($info["lampiran"]) > 0 && count($info["lampiran"]) > 1)
+					@if(count($info["pre_order"]->Lampiran) > 0 && count($info["pre_order"]->Lampiran) > 1)
 					<ol style="margin-left: -20px; margin-bottom: 0px !important; margin-top:0px !important"> 
-						@foreach($info["lampiran"] as $lampiran)
+						@foreach($info["pre_order"]->Lampiran as $lampiran)
 						  	<li>{{ $lampiran->nama }}</li>
 						@endforeach
 					</ol>
-					@elseif(count($info["lampiran"]) == 1)
-					<span style="margin-left: 3px;">{{ $info["lampiran"][0]->nama }}</span>
+					@elseif(count($info["pre_order"]->Lampiran) == 1)
+					<span style="margin-left: 3px;">{{ $info["pre_order"]->Lampiran[0]->nama }}</span>
 					@else
 					<span style="margin-left: 3px;">-</span>
 					@endif

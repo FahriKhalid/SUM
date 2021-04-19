@@ -11,6 +11,12 @@ use DB;
 
 class PreOrderService 
 {
+
+	public function nomorPo($id)
+	{
+		return PreOrder::findOrFail($id)->no_po;
+	}
+
 	public function lastKodePreOrder(){
 		$skpp = PreOrder::withTrashed()->selectRaw('left(no_po, 4) as last')->orderBy('last', 'desc')->first();
 		 

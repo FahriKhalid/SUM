@@ -10,7 +10,8 @@
         <div class="modal-body">
             <a href="{{ url('pembelian/pengajuan_so/edit/'.$id) }}" class="btn btn-primary"><i class="fa fa-edit"></i> Edit</a>  
             <button type="button" url="{{ url('pembelian/pengajuan_so/destroy/'.$id) }}" class="btn btn-danger delete-pengajuan-so"><i class="fa fa-trash"></i> Hapus</button>
-            <button class="btn btn-warning"onclick="show_form_email('dokumen Pengajuan Sales Order', '{{ url('pembelian/pengajuan_so/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email ({{ isset($info["riwayat_email"]) ? $info["riwayat_email"]->jumlah : '0' }})</button>
+            <a href="{{ url('pembelian/pengajuan_so/surat_pengajuan_so/'.$id) }}" target="_blank" class="btn btn-warning"><i class="fas fa-download"></i> Download</a>
+            <button class="btn btn-warning" onclick="show_form_email('dokumen Pengajuan Sales Order', '{{ url('pembelian/pengajuan_so/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email ({{ isset($info["riwayat_email"]) ? $info["riwayat_email"]->jumlah : '0' }})</button>
         </div>
         <div class="modal-body"> 
             <table class="table table-borderless table-sm"> 
@@ -23,6 +24,26 @@
                     <th>Nomor SKPP</th>
                     <th>:</th>
                     <td>{{ $info["pengajuan_so"]->PreOrder->SKPP->no_skpp }}</td>
+                </tr>
+                <tr>
+                    <th>Lampiran</th>
+                    <th>:</th>
+                    <td>
+                        @if(count($info["pengajuan_so"]->Lampiran) > 0) 
+                            @foreach($info["pengajuan_so"]->Lampiran as $lampiran)  
+                                <span class="badge rounded-pill border custom-pill"> 
+                                    {{ $lampiran->nama }} . {{ Helper::getExtensionFromString($lampiran->file) }} 
+                                    @if(Helper::getExtensionFromString($lampiran->file) == "PDF")
+                                    <a href="javascript:void(0)" onclick="view_lampiran('{{ $lampiran->nama }}','{{ asset('lampiran/'.$lampiran->file) }}')">Lihat dokumen</a>
+                                    @else
+                                    <a href="{{ asset('lampiran/'.$lampiran->file) }}" download>Download</a>
+                                    @endif
+                                </span>
+                            @endforeach 
+                        @else
+                        -
+                        @endif
+                    </td>
                 </tr>
             </table> 
  

@@ -270,7 +270,7 @@ class SkppPenjualanController extends Controller
 
             if($request->is_lampiran == 1){
                 // insert lampiran
-                $this->LampiranService->store($request, $skpp->id_skpp, "skpp");
+                $this->LampiranService->store($request, $skpp->id_skpp, Helper::RemoveSpecialChar($skpp->no_skpp), "SKPP");
             } 
 
             DB::commit();
@@ -291,9 +291,8 @@ class SkppPenjualanController extends Controller
     {
         $id_skpp = Helper::decodex($id); 
         $info["kategori"]   = "penjualan";
-        $info["skpp"]       = SKPP::with('CreatedBy','Customer','Status', 'SKPPATM')->findOrFail($id_skpp);
-        $info["po"]         = Barang::with('Produk')->where("id_skpp", $id_skpp)->get();
-        $info["lampiran"]   = Lampiran::where("id_skpp", $id_skpp)->get();
+        $info["skpp"]       = SKPP::with('CreatedBy','Customer','Status', 'SKPPATM', 'Lampiran')->findOrFail($id_skpp);
+        $info["po"]         = Barang::with('Produk')->where("id_skpp", $id_skpp)->get(); 
         $info["email"]      = $info["skpp"]->Customer->email;
         $info["riwayat_email"] = RiwayatEmail::with('UpdatedBy')->where("id_reference", $id_skpp)->where("kategori", "skpp")->first();
 
@@ -309,11 +308,10 @@ class SkppPenjualanController extends Controller
     public function edit($id)
     {
         $id_skpp = Helper::decodex($id);
-        $info["skpp"]  = SKPP::with('CreatedBy','Customer','Status')->findOrFail($id_skpp);
+        $info["skpp"]  = SKPP::with('CreatedBy','Customer','Status','Lampiran')->findOrFail($id_skpp);
         $info["customer"] = Customer::get();
         $info["produk"] = Produk::where("is_aktif", 1)->get();
         $info["po"] = Barang::where("id_skpp", $id_skpp)->get(); 
-        $info["lampiran"] = Lampiran::where("id_skpp", $id_skpp)->get();
         $info["atm"] = ATM::where("is_aktif", 1)->get();
 
         $info["id_atm"] = [];
@@ -332,7 +330,7 @@ class SkppPenjualanController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    { 
+    {  
         $id =  Helper::decodex($id);
 
         $rules = [
@@ -459,38 +457,22 @@ class SkppPenjualanController extends Controller
                 $this->BarangService->store($request, $id, "skpp");
             }
 
-            // delete all attachment
-            if($request->is_lampiran != 1)
-            {
-                $this->LampiranService->destroy($id, "skpp");
-            }
-            else if($request->is_lampiran == 1)
-            {
-                // update attachment
-                if($request->has('nama_file')){ 
-                    $this->LampiranService->update($request);
-                }
+            //lampiran
+            $nama_file = Helper::RemoveSpecialChar($this->SkppService->nomorSkpp($id));
+            $this->LampiranService->call($request, $id, $nama_file, "SKPP"); 
 
-                // store attachment
-                if($request->has('new_file')){
-                    $this->LampiranService->store($request, $id, "skpp");
-                }
-            }
-            
             $info["customer"]   = Customer::get();
             $info["produk"]     = Produk::where("is_aktif", 1)->get();
             $info["po"]         = Barang::where("id_skpp", $id)->get(); 
-            $info["lampiran"]   = Lampiran::where("id_skpp", $id)->get();
+            $info["lampiran"]   = $skpp->Lampiran;
 
             DB::commit();
-
             return response()->json([   
                 'status' => 'success', 
                 'message' => 'Update SKPP berhasil', 
                 'form_edit_lampiran' => view('skpp.penjualan.form_edit_lampiran', compact('info'))->render(),
                 'form_edit_po' => view('skpp.penjualan.form_edit_po', compact('info'))->render(),
             ]); 
-
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['status' => 'error', 'message' => $e->getMessage().' Line '.$e->getLine()]); 

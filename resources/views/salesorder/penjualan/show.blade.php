@@ -107,6 +107,26 @@
 								<th>:</th>
 								<td>{{ $info["so"]->SupirAktif[0]->Supir->no_telepon == null ? "-" : $info["so"]->SupirAktif[0]->Supir->no_telepon }}</td>
 							</tr> 
+							<tr>
+								<th>Lampiran</th>
+								<th>:</th>
+								<td>
+									@if(count($info["so"]->Lampiran) > 0) 
+										@foreach($info["so"]->Lampiran as $lampiran)  
+										  	<span class="badge rounded-pill border custom-pill"> 
+									  			{{ $lampiran->nama }} . {{ Helper::getExtensionFromString($lampiran->file) }} 
+									  			@if(Helper::getExtensionFromString($lampiran->file) == "PDF")
+									  			<a href="javascript:void(0)" onclick="view_lampiran('{{ $lampiran->nama }}','{{ asset('lampiran/'.$lampiran->file) }}')">Lihat dokumen</a>
+									  			@else
+									  			<a href="{{ asset('lampiran/'.$lampiran->file) }}" download>Download</a>
+									  			@endif
+			    							</span>
+										@endforeach 
+									@else
+									-
+									@endif
+								</td>
+							</tr> 
 						</tbody>
 					</table>
 				</div> 

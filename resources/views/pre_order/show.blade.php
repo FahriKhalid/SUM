@@ -29,7 +29,7 @@
 		<div class="card-header bg-white d-flex justify-content-between"> 
 			<div>
 				<a href="{{ url('pembelian/pre_order/edit/'.Helper::encodex($info["pre_order"]->id_pre_order)) }}" class="btn btn-primary"><i class="fa fa-edit"></i> Edit</a>
-				<a target="_blank" href="{{ url('pembelian/pre_order/surat_po/'.Helper::encodex($info["pre_order"]->id_pre_order)) }}" class="btn btn-warning"><i class="fa fa-download"></i> Pre Order</a>
+				<a target="_blank" href="{{ url('pembelian/pre_order/surat_po/'.Helper::encodex($info["pre_order"]->id_pre_order)) }}" class="btn btn-warning"><i class="fa fa-download"></i> Download</a>
 				<button class="btn btn-warning"onclick="show_form_email('dokumen Pre Order', '{{ url('pembelian/pre_order/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email ({{ isset($info["riwayat_email"]) ? $info["riwayat_email"]->jumlah : '0' }})</button>
 			</div>
 			<div>
@@ -43,7 +43,7 @@
 			</div>
 		</div> 
 		<div class="card-body"> 
-			<table class="table table-borderless" style="margin-left: -12px;">
+			<table class="table table-sm table-borderless">
 				<tr>
 					<th width="20%">Nomor Pre Order</th>
 					<th width="1%">:</th>
@@ -58,8 +58,8 @@
 					<th>Lampiran</th>
 					<th>:</th>
 					<td>
-						@if(count($info["lampiran"]) > 0) 
-							@foreach($info["lampiran"] as $lampiran)  
+						@if(count($info["pre_order"]->Lampiran) > 0) 
+							@foreach($info["pre_order"]->Lampiran as $lampiran)  
 							  	<span class="badge rounded-pill border custom-pill"> 
 						  			{{ $lampiran->nama }} . {{ Helper::getExtensionFromString($lampiran->file) }} 
 						  			@if(Helper::getExtensionFromString($lampiran->file) == "PDF")

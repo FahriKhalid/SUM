@@ -53,44 +53,13 @@
 					</div>
 
 					{{-- Form Purchase Order --}}
-
 					<label>Purchase Order</label>
 					<div id="table-po">
 						@include("pre_order.form_edit_po")
 					</div>
 	 				
-
 	 				{{-- Form Lampiran --}}
-
-					<div class="custom-control custom-checkbox mb-2 mt-4">
-				        <input type="checkbox" class="custom-control-input" name="is_lampiran" {{ count($info["pre_order"]->Lampiran) > 0 ? "checked" : "" }} value="1" id="show-form-lampiran">
-				        <label class="custom-control-label" for="show-form-lampiran">Centang jika ada lampiran</label>
-				    </div>
-					
-					<div class="{{ count($info["pre_order"]->Lampiran) > 0 ? "" : "d-none" }}" id="form-lampiran">
-						<table class="table table-sm table-bordered">
-							<thead>
-								<tr> 
-									<th width="300px">File <span class="text-danger">*</span></th> 
-									<th>Nama <span class="text-danger">*</span></th>
-									<th>Keterangan</th>
-									<th width="1px">
-										<button type="button" class="btn btn-success btn-sm" onclick="addRowLampiran()" data-toggle="tooltip" data-placement="top" title="Tambah data"><i class="fa fa-plus"></i></button>
-									</th> 
-								</tr>
-							</thead>
-							<tbody id="form-parent-lampiran">
-								@include("pre_order.form_edit_lampiran")
-							</tbody>
-						</table>
-						<small>
-							<span class="text-danger font-italic">
-								<div>Note : </div>
-								<div>- Extensi file lampiran yang diperbolehkan hanya PNG, JPG, JPEG, DOC, DOCX, dan PDF.</div>
-								<div>- Maksimal ukuran file 2 Mb.</div> 
-							</span>
-						</small>
-					</div>
+	 				@include("layout.form_edit_lampiran", ["info_lampiran" => $info["pre_order"]->Lampiran])
 				</div>
 
 				<div class="card-body border-top d-flex justify-content-between"> 
@@ -353,10 +322,12 @@
                 loader(".card", true);
 			},
 			success : function(resp){
-               	if (resp.status == "error"){
+               	if (resp.status == "error_validate"){
                		for (var i = 0; i < resp.message.length; i++) {
                			toastr.error(resp.message[i],{ "closeButton": true });
                		} 
+                } else if (resp.status == "error"){
+               		toastr.error(resp.message[i],{ "closeButton": true });
                 } else {
                		toastr.success(resp.message, { "closeButton": true });  
                		location.href = "{{ url('pembelian/pre_order/show') }}/"+"{{ $id }}"

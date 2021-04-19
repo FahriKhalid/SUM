@@ -6,7 +6,7 @@
 	<div class="container-fluid mt-4 mb-4">
 	    <div class="row">
 	        <div class="col-md-12 d-flex justify-content-between">
-	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-edit"></i> Form Edit Pengajuan Sales Order </h6>
+	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-edit"></i> FORM EDIT PENGAJUAN SALES ORDER </h6>
 	            <a href="{{ url("pembelian/skpp/show/".Helper::encodex($info["pengajuan_so"]->PreOrder->id_pre_order)) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
 	        </div>  
 	    </div>  
@@ -19,15 +19,20 @@
 						<div class="form-group col-md-12">
 	                        <label>Nomor Pengajuan Sales Order <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
-	                            <input class="form-control" disabled value="{{ $info["pengajuan_so"]->no_pengajua_so }}" placeholder="Wajib di isi"> 
+	                            <input class="form-control" disabled value="{{ $info["pengajuan_so"]->no_pengajuan_so }}" placeholder="Wajib di isi"> 
 	                        </div>
 	                    </div>  
 					</div> 
 
+					{{-- Purchase Order --}}
 					<label>Purchase Order</label>
 					<div id="table-po">
 						 @include('pengajuan_so.form_table_edit')
 					</div>
+
+					{{-- Form Lampiran --}}
+					@include('layout.form_edit_lampiran', ["info_lampiran" => $info["pengajuan_so"]->Lampiran])
+
 				</div>  
 				<div class="card-body border-top d-flex justify-content-between">  
 					<div>
@@ -46,6 +51,102 @@
 
 
 <script type="text/javascript"> 
+
+	/*
+    |--------------------------------------------------------------------------
+    | Function Lampiran
+    |--------------------------------------------------------------------------
+    */
+
+	$("body").delegate("#show-form-lampiran", "click", function(){
+		if($(this).is(":checked")){
+            $("#form-lampiran").removeClass("d-none"); 
+        }else{
+            $("#form-lampiran").addClass("d-none");
+        }
+	});
+
+	function addRowLampiran(){
+		var clone = $("#form-parent-lampiran").find("tr:last").clone();	
+
+		clone.find('button:last').addClass("remove-row-lampiran")
+				.removeClass("btn-dark")
+				.removeClass("delete-lampiran") 
+				.addClass("btn-danger")
+				.attr("onclick", "")
+				.find('i').removeClass("fa-trash").addClass("fa-minus");
+
+		clone.find("input[name='file[]']").attr("name", "new_file[]");
+		clone.find("input[name='nama_file[]']").attr("name", "new_nama_file[]");
+		clone.find("textarea[name='keterangan_file[]']").attr("name", "new_keterangan_file[]");
+
+		clone.find("input").val("");
+		clone.find("textarea").val("");
+
+		$("#form-parent-lampiran").append(clone);
+	}
+
+	$("body").delegate(".remove-row-lampiran", "click", function(){
+		var jumlah_baris = $("#form-parent-lampiran").find("tr").length;
+
+		if(jumlah_baris == 1){
+			$("#show-form-lampiran").prop("checked", false);
+			$("#form-lampiran").addClass("d-none");
+		}else{
+			$(this).closest("tr").remove();
+		}
+	});
+ 
+	var row_lampiran_remove = null;
+
+	$("body").delegate(".delete-lampiran", "click", function(e){ 
+		e.preventDefault();  
+    	$("#form-hapus").attr("action", $(this).attr("url")); 
+    	$("#modal-konfirmasi-hapus").modal("show"); 
+
+    	row_lampiran_remove = $(this).closest("tr");
+	});
+
+	$(document).on("submit", "#form-hapus", function(e){
+	    e.preventDefault();
+
+	    $.ajax({
+	        url : $(this).attr("action"),
+	        type : 'DELETE',
+	        data : { "_token" : $('meta[name="csrf-token"]').attr('content') },  
+			dataType : "json", 
+			beforeSend: function(resp){
+				loader(".modal-content", true);
+			},
+	        success : function(resp)
+	        { 
+	            if (resp.status == 'success') {
+	                toastr.success(resp.message, { "closeButton": true });    
+	      
+	                if(row_lampiran_remove != null){
+	                	row_lampiran_remove.remove();
+	                	row_lampiran_remove = null;
+	                }
+
+	                $("#modal-konfirmasi-hapus").modal("hide");
+	            } else {
+	                toastr.error(resp.message, { "closeButton": true });
+	            }
+	            loader(".modal-content", false);
+	        },
+	        error : function (jqXHR, exception) {
+	            errorHandling(jqXHR.status, exception); 
+	            loader(".modal-content", false);
+	        }
+	    });
+	});
+
+	/*
+    |--------------------------------------------------------------------------
+    | Function pengajauan so
+    |--------------------------------------------------------------------------
+    */
+
 	$(document).on("submit", "#form-pengajuan-so", function(e){
 		e.preventDefault();
 		var data = new FormData(this);
@@ -65,7 +166,11 @@
 				loader(".card", true);
 			},
 			success : function(resp){
-				if(resp.status == 'error'){
+				if(resp.status == 'error_validate'){
+					for (var i = 0; i < resp.message.length; i++) {
+						toastr.error(resp.message[i],{ "closeButton": true });
+					}
+				} else if(resp.status == 'error'){
 					toastr.error(resp.message,{ "closeButton": true });
 				} else { 
 					Swal.fire('Berhasil',resp.message,'success');

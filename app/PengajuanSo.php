@@ -54,7 +54,17 @@ class PengajuanSo extends Model
         return $this->hasMany(BarangPengajuanSo::class,'id_pengajuan_so','id_pengajuan_so');   
     }
 
+    public function totalKuantitasBarangPengajuanSo()
+    {
+        return $this->BarangPengajuanSo()->sum("kuantitas");
+    }
+
     public function SO(){
         return $this->hasOne(SO::class, 'id_pengajuan_so', 'id_pengajuan_so')->withDefault();
+    }
+
+    public function Lampiran()
+    {
+        return $this->hasMany(Lampiran::class,'id_reference','id_pengajuan_so')->where("kategori", "PENGAJUAN SO");   
     }
 }

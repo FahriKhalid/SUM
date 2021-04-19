@@ -17,9 +17,11 @@
 	        </div>  
 	    </div>
 		<div class="card mt-3">
-			<div class="card-body">
+			<div class="card-header bg-white">
 				<button onclick="show_modal()" class="btn btn-success"><i class="fa fa-plus"></i> Tambah</button>
-				<div class="table-responsive mt-3">
+			</div>
+			<div class="card-body">
+				<div class="table-responsive">
                     <table class="table table-sm table-bordered" id="tabel-supir" style="width:100%">
                         <thead>
                             <tr>

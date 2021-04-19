@@ -55,7 +55,7 @@
 						<tbody id="form-parent-po">
 							<tr> 
 								<td> 
-									<select class="form-control select2 select-produk" title="Pilih Produk" name="produk[]">
+									<select class="form-control select2 select-produk" title="Pilih Produk" name="new_produk[]">
 										<option value="">-- Pilih Barang --</option>
 										@foreach($info["produk"] as $produk)
 											<option value="{{ $produk->id_produk }}">{{ $produk->nama.' ('.$produk->spesifikasi.')' }}</option>
@@ -63,11 +63,11 @@
 									</select>
 								</td>
 								<td>
-									<input type="text" class="form-control" name="incoterm[]">
+									<input type="text" class="form-control" name="new_incoterm[]">
 								</td>
 								<td>
 									<div class="input-group"> 
-		                                <input type="text" value="1" class="form-control kuantitas number" name="kuantitas[]">
+		                                <input type="text" value="1" class="form-control kuantitas number" name="new_kuantitas[]">
 		                                <div class="input-group-append">
 		                                    <span class="input-group-text">MT</span>
 		                                </div>
@@ -78,7 +78,7 @@
 										<div class="input-group-prepend">
 		                                    <span class="input-group-text">Rp</span>
 		                                </div>
-		                                <input type="text" class="form-control numeric harga-beli" name="harga_beli[]">
+		                                <input type="text" class="form-control numeric harga-beli" name="new_harga_jual[]">
 		                            </div> 
 								</td> 
 								<td>
@@ -86,7 +86,7 @@
 										<div class="input-group-prepend">
 		                                    <span class="input-group-text">Rp</span>
 		                                </div>
-		                                <input type="text" readonly class="form-control nilai align-right" name="nilai[]">
+		                                <input type="text" readonly class="form-control nilai align-right" name="new_nilai[]">
 		                            </div> 
 									
 								</td>
@@ -105,49 +105,8 @@
 							</tr>
 						</tfoot>
 					</table>
-	 				
-
-	 				{{-- Form Lampiran --}}
-
-					<div class="custom-control custom-checkbox mt-4">
-				        <input type="checkbox" class="custom-control-input" name="is_lampiran" value="1" id="show-form-lampiran">
-				        <label class="custom-control-label" for="show-form-lampiran">Centang jika ada lampiran</label>
-				    </div>
-					<div class="d-none" id="form-lampiran">
-						<table class="table table-sm table-bordered">
-							<thead>
-								<tr> 
-									<th width="200px">File <i class="text-danger">*</i></th> 
-									<th>Nama <i class="text-danger">*</i></th>
-									<th>Keterangan</th>
-									<th width="1px"></th> 
-								</tr>
-							</thead>
-							<tbody id="form-parent-lampiran">
-								<tr> 
-									<td> 
-										<input type="file" class="lampiran" name="file[]">
-									</td> 
-									<td>
-										<input type="text" class="form-control lampiran" name="nama_file[][]">
-									</td>
-									<td>
-										<textarea style="height: 38px" class="form-control lampiran" rows="1" name="keterangan_file[]"></textarea>
-									</td> 
-									<td><button type="button" class="btn btn-success btn-sm" onclick="addRowLampiran()" data-toggle="tooltip" data-placement="top" title="Tambah data"><i class="fa fa-plus"></i></button></td>
-								</tr> 
-							</tbody>
-						</table>
-						<small>
-							<span class="text-danger font-italic">
-								<div>Note : </div>
-								<div>- Extensi file lampiran yang diperbolehkan hanya PNG, JPG, JPEG, DOC, DOCX, dan PDF.</div>
-								<div>- Maksimal ukuran file 2 Mb.</div> 
-							</span>
-						</small>
-					</div>
+	 				@include('layout.form_tambah_lampiran')
 				</div>
-
 				<div class="card-body border-top d-flex justify-content-between">  
 					<div></div>
 					<div> 
@@ -295,28 +254,28 @@
 		data.append("is_lampiran", $("input[name=is_lampiran]:checked").val())
 
 		$.each($(".select-produk option:selected"), function(){            
-            data.append("produk[]", $(this).val()); 
+            data.append("new_produk[]", $(this).val()); 
         });
-        $.each($("input[name='incoterm[]'"), function(){
-        	data.append("incoterm[]", $(this).val())
+        $.each($("input[name='new_incoterm[]'"), function(){
+        	data.append("new_incoterm[]", $(this).val())
         })
-        $.each($(".kuantitas"), function(){
-        	data.append("kuantitas[]", $(this).val()); 
+        $.each($("input[name='new_kuantitas[]'"), function(){
+        	data.append("new_kuantitas[]", $(this).val()); 
         });
-        $.each($(".harga-beli"), function(){
-        	data.append("harga_beli[]", $(this).val()); 
+        $.each($("input[name='new_harga_jual[]'"), function(){
+        	data.append("new_harga_jual[]", $(this).val()); 
         }); 
-		$.each($(".nilai"), function(){
-			data.append("nilai[]", $(this).val()); 
+		$.each($("input[name='new_nilai[]'"), function(){
+			data.append("new_nilai[]", $(this).val()); 
 		});
-		$.each($('input[type=file]'), function(i, value){
-		    data.append('file['+i+']', value.files[0]);
+		$.each($("input[name='new_file[]']"), function(i, value){
+		    data.append('new_file['+i+']', value.files[0]);
 		});
-		$.each($("input[name='nama_file[]']"), function(){
-			data.append("nama_file[]", $(this).val()); 
+		$.each($("input[name='new_nama_file[]']"), function(){
+			data.append("new_nama_file[]", $(this).val()); 
 		});
-		$.each($("input[name='keterangan_file[]']"), function(){
-			data.append("keterangan_file[]", $(this).val()); 
+		$.each($("textarea[name='new_keterangan_file[]']"), function(){
+			data.append("new_keterangan_file[]", $(this).val()); 
 		});
 
 		$.ajax({
@@ -330,10 +289,12 @@
                 loader(".card", true);
 			},
 			success : function(resp){
-               	if (resp.status == "error"){
+               	if (resp.status == "error_validate"){
                		for (var i = 0; i < resp.message.length; i++) {
                			toastr.error(resp.message[i],{ "closeButton": true });
                		} 
+                } else if(resp.status == "error"){
+                	toastr.error(resp.message, { "closeButton": true });
                 } else {
                		toastr.success(resp.message, { "closeButton": true });  
                		location.href = '{{url("pembelian/pre_order/show")}}/'+resp.id_pre_order;

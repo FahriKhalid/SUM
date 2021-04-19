@@ -74,7 +74,7 @@ class SKPP extends Model
 
     public function Lampiran()
     {
-        return $this->hasMany(Lampiran::class,'id_skpp','id_skpp');   
+        return $this->hasMany(Lampiran::class,'id_reference','id_skpp')->where("kategori", "SKPP");   
     }
 
     public function Barang()

@@ -76,24 +76,20 @@ class PreOrderController extends Controller
         if($request->no_po != ""){
             $data->where("no_po", "LIKE", "%".$request->no_po."%");
         }
-
         if($request->no_skpp != ""){ 
             $data->whereHas("SKPP", function($query) use ($request){
                 $query->where("no_skpp", "LIKE", "%".$request->no_skpp."%");
             });
         }
-
         if($request->produsen != ""){ 
             $data->where("id_produsen", Helper::decodex($request->produsen));
         }
-
         if($request->terakhir_pembayaran != ""){ 
             $tanggal = Helper::dateFormat($request->terakhir_pembayaran, true, 'Y-m-d');
             $data->whereHas("SKPP", function($query) use ($tanggal){
                 $query->where("terakhir_pembayaran", $tanggal);
             }); 
         }
-
         if($request->pembayaran != ""){  
             if(Helper::decodex($request->pembayaran) == 9) {
                 $data->whereHas("SKPP", function($query){
@@ -111,13 +107,11 @@ class PreOrderController extends Controller
                 }
             } 
         }
-
         if($request->created_by != ""){ 
             $data->whereHas("CreatedBy", function($query) use ($request){
                 $query->where("nama", "LIKE", "%".$request->created_by."%");
             });
         }
-
         if($request->created_at != ""){ 
             $tanggal = Helper::dateFormat($request->created_at, true, 'Y-m-d');
             $data->where("created_at", "LIKE", "%".$tanggal."%");
@@ -139,9 +133,9 @@ class PreOrderController extends Controller
                     </div>
                   </div>';
         })->addColumn('no_po', function($data){ 
-            return '<a href="'.url('pembelian/pre_order/show/'.Helper::encodex($data->id_pre_order)).'">'.$data->no_po.'</a>';            
+            return '<a href="'.url('pembelian/pre_order/show/'.Helper::encodex($data->id_pre_order)).'">'.$data->no_po.'</a>';         
         })->addColumn('produsen', function($data){ 
-            return $data->Produsen->perusahaan;            
+            return $data->Produsen->perusahaan.' - '.$data->Produsen->nama;            
         })->addColumn('skpp', function($data){ 
             return $data->SKPP->no_skpp;            
         })->addColumn('terakhir_pembayaran', function($data){ 
@@ -191,7 +185,7 @@ class PreOrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {  
+    {   
         $rules = [
             'status'                => 'required|in:1,2',
             'no_po'                 => 'required|unique:tr_pre_order,no_po',
@@ -236,7 +230,7 @@ class PreOrderController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
  
         if($validator->fails()){ 
-            return response()->json(['status' => 'error', 'message' => $validator->errors()->all()]); 
+            return response()->json(['status' => 'error_validate', 'message' => $validator->errors()->all()]); 
         }
 
         DB::beginTransaction();
@@ -250,37 +244,11 @@ class PreOrderController extends Controller
             $po->save();
 
             // insert po
-            $produk = [];
-            for ($i=0; $i < count($request->produk) ; $i++) { 
-                $x["id_pre_order"] = $po->id_pre_order;
-                $x["id_produk"] = $request->produk[$i];
-                $x["incoterm"] = $request->incoterm[$i];
-                $x["kuantitas"] = $request->kuantitas[$i]; 
-                $x["harga_jual"] = Helper::decimal($request->harga_beli[$i]);
-                $x["nilai"] = Helper::decimal($request->nilai[$i]);
-                $x["created_by"] = Auth::user()->id_user;
-                $produk[] = $x;
-            }
-            Barang::insert($produk);
+            $this->BarangService->store($request, $po->id_pre_order, "PRE ORDER");
 
-             // insert lampiran
             if($request->is_lampiran == 1){
-                $lampiran = [];
-                $file = $request->file('file');
-                for ($i=0; $i < count($file) ; $i++) { 
-                    $namafile = 'lampiran-'.Str::random(8).'.'.$file[$i]->getClientOriginalExtension();
-                    $z["id_pre_order"] = $po->id_pre_order;
-                    $z["nama"] = $request->nama_file[$i];
-                    $z["file"] = $namafile;
-                    $z["size"]  = $file[$i]->getSize(); 
-                    $z["ekstensi"] = $file[$i]->getClientOriginalExtension();
-                    $z["keterangan"] = $request->keterangan_file[$i];
-                    $z["created_by"] = Auth::user()->id_user; 
-                    $lampiran[] = $z; 
-                    $tujuan_upload = 'lampiran'; 
-                    $file[$i]->move($tujuan_upload, $namafile);
-                }
-                Lampiran::insert($lampiran);
+                // insert lampiran
+                $this->LampiranService->store($request, $po->id_pre_order, Helper::RemoveSpecialChar($po->no_po), "PRE ORDER");
             }
 
             DB::commit();
@@ -301,9 +269,8 @@ class PreOrderController extends Controller
     public function show($id)
     {
         $id_pre_order = Helper::decodex($id);
-        $info["pre_order"] = PreOrder::with('Produsen')->findOrFail($id_pre_order);
-        $info["po"]         = Barang::with('Produk')->where("id_pre_order", $id_pre_order)->get();
-        $info["lampiran"]   = Lampiran::where("id_pre_order", $id_pre_order)->get(); 
+        $info["pre_order"] = PreOrder::with('Produsen', 'Lampiran')->findOrFail($id_pre_order);
+        $info["po"] = Barang::with('Produk')->where("id_pre_order", $id_pre_order)->get(); 
         $info["email"] = $info["pre_order"]->Produsen->email;
         $info["riwayat_email"] = RiwayatEmail::with('UpdatedBy')->where("id_reference", $id_pre_order)->where("kategori", "pre order")->first();
         
@@ -421,7 +388,7 @@ class PreOrderController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
  
         if($validator->fails()){ 
-            return response()->json(['status' => 'error', 'message' => $validator->errors()->all()]); 
+            return response()->json(['status' => 'error_validate', 'message' => $validator->errors()->all()]); 
         }
 
         DB::beginTransaction();
@@ -443,27 +410,11 @@ class PreOrderController extends Controller
                 $this->BarangService->store($request, $id_pre_order, "po");
             }
 
-            // delete all attachment
-            if(!$request->has('is_lampiran'))
-            {
-                $this->LampiranService->destroy($id_pre_order, "po");
-            }
-            else
-            {
-                // update attachment
-                if($request->has('nama_file')){ 
-                    $this->LampiranService->update($request);
-                }
-
-                // store attachment
-                if($request->has('new_file')){
-                    $this->LampiranService->store($request, $id_pre_order, "po");
-                }
-            }
+            // lampiran
+            $nama_file = Helper::RemoveSpecialChar($this->PreOrderService->nomorPo($id_pre_order));
+            $this->LampiranService->call($request, $id_pre_order, $nama_file, "PRE ORDER");
              
-
             DB::commit();
-
             return response()->json(['status' => 'success','message' => 'Update Pre Order berhasil']); 
         } catch (\Exception $e) {
             DB::rollback();

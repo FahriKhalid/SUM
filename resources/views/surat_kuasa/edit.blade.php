@@ -8,7 +8,7 @@
 
 	    <div class="row">
 	        <div class="col-md-12 d-flex justify-content-between">
-	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-plus-circle"></i> Form tambah surat kuasa </h6>
+	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-edit"></i> FORM EDIT SURAT KUASA </h6>
 	            <a href="{{ url("surat_kuasa/index/".Helper::encodex($info["sk"]->SO->id_so)) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
 	        </div>  
 	    </div> 
@@ -17,8 +17,7 @@
 			<form id="form-so" enctype="multipart/form-data">
 				@csrf
 				<input type="hidden" name="id_skso" value="{{ $id }}">
-				<div class="card-body" id="layout-parent"> 
-
+				<div class="card-body"> 
 					<div class="form-row ">
 	                    <div class="form-group col-md-6">
 		                    <label>Nomor Sales Order <span class="text-danger">*</span></label>
@@ -119,18 +118,19 @@
 						</table>
 					</div>
 
+					{{-- Form Lampiran --}}
+					@include('layout.form_edit_lampiran', ["info_lampiran" => $info["sk"]->Lampiran])
+
+				</div>   
+
+				<div class="card-body border-top d-flex justify-content-between">
 					<div>
-						<div class="legend bg-red"></div>
-						<div class="text-dark">Stok Habis</div>
+						<div class="legend bg-red"></div> Stok Habis
 					</div>
-				</div>  
-
-				<div id="layout-child">
-					
-				</div>
-
-				<div class="card-body border-top d-flex justify-content-between"> 
-					<button class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> 
+ 
+					<div>
+						<button class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> 
+					</div>
 				</div>
 			</form>
 		</div>
@@ -139,7 +139,7 @@
 @endsection
 
 @section('footer')
- 
+<script type="text/javascript" src="{{ asset('js/lampiran.js') }}"></script>
 <script type="text/javascript"> 
 	$(document).on("submit", "#form-so", function(e){
 		e.preventDefault();
@@ -202,8 +202,53 @@
  			totalKuantitas();
  			alert("Jumlah kuantitas tidak boleh lebih dari sisa kuantitas");
  		}
- 		
 	});
+
+
+	var row_lampiran_remove = null;
+
+	$("body").delegate(".delete-lampiran", "click", function(e){ 
+		e.preventDefault();  
+    	$("#form-hapus").attr("action", $(this).attr("url")); 
+    	$("#modal-konfirmasi-hapus").modal("show"); 
+
+    	row_lampiran_remove = $(this).closest("tr");
+	});
+
+	$(document).on("submit", "#form-hapus", function(e){
+	    e.preventDefault();
+
+	    $.ajax({
+	        url : $(this).attr("action"),
+	        type : 'DELETE',
+	        data : { "_token" : $('meta[name="csrf-token"]').attr('content') },  
+			dataType : "json", 
+			beforeSend: function(resp){
+				loader(".modal-content", true);
+			},
+	        success : function(resp)
+	        { 
+	            if (resp.status == 'success') {
+	                toastr.success(resp.message, { "closeButton": true });    
+	                
+	                if(row_lampiran_remove != null){
+	                	row_lampiran_remove.remove();
+	                	row_lampiran_remove = null;
+	                }
+
+	                $("#modal-konfirmasi-hapus").modal("hide");
+	            } else {
+	                toastr.error(resp.message, { "closeButton": true });
+	            }
+	            loader(".modal-content", false);
+	        },
+	        error : function (jqXHR, exception) {
+	            errorHandling(jqXHR.status, exception); 
+	            loader(".modal-content", false);
+	        }
+	    })
+	});
+
 </script>
 
 @endsection

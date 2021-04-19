@@ -17,8 +17,10 @@
     </div> 
 	
 	<div class="card mt-3">
-		<div class="card-body">
-			<a href="{{ url('penjualan/skpp/create') }}" class="btn btn-success mb-3"><i class="fa fa-plus"></i> Tambah</a>
+        <div class="card-header bg-white">
+            <a href="{{ url('penjualan/skpp/create') }}" class="btn btn-success"><i class="fa fa-plus"></i> Tambah</a>
+        </div>
+		<div class="card-body"> 
 			<div class="table-responsive">
                 <table class="table table-bordered" id="tabel-skpp" style="width:100%">
                     <thead>

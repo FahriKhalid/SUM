@@ -3,7 +3,8 @@
         <thead>
             <tr>
                 <th width="1px">No</th>
-                <th>No Pengajuan SO</th>  
+                <th>No Pengajuan SO</th> 
+                <th>Kuantitas</th> 
                 <th>Created at</th>
                 <th>Created by</th>
                 <th width="70px">Aksi</th>

@@ -6,7 +6,7 @@
 	<div class="container-fluid mt-4 mb-4">
 	    <div class="row">
 	        <div class="col-md-12 d-flex justify-content-between">
-	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-plus-circle"></i> Form Tambah Pengajuan Sales Order </h6>
+	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-plus-circle"></i> FORM TAMBAH PENGAJUAN SALES OREDR </h6>
 	            <a href="{{ url("pembelian/skpp/show/".$id) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
 	        </div>  
 	    </div>  
@@ -23,19 +23,18 @@
 	                        </div>
 	                    </div>  
 					</div> 
-
 					<label>Purchase Order</label>
 					<div id="table-po">
 						 @include('pengajuan_so.form_table_create')
 					</div>
+					@include('layout.form_tambah_lampiran')
 				</div>  
 				<div class="card-body border-top d-flex justify-content-between">  
 					<div>
 						<div class="legend bg-red"></div> Stok Habis
 					</div>
 					<button class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> 
-				</div>
- 
+				</div> 
 			</form>
 		</div>
 	</div>
@@ -46,6 +45,27 @@
 
 
 <script type="text/javascript"> 
+	$("body").delegate("#show-form-lampiran", "click", function(){
+		if($(this).is(":checked")){
+            $("#form-lampiran").removeClass("d-none"); 
+        }else{
+            $("#form-lampiran").addClass("d-none");
+        }
+	});
+
+	function addRowLampiran(){
+		var clone = $("#form-parent-lampiran").find("tr:last").clone();	
+
+		clone.find('button:last').addClass("remove-row-po").removeClass("btn-success")
+				.addClass("btn-danger")
+				.attr("onclick", "")
+				.find('i').removeClass("fa-plus").addClass("fa-minus");
+
+		clone.find("input").val("");
+
+		$("#form-parent-lampiran").append(clone);
+	}
+
 	$(document).on("submit", "#form-pengajuan-so", function(e){
 		e.preventDefault();
 		var data = new FormData(this);
@@ -149,9 +169,7 @@
 	$("body").delegate(".remove-row-po", "click", function(){
 		$(this).closest("tr").remove();
 		total_harga();
-	});
- 
-
+	}); 
 </script>
 
 @endsection

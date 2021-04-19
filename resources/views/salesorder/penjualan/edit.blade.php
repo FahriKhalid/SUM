@@ -66,6 +66,7 @@
 		                </div>  
 					</div>
 
+					<label>Purchase Order</label>
 					<div class="table-responsive">
 						<table class="table table-bordered">
 							<thead>
@@ -129,6 +130,10 @@
 							</tfoot>			
 						</table>
 					</div> 
+
+					{{-- Form Lampiran --}}
+					@include('layout.form_edit_lampiran', ["info_lampiran" => $info["so"]->Lampiran])
+
 				</div>   
 
 				@if($info["so"]->Status->status != 'Delivered')
@@ -144,7 +149,7 @@
 @endsection
 
 @section('footer')
- 
+<script type="text/javascript" src="{{ asset('js/lampiran.js') }}"></script>
 <script type="text/javascript"> 
 	$(document).on("submit", "#form-so", function(e){
 		e.preventDefault();
@@ -196,7 +201,50 @@
  			totalKuantitas();
  			alert("Jumlah kuantitas tidak boleh lebih dari sisa kuantitas");
  		}
- 		
+	});
+
+	var row_lampiran_remove = null;
+
+	$("body").delegate(".delete-lampiran", "click", function(e){ 
+		e.preventDefault();  
+    	$("#form-hapus").attr("action", $(this).attr("url")); 
+    	$("#modal-konfirmasi-hapus").modal("show"); 
+
+    	row_lampiran_remove = $(this).closest("tr");
+	});
+
+	$(document).on("submit", "#form-hapus", function(e){
+	    e.preventDefault();
+
+	    $.ajax({
+	        url : $(this).attr("action"),
+	        type : 'DELETE',
+	        data : { "_token" : $('meta[name="csrf-token"]').attr('content') },  
+			dataType : "json", 
+			beforeSend: function(resp){
+				loader(".modal-content", true);
+			},
+	        success : function(resp)
+	        { 
+	            if (resp.status == 'success') {
+	                toastr.success(resp.message, { "closeButton": true });    
+	      
+	                if(row_lampiran_remove != null){
+	                	row_lampiran_remove.remove();
+	                	row_lampiran_remove = null;
+	                }
+
+	                $("#modal-konfirmasi-hapus").modal("hide");
+	            } else {
+	                toastr.error(resp.message, { "closeButton": true });
+	            }
+	            loader(".modal-content", false);
+	        },
+	        error : function (jqXHR, exception) {
+	            errorHandling(jqXHR.status, exception); 
+	            loader(".modal-content", false);
+	        }
+	    });
 	});
 </script>
 

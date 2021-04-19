@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables; 
 use App\Services\SuratKuasaService;
+use App\Services\LampiranService;
 use App\Services\AppService;
 use App\Mail\SendEmail;
 use App\RiwayatEmail;
@@ -24,13 +25,16 @@ use DB;
 class SuratKuasaController extends Controller
 {
     protected $SuratKuasaService;
+    protected $LampiranService;
     protected $AppService;
 
     public function __construct(
         SuratKuasaService $SuratKuasaService,
+        LampiranService $LampiranService,
         AppService $AppService
     ){
         $this->SuratKuasaService = $SuratKuasaService;
+        $this->LampiranService = $LampiranService;
         $this->AppService = $AppService;
     }
 
@@ -130,7 +134,25 @@ class SuratKuasaController extends Controller
             'id_so_po.*.required'   => 'ID produk tidak boleh kosong',
             'kuantitas.*.required'  => 'kuantitas produk twajib diisi'
         ];
- 
+        
+        if($request->is_lampiran == 1){
+            $rule_lampiran = [
+                'nama_file.*'         => 'required',
+                'file.*'              => 'required|max:2000|mimes:doc,docx,pdf,jpg,jpeg,png', 
+            ];
+
+            $rules = array_merge($rules, $rule_lampiran);
+
+            $message_lampiran = [
+                'nama_file.*.required' => 'Nama file wajib diisi',
+                'file.*.required' => 'File wajib diisi',
+                'file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
+                'file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
+            ];
+
+            $messages = array_merge($messages, $message_lampiran);
+        }
+
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if($validator->fails()){ 
@@ -166,8 +188,12 @@ class SuratKuasaController extends Controller
                     ];
                 } 
             }
-
             SKSO::insert($data_skso);
+
+            // insert lampiran
+            if($request->is_lampiran == 1){
+                $this->LampiranService->store($request, $sk->id_sk, Helper::RemoveSpecialChar($sk->no_sk), "SURAT KUASA");
+            } 
 
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Tambah surat kuasa berhasil']); 
@@ -239,7 +265,41 @@ class SuratKuasaController extends Controller
             'id_so_po.*.required'   => 'ID produk tidak boleh kosong',
             'kuantitas.*.required'  => 'kuantitas produk twajib diisi'
         ];
- 
+        
+        if($request->is_lampiran == 1)
+        {
+            $rule_lampiran = [
+                'nama_file.*'       => 'required', 
+            ];
+            
+            $message_lampiran = [
+                'nama_file.*.required' => 'Nama file wajib diisi',
+                'file.*.required' => 'File wajib diisi',
+                'file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
+                'file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
+            ];
+
+            $rules = array_merge($rules, $rule_lampiran); 
+            $messages = array_merge($messages, $message_lampiran);
+
+            if($request->has('new_nama_file')){
+                $new_rule_lampiran = [
+                    'new_nama_file.*'       => 'required',
+                    'new_file.*'            => 'required|max:2000|mimes:doc,docx,pdf,png,jpg,jpeg', 
+                ];
+
+                $new_message_lampiran = [
+                    'new_nama_file.*.required' => 'Nama file wajib diisi',
+                    'new_file.*.required' => 'File wajib diisi',
+                    'new_file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
+                    'new_file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
+                ];
+
+                $rules = array_merge($rules, $new_rule_lampiran);
+                $messages = array_merge($messages, $new_message_lampiran); 
+            }
+        }
+
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if($validator->fails()){ 
@@ -269,6 +329,10 @@ class SuratKuasaController extends Controller
                      
                 } 
             } 
+
+            // lampiran
+            $nama_file = Helper::RemoveSpecialChar($this->SuratKuasaService->nomor($id_sk));
+            $this->LampiranService->call($request, $id_sk, $nama_file, "SURAT KUASA"); 
 
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Update surat kuasa berhasil']); 
@@ -323,8 +387,17 @@ class SuratKuasaController extends Controller
             $sk = SuratKuasa::findOrFail($id_sk);
             $email_tujuan = $sk->SO->SKPP->Customer->email;
 
+            $lampiran = [];
+            if($sk->Lampiran != null && count($sk->Lampiran) > 0){
+                foreach ($sk->Lampiran as $value) {
+                    $x["name_file"] = $value->file;
+                    $x["url_file"] = asset('lampiran/'.$value->file);
+                    $lampiran[] = $x;
+                }  
+            }
+
             $pdf = $this->SuratKuasaService->suratKuasa($id_sk); 
-            Mail::to($email_tujuan)->send(new SendEmail("SURAT KUASA", $pdf["pdf"])); 
+            Mail::to($email_tujuan)->send(new SendEmail("SURAT KUASA", $pdf["pdf"], $lampiran)); 
             $this->AppService->storeRiwayatEmail($id_sk, "surat kuasa");
 
             DB::commit();

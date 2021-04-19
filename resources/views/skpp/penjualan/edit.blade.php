@@ -8,7 +8,7 @@
 
 	    <div class="row">
 	        <div class="col-md-12 d-flex justify-content-between">
-	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-edit"></i> Form edit SKPP</h6>
+	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-edit"></i> FORM EDIT SKPP</h6>
 	            <a href="{{ url("penjualan/skpp/show/".Helper::encodex($info["skpp"]->id_skpp)) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
 	        </div>  
 	    </div> 
@@ -78,44 +78,15 @@
 					</div>
 
 					{{-- Form Purchase Order --}}
-
 					<label>Purchase Order</label>
-
 					<div id="table-po">
 						@include('skpp.penjualan.form_edit_po')
 					</div>
 	 				
 
 	 				{{-- Form Lampiran --}}
+					@include('layout.form_edit_lampiran', ["info_lampiran" => $info["skpp"]->Lampiran])
 
-					<div class="custom-control custom-checkbox mb-2 mt-4">
-				        <input type="checkbox" class="custom-control-input" name="is_lampiran" {{ count($info["skpp"]->Lampiran) > 0 ? "checked" : "" }} value="1" id="show-form-lampiran">
-				        <label class="custom-control-label" for="show-form-lampiran">Centang jika ada lampiran</label>
-				    </div>
-				    <div class="{{ count($info["skpp"]->Lampiran) > 0 ? "" : "d-none" }}" id="form-lampiran">
-				    	<table class="table table-sm table-bordered">
-							<thead>
-								<tr> 
-									<th width="200px">File <span class="text-danger">*</span></th> 
-									<th>Nama <span class="text-danger">*</span></th>
-									<th>Keterangan</th>
-									<th width="1px">
-										<button type="button" class="btn btn-success btn-sm" onclick="addRowLampiran()" data-toggle="tooltip" data-placement="top" title="Tambah data"><i class="fa fa-plus"></i></button>
-									</th> 
-								</tr>
-							</thead>
-							<tbody id="form-parent-lampiran">
-								@include('skpp.penjualan.form_edit_lampiran')
-							</tbody>
-						</table>
-						<small>
-							<span class="text-danger font-italic">
-								<div>Note : </div>
-								<div>- Extensi file lampiran yang diperbolehkan hanya PNG, JPG, JPEG, DOC, DOCX, dan PDF.</div>
-								<div>- Maksimal ukuran file 2 Mb.</div> 
-							</span>
-						</small>
-				    </div>
 				</div>
   
 				<div class="card-body border-top d-flex justify-content-between">  
@@ -134,7 +105,7 @@
 @endsection
 
 @section('footer')
- 
+<script type="text/javascript" src="{{ asset('js/lampiran.js') }}"></script>
 <script type="text/javascript">
 
 	$('input[name=batas_akhir_pembayaran]').datepicker({
@@ -148,15 +119,7 @@
 	    uiLibrary: 'bootstrap4',
 	    format: 'dd/mm/yyyy'
 	});
-
-	$("body").delegate("#show-form-lampiran", "click", function(){
-		if($(this).is(":checked")){
-            $("#form-lampiran").removeClass("d-none"); 
-        }else{
-            $("#form-lampiran").addClass("d-none");
-        }
-	});
-
+ 
 	$("body").delegate("#show-form-ongkir", "click", function(){
 		if($(this).is(":checked")){
             $("#form-ongkir").removeClass("d-none"); 
@@ -202,27 +165,7 @@
 		input_number();
 		total_harga();
 	}
-
-	function addRowLampiran(){
-		var clone = $("#form-parent-lampiran").find("tr:last").clone();	
-
-		clone.find('button:last').addClass("remove-row-lampiran")
-				.removeClass("btn-dark")
-				.removeClass("delete-lampiran") 
-				.addClass("btn-danger")
-				.attr("onclick", "")
-				.find('i').removeClass("fa-trash").addClass("fa-minus");
-
-		clone.find("input[name='file[]']").attr("name", "new_file[]");
-		clone.find("input[name='nama_file[]']").attr("name", "new_nama_file[]");
-		clone.find("textarea[name='keterangan_file[]']").attr("name", "new_keterangan_file[]");
-
-		clone.find("input").val("");
-		clone.find("textarea").val("");
-
-		$("#form-parent-lampiran").append(clone);
-	}
-
+ 
 	$("body").delegate(".remove-row-po", "click", function(){
 		$(this).closest("tr").remove();
 	});
@@ -257,11 +200,8 @@
 	});  
 
 	$("body").delegate(".kuantitas", "keyup", function(){
-
 		var kuantitas = $(this).val();
-
 		var closest = $(this).closest("tr");
-		
 		var harga_jual = closest.find(".harga-jual").val();
 
 		if (harga_jual != "" && harga_jual != "0,00") {
@@ -286,15 +226,12 @@
 
 		var ppn = total * 10 / 100;
 		var total_harga = total - ppn; 
-
 		$("#total-ppn").html(formatNumber(ppn, 2));
-
 		$("#total-harga").html(formatNumber(total_harga, 2));
 	}
  
 
 	$("body").delegate(".select-produk", "change", function(){
- 
 		var array = [];
 		$("#form-parent-po").find("tr").each(function(){
 			var val = $(this).find("select").val();
@@ -307,7 +244,6 @@
 			$(this).val("").change(); 
 			alert("Produk duplikat, silahkan pilih produk lainnya");
 		}
-
 	});
 
 	var row_po_remove = null;
@@ -421,8 +357,9 @@
 		$.each($("input[name='new_nilai[]']"), function(){
 			data.append("new_nilai[]", $(this).val()); 
 		});
-
-
+		$.each($("input[name='id_lampiran[]']"), function(){
+			data.append("id_lampiran[]", $(this).val()); 
+		});
 		$.each($("input[name='file[]']"), function(i, value){
 		    data.append('file['+i+']', value.files[0]);
 		});
@@ -432,7 +369,6 @@
 		$.each($("textarea[name='keterangan_file[]']"), function(){
 			data.append("keterangan_file[]", $(this).val()); 
 		});
-
 		$.each($("input[name='new_file[]']"), function(i, value){
 		    data.append('new_file['+i+']', value.files[0]);
 		});
@@ -443,8 +379,7 @@
 			data.append("new_keterangan_file[]", $(this).val()); 
 		});
 
-
-		var is_lampiran = {{ count($info["lampiran"]) }};
+		var is_lampiran = {{ count($info["skpp"]->Lampiran) }};
 
 		if(is_lampiran > 0){
 			if(!$("#show-form-lampiran").is(":checked")){

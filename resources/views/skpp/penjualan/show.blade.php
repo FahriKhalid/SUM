@@ -106,8 +106,8 @@
 					<th>Lampiran</th>
 					<th>:</th>
 					<td>
-						@if(count($info["lampiran"]) > 0) 
-							@foreach($info["lampiran"] as $lampiran)  
+						@if(count($info["skpp"]->Lampiran) > 0) 
+							@foreach($info["skpp"]->Lampiran as $lampiran)  
 							  	<span class="badge rounded-pill border custom-pill"> 
 						  			{{ $lampiran->nama }} . {{ Helper::getExtensionFromString($lampiran->file) }} 
 						  			@if(Helper::getExtensionFromString($lampiran->file) == "PDF")

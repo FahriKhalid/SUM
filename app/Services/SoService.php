@@ -11,6 +11,12 @@ use DB;
 
 class SoService 
 {
+
+    public function nomor($id)
+    {
+        return SO::findOrFail($id)->no_so;
+    }
+
     public function lastKodeSo()
     {
         $so = SO::selectRaw('left(no_so, 4) as last')->orderBy('last', 'desc')->first();

@@ -17,8 +17,13 @@ class SkppService
 {
 	public $StokService;
 
-	public function __construct(StokService $StokService){
+	public function __construct(StokService $StokService){ 
 		$this->StokService = $StokService;
+	}
+
+	public function nomorSkpp($id)
+	{
+		return SKPP::findOrFail($id)->no_skpp;
 	}
 
 	public function lastKodeSkpp()
@@ -91,9 +96,8 @@ class SkppService
 
 	public function suratSKPP($id)
 	{
-        $info["skpp"]               = SKPP::with('CreatedBy','Customer','Status','SKPPATM')->findOrFail($id);
-        $info["po"]                 = Barang::with('Produk')->where("id_skpp", $id)->get();
-        $info["lampiran"]           = Lampiran::where("id_skpp", $id)->get();
+        $info["skpp"]               = SKPP::with('CreatedBy','Customer','Status','SKPPATM','Lampiran')->findOrFail($id);
+        $info["po"]                 = Barang::with('Produk')->where("id_skpp", $id)->get(); 
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
         $pdf = PDF::loadview('surat.penjualan.surat_skpp', compact('info')); 
 
