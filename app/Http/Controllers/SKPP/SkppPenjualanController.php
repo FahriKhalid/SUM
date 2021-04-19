@@ -146,7 +146,7 @@ class SkppPenjualanController extends Controller
         })->addColumn('no_skpp', function($data){ 
             return '<a href="'.url('penjualan/skpp/show/'.Helper::encodex($data->id_skpp)).'">'.$data->no_skpp.'</a>';
         })->addColumn('customer', function($data){ 
-            return $data->Customer->perusahaan;
+            return $data->Customer->perusahaan.' - '.$data->Customer->nama;
         })->addColumn('status', function($data){ 
             return $data->Status->status;            
         })->addColumn('terakhir_pembayaran', function($data){ 

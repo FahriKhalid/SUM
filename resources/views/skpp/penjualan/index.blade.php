@@ -46,7 +46,7 @@
                             	<select class="form-control select2" id="filter-customer" title="customer">
                             		<option value="">Semua</option>
                             		@foreach($info["customer"] as $customer)
-                            		<option value="{{ Helper::encodex($customer->id_customer) }}">{{ $customer->perusahaan }}</option>
+                            		<option value="{{ Helper::encodex($customer->id_customer) }}">{{ $customer->perusahaan.' - '.$customer->nama }}</option>
                             		@endforeach
                             	</select>
                             </td> 

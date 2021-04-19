@@ -5,7 +5,7 @@
 	<div class="container-fluid mt-4 mb-4">
 	    <div class="row">
 	        <div class="col-md-12 d-flex justify-content-between">
-	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-plus-circle"></i> Form tambah Sales Order </h6>
+	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-plus-circle"></i> FORM TAMBAH SALES ORDER </h6>
 	            <a href="{{ url("penjualan/salesorder/index/".$id) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
 	        </div>  
 	    </div> 
