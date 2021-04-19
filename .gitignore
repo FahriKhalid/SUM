@@ -1,6 +1,9 @@
 /node_modules
 /public/lampiran
 /public/bukti_pembayaran
+/public/file_so
+/public/file_skpp
+/public/faktur_pajak
 /public/hot
 /public/storage
 /storage/*.key
