@@ -1,5 +1,6 @@
 /node_modules
 /public/lampiran
+/public/bukti_pembayaran
 /public/hot
 /public/storage
 /storage/*.key
