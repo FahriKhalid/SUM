@@ -26,7 +26,7 @@
     </div>
     @endif
 	<div class="card mt-3 ">
-		@if(!PembayaranService::isBayar("penjualan", Helper::decodex($id)))
+		@if(!PembayaranService::isBayar(Helper::decodex($id)))
 		<div class="card-body alert-info">
 			<table class="table table-borderless table-sm">
 				<thead>

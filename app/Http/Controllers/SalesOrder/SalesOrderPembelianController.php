@@ -213,7 +213,8 @@ class SalesOrderPembelianController extends Controller
     { 
         $id_pre_order = Helper::decodex($id);  
         $info["skpp"] = SKPP::where("id_pre_order", $id_pre_order)->first(); 
-    
+        $info["po"] = Barang::where("id_pre_order", $id_pre_order)->get();
+        
         return view('salesorder.pembelian.show', compact('id', 'info'));
     }
 

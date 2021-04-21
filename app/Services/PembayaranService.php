@@ -34,7 +34,7 @@ class PembayaranService
 		}
 	}
 
-    public static function isBayar($kategori, $id)
+    public static function isBayar($id)
     {
         $skpp = SKPP::with("Pembayaran")->findOrFail($id);
 

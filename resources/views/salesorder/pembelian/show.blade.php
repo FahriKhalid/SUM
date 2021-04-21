@@ -32,6 +32,29 @@
 	</div> 
 	@else
 	<div class="card mt-3 "> 
+		@if(!PembayaranService::isBayar($info["skpp"]->id_skpp))
+		<div class="card-body alert-info">
+			<table class="table table-borderless table-sm">
+				<thead>
+					<tr>
+						<th width="1px">No</th>
+						<th width="200px">Produk</th>
+						<th>Sisa Kuantitas</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach($info["po"] as $po)
+						<tr>
+							<td>{{ $loop->iteration }}.</td>
+							<td>{{ $po->Produk->nama }}</td>
+							<td>{{ (int)$po->kuantitas - (int)$po->totalKuantitasPO() }} MT</td>
+							 
+						</tr>
+					@endforeach
+				</tbody>
+			</table>
+		</div>
+		@endif
 		<div class="card-body bg-white">   
 			@if($info["skpp"] != null)
 			<a class="btn btn-success" href="{{ url('pembelian/salesorder/'.$id.'/create') }}"><i class="fa fa-plus"></i> Tambah</a>
@@ -157,7 +180,7 @@
 	        { 
 	            if (resp.status == 'success') {
 	                toastr.success(resp.message, { "closeButton": true });    
-	                refresh_table("#tabel-so");
+	                location.reload();
 	                $("#modal-konfirmasi-hapus-so_pembelian").modal("hide");
 	            } else {
 	                toastr.error(resp.message, { "closeButton": true });
