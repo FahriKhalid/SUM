@@ -9,7 +9,7 @@
 	            <a href="{{ url("penjualan/invoice/index/".$id) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
 	        </div>  
 	    </div> 
-	    @if(PembayaranService::isBayar("penjualan", Helper::decodex($id)))
+	    @if(PembayaranService::isBayar(Helper::decodex($id)))
 	    <div class="alert alert-warning mt-3">
 	    	<h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Warning</h4>
 	        Pembayaran belum ada. Tidak dapat menambahkan invoice!
@@ -88,7 +88,7 @@
 							</span>
 						</small>
 					</div>
-					@if(!PembayaranService::isBayar("penjualan", Helper::decodex($id)))
+					@if(!PembayaranService::isBayar(Helper::decodex($id)))
 					<div>
 						@csrf
 						<input type="hidden" name="id_skpp" value="{{ $id }}">

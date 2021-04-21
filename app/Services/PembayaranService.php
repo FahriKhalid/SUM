@@ -35,7 +35,7 @@ class PembayaranService
 	}
 
     public static function isBayar($id)
-    {
+    {   
         $skpp = SKPP::with("Pembayaran")->findOrFail($id);
 
         if ($skpp->Pembayaran->sisa_hutang == null) {
