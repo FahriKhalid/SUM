@@ -109,10 +109,12 @@
                 loader(".modal-content", true);
 			},
 			success : function(resp){
-               	if (resp.status == "error"){
+               	if (resp.status == "error_validate"){
                		for (var i = 0; i < resp.message.length; i++) {
-               			toastr.error(resp.message[i],{ "closeButton": true });
+               			toastr.error(resp.message[i], { "closeButton": true });
                		} 
+                } else if (resp.status == "error"){
+               		toastr.error(resp.message, { "closeButton": true }); 
                 } else {
                		toastr.success(resp.message, { "closeButton": true }); 
                		refresh_table("#tabel-customer");

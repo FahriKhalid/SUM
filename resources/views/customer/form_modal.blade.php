@@ -25,7 +25,7 @@
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="text" class="form-control email" name="email" placeholder="Opsional">
+                        <input type="text" class="form-control" name="email" placeholder="Opsional">
                     </div>
                     <div class="form-group">
                         <label>Telpon <span class="text-danger">*</span></label>

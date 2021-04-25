@@ -26,14 +26,16 @@ class CustomerController extends Controller
         $data = $customer->query();
 
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($id){
-
             return '<a href="javascript:void(0);" did="'.Helper::encodex($id->id_customer).'" class="btn btn-sm btn-primary edit"><i class="fa fa-edit"></i></a>
             <a href="javascript:void(0);" url="/customer/destroy/'.Helper::encodex($id->id_customer).'" class="btn btn-sm btn-danger hapus"><i class="fa fa-trash"></i></a>';
-
+        })->addColumn('perusahaan', function ($query) {
+            return $query->perusahaan == null ? '-' : $query->perusahaan;
+        })->addColumn('no_npwp', function ($query) {
+            return $query->no_npwp == null ? '-' : $query->no_npwp;
+        })->addColumn('email', function ($query) {
+            return $query->email == null ? '-' : $query->email;
         })->orderColumn('name', function ($query, $order) {
-
              $query->orderBy('id_customer', $order);
-
         })->rawColumns(['action'])->make(true);
     }
 
@@ -77,7 +79,7 @@ class CustomerController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
  
         if($validator->fails()){ 
-            return response()->json(['status' => 'error', 'message' => $validator->errors()->all()]); 
+            return response()->json(['status' => 'error_validate', 'message' => $validator->errors()->all()]); 
         }
 
         try {
@@ -151,7 +153,7 @@ class CustomerController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
  
         if($validator->fails()){ 
-            return response()->json(['status' => 'error', 'message' => $validator->errors()->all()]); 
+            return response()->json(['status' => 'error_validate', 'message' => $validator->errors()->all()]); 
         }
 
         try {
