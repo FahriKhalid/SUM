@@ -51,5 +51,12 @@ function addRowLampiran(){
 */
 
 $("body").delegate(".remove-lampiran", "click", function(){
-	$(this).closest("tr").remove();
+	
+
+	let parent = $("#form-parent-lampiran");
+	if(parent.find("tr").length < 2){
+		alert('Baris ini tidak dapat di hapus')
+	} else {
+		$(this).closest("tr").remove();
+	}
 });

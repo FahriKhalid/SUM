@@ -27,7 +27,7 @@
 					<tr>
 						<td>Nomor Tagihan</td>
 						<td>:</td>
-						<td>{{ $info["invoice"]->no_tagihan }}</td>
+						<td>{{ $info["invoice"]->no_tagihan == null ? '-' : $info["invoice"]->no_tagihan }}</td>
 					</tr>
 					<tr>
 						<td>Nomor Faktur Pajak</td>
@@ -37,7 +37,7 @@
 					<tr>
 						<td>Nomor Sales Order</td>
 						<td>:</td>
-						<td>{{ $info["invoice"]->SO->no_so }}</td>
+						<td>{{ $info["invoice"]->SO->is_sementara == 1 ? '-' : $info["invoice"]->SO->no_so }}</td>
 					</tr>
 				</thead>
 			</table> 

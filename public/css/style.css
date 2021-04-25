@@ -55,6 +55,7 @@
     color: #ffffff;
     background-color: #f97f74;
     border-color: #f97f74;
+    text-decoration: none;
 }
 
 .checkbox-yajra-custom .custom-control-label::before, 
@@ -117,4 +118,13 @@ ol { margin-left: -23px !important; }
  .center-position {
     height: calc(100vh - 200px);
     display: flex;
+}
+
+.bg-yellow {
+    background-color: #f6c23eb3 !important;
+    text-decoration: none;
+}
+
+.sidebar.toggled .nav-item .collapse {
+    z-index: 2 !important;
 }

@@ -22,22 +22,22 @@
                 <tr>
                     <th>Nomor tagihan</th>
                     <th>:</th>
-                    <td>{{ $info["invoice"]->no_tagihan }}</td>
+                    <td>{{ $info["invoice"]->no_tagihan == null ? '-' : $info["invoice"]->no_tagihan }}</td>
                 </tr>
                 <tr>
                     <th>Nomor resi</th>
                     <th>:</th>
-                    <td>{{ $info["invoice"]->no_resi }}</td>
+                    <td>{{ $info["invoice"]->no_resi == null ? '-' : $info["invoice"]->no_resi }}</td>
                 </tr>
                 <tr>
                     <th>Nomor faktur pajak</th>
                     <th>:</th>
-                    <td>{{ $info["invoice"]->no_faktur_pajak }}</td>
+                    <td>{{ $info["invoice"]->no_faktur_pajak == null ? '-' : $info["invoice"]->no_faktur_pajak }}</td>
                 </tr>
                 <tr>
                     <th>Nomor sales order</th>
                     <th>:</th>
-                    <td>{{ $info["invoice"]->SO->no_so }}</td>
+                    <td>{{ $info["invoice"]->SO->is_sementara == 1 ? '-' : $info["invoice"]->SO->no_so }}</td>
                 </tr>
             </table> 
             <div class="table-responsive">

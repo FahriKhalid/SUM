@@ -1,11 +1,8 @@
 @extends('layout.index')
-
 @section('title', 'SUM - Edit sales order')
-
 @section('content')
 
 	<div class="container-fluid mt-4 mb-4">
-
 	    <div class="row">
 	        <div class="col-md-12 d-flex justify-content-between">
 	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-plus-circle"></i> FORM EDIT SALES ORDER</h6>
@@ -18,6 +15,12 @@
 	    	Status delivered. Sales order tidak dapat di edit!
 	    </div>
 	    @endif
+	    @if($info["so"]->is_sementara == 1)
+			<div class="alert alert-warning mt-3">
+		    	<h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Warning</h4> 
+		    	Sales order masih bersifat sementara!
+		    </div>
+		@endif
 		<div class="card mt-3"> 
 			<form id="form-so" enctype="multipart/form-data">
 				@csrf 
@@ -50,10 +53,10 @@
 		                <div class="form-group col-md-6">
 		                    <label>Penanggung jawab <span class="text-danger">*</span></label>
 		                    <div class="form-group"> 
-								<input type="hidden" value="{{ Helper::encodex($info["so"]->SupirAktif[0]->id_supir_so) }}" name="id_supir_so">
+								<input type="hidden" value="{{ $info["so"]->is_sementara == 1 ? '' : Helper::encodex($info["so"]->SupirAktif[0]->id_supir_so) }}" name="id_supir_so">
 		                        <select class="form-control select2" name="supir">
 		                        	@foreach($info["supir"] as $supir)
-		                        		<option {{ $info["so"]->SupirAktif[0]->Supir->id_supir == $supir->id_supir ? "selected" : "" }} value="{{ $supir->id_supir }}">{{ $supir->nama }} - {{ $supir->plat_nomor }} - {{ $supir->kendaraan }}</option>
+		                        		<option {{ $info["so"]->is_sementara == 1 ? '' : ($info["so"]->SupirAktif[0]->Supir->id_supir == $supir->id_supir ? "selected" : "") }} value="{{ $supir->id_supir }}">{{ $supir->nama }} - {{ $supir->plat_nomor }} - {{ $supir->kendaraan }}</option>
 		                        	@endforeach
 		                        </select>
 		                    </div> 
@@ -137,9 +140,12 @@
 				</div>   
 
 				@if($info["so"]->Status->status != 'Delivered')
-			    <div class="card-body border-top d-flex justify-content-between"> 
+				<div class="card-body border-top d-flex justify-content-between">  
+					<div>
+						<div class="legend bg-red"></div> Stok Habis
+					</div> 
 					<button class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> 
-				</div>
+				</div> 
 			    @endif
 				
 			</form>
@@ -165,7 +171,11 @@
 				loader(".card", true);
 			},
 			success : function(resp){
-				if(resp.status == 'error'){
+				if(resp.status == 'error_validate'){
+	                for (var i = 0; i < resp.message.length; i++) {
+	                	toastr.error(resp.message[i], { "closeButton": true });
+	                }
+	            } else if(resp.status == 'error'){
 					toastr.error(resp.message,{ "closeButton": true });
 				} else {
 					toastr.success(resp.message, { "closeButton": true });  

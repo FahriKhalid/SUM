@@ -15,7 +15,7 @@
 	        Pembayaran belum lunas. Tidak dapat menambahkan data sales order!
 	    </div>
 	    @endif
-		<div class="card mt-3"> 
+		<div class="card mt-3">  
 			<form id="form-so" enctype="multipart/form-data"> 
 				<div class="card-body" id="layout-parent"> 
 

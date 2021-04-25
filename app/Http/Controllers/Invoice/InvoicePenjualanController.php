@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Invoice;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
+use App\Services\SalesOrderPenjualanService;
 use App\Invoice;
+use App\Barang;
 use App\SKPP;
 use App\SO;
 use Validator;
@@ -17,6 +19,12 @@ use DB;
 class InvoicePenjualanController extends Controller
 {
     protected $status_delivered = 5;
+    protected $SalesOrderPenjualanService;
+
+    public function __construct(SalesOrderPenjualanService $SalesOrderPenjualanService)
+    {   
+        $this->SalesOrderPenjualanService = $SalesOrderPenjualanService;
+    }
 
     /**
      * Display a listing of the resource.
@@ -59,25 +67,21 @@ class InvoicePenjualanController extends Controller
                     </div>
                 </div>';
 
+        })->addColumn('no_tagihan', function($data){ 
+            return $data->no_tagihan == null ? '-' : $data->no_tagihan;
+        })->addColumn('no_faktur_pajak', function($data){ 
+            return $data->no_faktur_pajak == null ? '-' : $data->no_faktur_pajak;
         })->addColumn('customer', function($data){ 
-
             return $data->SKPP->Customer->nama;
-            
         })->addColumn('no_skpp', function($data){ 
-
             return $data->SKPP->no_skpp;
-            
         })->addColumn('no_so', function($data){ 
-
-            return $data->SO->no_so;
-            
+            return $data->SO->no_so == null ? '-' : $data->SO->no_so;
         })->addColumn('total', function($data){ 
- 
             return '<div class="d-flex justify-content-between">
                 <div>IDR</div>
                 <div>'.Helper::currency($data->total).'</div>
             </div>';
-            
         })->rawColumns(['action','total'])->make(true);
     }
 
@@ -89,10 +93,9 @@ class InvoicePenjualanController extends Controller
     public function create($id)
     {
         $id_skpp = Helper::decodex($id);
-
         $info["skpp"] = SKPP::selectRaw("*, left(no_skpp, 4) as no_dokumen")->findOrFail($id_skpp);   
-
         $info["so"] = SO::where("id_skpp", $id_skpp)->get();
+        $info["po"] = Barang::with('Produk')->where("id_skpp", $id_skpp)->get();
 
         return view('invoice.penjualan.create', compact('info', 'id'));
     }
@@ -159,6 +162,64 @@ class InvoicePenjualanController extends Controller
             $invoice->save();
 
             $file->move($tujuan_upload, $namafile);
+
+            DB::commit();
+            return response()->json(['status' => 'success', 'message' => 'Tambah invoice berhasil']); 
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store_sementara(Request $request, $id)
+    { 
+        $id_skpp = Helper::decodex($id);
+
+        $rules = [ 
+            'id_po.*'       => 'required',
+            'kuantitas.*'   => 'required|numeric|min:1',
+            'harga_jual.*'  => 'required',
+            'nilai.*'       => 'nullable',
+            'sub_total'     => 'required',  
+            'ppn'           => 'required',  
+            'total'         => 'required',  
+        ]; 
+ 
+        $messages = [ 
+            'id_po.*.required'          => 'Id PO wajib diisi',
+            'kuantitas.*.required'      => 'Kuantitas wajib diisi',
+            'kuantitas.*.min'           => 'Kuantitas tidak boleh 0',
+            'harga_jual.*.required'     => 'Harga jual wajib diisi',  
+            'nilai.*.required'          => 'Nilai wajib diisi',
+            'sub_total.required'        => 'Sub total wajib diisi', 
+            'ppn.required'              => 'PPN wajib diisi', 
+            'id_po.required'            => 'PO wajib diisi',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+ 
+        if($validator->fails()){ 
+            return response()->json(['status' => 'error_validate', 'message' => $validator->errors()->all()]); 
+        }
+
+        DB::beginTransaction();
+        try {
+            
+            $result = $this->SalesOrderPenjualanService->storeSoSementara($request, $id_skpp);
+
+            $invoice = new Invoice();
+            $invoice->id_skpp = $id_skpp;
+            $invoice->id_so = $result["id_so"];
+            $invoice->ppn = Helper::decimal($request->ppn);
+            $invoice->total = Helper::decimal($request->total);
+            $invoice->created_by = Auth::user()->id_user;  
+            $invoice->save();
 
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Tambah invoice berhasil']); 
@@ -303,6 +364,20 @@ class InvoicePenjualanController extends Controller
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
         $pdf = PDF::loadview('surat.penjualan.surat_invoice', compact('info')); 
 
-        return $pdf->setPaper('a4')->stream(Helper::RemoveSpecialChar($info["invoice"]->no_tagihan).'.pdf');  
+        if ($info["invoice"]->SO->is_sementara == 1) {
+            $file = 'Invoice '.date('Y-m-d H:i:s');
+        } else {
+            $file = Helper::RemoveSpecialChar($info["invoice"]->no_tagihan);
+        }
+        
+        return $pdf->setPaper('a4')->stream($file.'.pdf');  
+    }
+
+    public function reset_po($id)
+    {
+        $id_skpp = Helper::decodex($id);
+        $info["po"] = Barang::with('Produk')->where("id_skpp", $id_skpp)->get();
+
+        return response()->json(['html' => view('invoice.penjualan.form_po', compact('info'))->render()]);
     }
 }

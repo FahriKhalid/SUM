@@ -41,7 +41,7 @@
 					<td>
 						<textarea style="height: 38px" class="form-control lampiran" rows="1" name="new_keterangan_file[]"></textarea>
 					</td> 
-					<td><button type="button" class="btn btn-danger btn-sm remove-row-lampiran"><i class="fa fa-minus"></i></button></td>
+					<td><button type="button" class="btn btn-danger btn-sm remove-lampiran"><i class="fa fa-minus"></i></button></td>
 				</tr> 
 			@endforelse
 		</tbody>

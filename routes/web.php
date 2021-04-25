@@ -74,13 +74,15 @@ Route::group(['middleware' => ['auth']], function ()
         Route::group(['prefix' => 'invoice'], function() {  
             Route::get('index/{id}', 'Invoice\InvoicePenjualanController@index'); 
             Route::get('create/{id}', 'Invoice\InvoicePenjualanController@create'); 
-            Route::post('store/{id}', 'Invoice\InvoicePenjualanController@store'); 
+            Route::post('store/{id}', 'Invoice\InvoicePenjualanController@store');  
+            Route::post('store_sementara/{id}', 'Invoice\InvoicePenjualanController@store_sementara'); 
             Route::get('data/{id}', 'Invoice\InvoicePenjualanController@data'); 
             Route::get('show/{id}', 'Invoice\InvoicePenjualanController@show');
             Route::get('edit/{id}', 'Invoice\InvoicePenjualanController@edit');
             Route::post('update/{id}', 'Invoice\InvoicePenjualanController@update');
             Route::delete('destroy/{id}', 'Invoice\InvoicePenjualanController@destroy'); 
             Route::get('surat/{id}', 'Invoice\InvoicePenjualanController@surat');
+            Route::get('reset_po/{id}', 'Invoice\InvoicePenjualanController@reset_po');
         }); 
     });
  

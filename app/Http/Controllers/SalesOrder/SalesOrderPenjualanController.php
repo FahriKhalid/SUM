@@ -235,11 +235,13 @@ class SalesOrderPenjualanController extends Controller
         
         $info["so"] = SO::with("SupirAktif", "Lampiran")->findOrFail($id_so); 
         $info["sopo"] = $this->SoPoService->get($id_so);
-        $info["supir"] = Supir::where("id_supir", "!=", $info["so"]->SupirAktif[0]->id_supir)->get();
         $info["riwayat_supir"] = $this->SupirSoService->get($id_so);
         $info["email"] = $info["so"]->SKPP->Customer->email;
         $info["riwayat_email"] = $this->RiwayatEmailService->first($id_so, "SALES ORDER");
-       
+        if($info["so"]->is_sementara != 1){
+            $info["supir"] = Supir::where("id_supir", "!=", $info["so"]->SupirAktif[0]->id_supir)->get();
+        }
+
         return view('salesorder.penjualan.show', compact('id', 'info'));
     }
 
@@ -277,7 +279,7 @@ class SalesOrderPenjualanController extends Controller
             'nomor_so_pengambilan'  => 'required',
             'supir'                 => 'required|exists:ms_supir,id_supir',
             'tujuan'                => 'required',   
-            'id_supir_so'           => 'required',
+            'id_supir_so'           => 'nullable',
             'id_so_po.*'            => 'required|distinct',   
             'kuantitas.*'           => 'required'
         ]; 
@@ -331,7 +333,7 @@ class SalesOrderPenjualanController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
  
         if($validator->fails()){ 
-            return response()->json(['status' => 'error', 'message' => $validator->errors()->all()]); 
+            return response()->json(['status' => 'error_validate', 'message' => $validator->errors()->all()]); 
         }
         
         DB::beginTransaction();
@@ -342,6 +344,7 @@ class SalesOrderPenjualanController extends Controller
 
             // insert SO
             $so = SO::findOrFail($id_so); 
+            $so->is_sementara = 0;
             $so->no_so = $request->nomor_so; 
             $so->no_so_pengambilan = $request->nomor_so_pengambilan; 
             $so->tujuan = $request->tujuan;
@@ -363,9 +366,14 @@ class SalesOrderPenjualanController extends Controller
             }
             
             // update Supir PO
-            if($so->SupirAktif[0]->Supir->id_supir != $request->supir){ 
-                $this->SupirSoService->update($request);
+            if ($so->is_sementara == 1) {
+                $this->SupirSoService->store($so->id_so, $request);
+            } else {
+                if($so->SupirAktif[0]->Supir->id_supir != $request->supir){ 
+                    $this->SupirSoService->update($request);
+                }
             }
+            
             
             // lampiran
             $nama_file = Helper::RemoveSpecialChar($this->SoService->nomor($id_so));

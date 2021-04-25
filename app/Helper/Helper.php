@@ -1,14 +1,14 @@
 <?php  
 
 namespace App\Helper;
- 
+
+use DateTime;
 use Session;
+use Cookie;
+use Crypt;
+use Route;
 use Auth;
 use DB;
-use Route;
-use Crypt;
-use DateTime;
-use Cookie;
 
 class Helper { 
 
@@ -212,7 +212,7 @@ class Helper {
 	    	if($beda > 0){
 	    		if($bedahari < 10)
 	    		{
-	    			return 'bg-warning text-white';
+	    			return 'bg-yellow text-white';
 	    		} else {
 	    			return '';
 	    		}
@@ -247,13 +247,12 @@ class Helper {
 	public static function RemoveSpecialChar($str) 
 	{ 
     	$res = str_replace([ '\'', '"', '/' , ':', '*', '?', '<', '>', '|', '.', ',', '#', '$', '^'], ' ', $str); 
-      
     	return $res; 
     } 
 
     public static function PPN($harga){
-    	$ppn_harga = $harga * 0.1;
-		$harga = $harga + $ppn_harga;
+    	$harga_ppn = $harga * 0.1;
+		$harga = $harga + $harga_ppn;
 		return $harga;
     }
 

@@ -8,25 +8,32 @@
 
 @section('content')
 @include('salesorder.penjualan.header_salesorder')
-@include('salesorder.penjualan.modal_ganti_supir')
 @include('salesorder.penjualan.modal_update_status') 
 @include('layout.modal_email') 
+@if($info["so"]->is_sementara != 1)
+	@include('salesorder.penjualan.modal_ganti_supir')
+@endif
 
 <div class="container-fluid mb-4 mt-4">
-
 	<div class="row">
 		<div class="col-md-12 d-flex justify-content-between">
 			<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-truck-moving"></i> Detail Sales Order</h6>
 			<a href="{{ url("penjualan/salesorder/index/".Helper::encodex($info["so"]->id_skpp)) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
 		</div>  
 	</div>  
-
+	@if($info["so"]->is_sementara == 1)
+		<div class="alert alert-warning mt-3">
+	    	<h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Warning</h4> 
+		    Sales order masih bersifat sementara!
+	    </div>
+	@endif
 	<div class="card mt-3"> 
 		<div class="card-header bg-white d-flex justify-content-between align-items-center">
 			<div>
 				<a href="{{ url('penjualan/salesorder/edit/'.$id) }}"  class="btn btn-primary"><i class="fa fa-edit"></i> Edit</a>
 				<a href="{{ url('penjualan/salesorder/surat_so/'.$id) }}" target="_blank" class="btn btn-warning"><i class="fa fa-download"></i> Surat SO</a>
-				 
+
+				@if($info["so"]->is_sementara != 1)
 				<button class="btn btn-warning" onclick="modal_ganti_supir()"><i class="fa fa-sync"></i> Ganti supir</button>
 
 				<div class="btn-group" role="group" aria-label="Basic example">
@@ -34,31 +41,32 @@
 					<button class="btn btn-warning action" {{ $info["so"]->Status->id_status == 6 ? 'disabled' : '' }} onclick="update_status('On Process', '{{ Helper::encodex(6) }}')"><i class="fas fa-truck-moving"></i> On process</button>
 					<button class="btn btn-warning action" {{ $info["so"]->Status->id_status == 5 ? 'disabled' : '' }} onclick="update_status('Delivered', '{{ Helper::encodex(5) }}')"><i class="fas fa-truck-loading"></i> Delivered</button>
 				</div> 
- 
-				  	<button class="btn btn-warning"onclick="show_form_email('dokumen Sales Order', '{{ url('penjualan/salesorder/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email ({{ isset($info["riwayat_email"]) ? $info["riwayat_email"]->jumlah : '0' }})</button>  
-			</div>
-
-			<div>
-
-				@if($info["so"]->Status->id_status == 7)
-					@php
-						$color = 'badge-secondary';
-					@endphp
-				@elseif($info["so"]->Status->id_status == 6) 
-					@php
-						$color = 'badge-warning';
-					@endphp
-				@elseif($info["so"]->Status->id_status == 5)
-					@php
-						$color = 'badge-success';
-					@endphp
-				@else
-					@php
-						$color = 'badge-danger';
-					@endphp
 				@endif
 
-				<span class="badge {{ $color }} font-15">{{ $info["so"]->Status->status }}</span>
+				<button class="btn btn-warning"onclick="show_form_email('dokumen Sales Order', '{{ url('penjualan/salesorder/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email ({{ isset($info["riwayat_email"]) ? $info["riwayat_email"]->jumlah : '0' }})
+				</button>  
+			</div>
+			<div>
+				@if($info["so"]->is_sementara != 1)
+					@if($info["so"]->Status->id_status == 7)
+						@php
+							$color = 'badge-secondary';
+						@endphp
+					@elseif($info["so"]->Status->id_status == 6) 
+						@php
+							$color = 'badge-warning';
+						@endphp
+					@elseif($info["so"]->Status->id_status == 5)
+						@php
+							$color = 'badge-success';
+						@endphp
+					@else
+						@php
+							$color = 'badge-danger';
+						@endphp
+					@endif 
+					<span class="badge {{ $color }} font-15">{{ $info["so"]->Status->status }}</span>
+				@endif
 			</div>
 		</div> 
 		
@@ -80,32 +88,32 @@
 							<tr>
 								<th>Nomor SO pengambilan</th>
 								<th>:</th>
-								<td>{{ $info["so"]->no_so_pengambilan }}</td>
+								<td>{{ $info["so"]->no_so_pengambilan == null ? '-' : $info["so"]->no_so_pengambilan }}</td>
 							</tr> 
 							<tr>
 								<th>Alat angkut</th>
 								<th>:</th>
-								<td>{{ $info["so"]->SupirAktif[0]->Supir->kendaraan }}</td>
+								<td>{{ $info["so"]->is_sementara == 1 ? '-' : $info["so"]->SupirAktif[0]->Supir->kendaraan }}</td>
 							</tr>
 							<tr>
 								<th>Tujuan</th>
 								<th>:</th>
-								<td>{{ $info["so"]->tujuan }}</td>
+								<td>{{ $info["so"]->is_sementara == 1 ? '-' : $info["so"]->tujuan }}</td>
 							</tr>
 							<tr>
 								<th>Nama supir</th>
 								<th>:</th>
-								<td id="nama-supir">{{ $info["so"]->SupirAktif[0]->Supir->nama == null ? "-" : $info["so"]->SupirAktif[0]->Supir->nama }}</td>
+								<td id="nama-supir">{{ $info["so"]->is_sementara == 1 ? '-' : ($info["so"]->SupirAktif[0]->Supir->nama == null ? "-" : $info["so"]->SupirAktif[0]->Supir->nama) }}</td>
 							</tr>
 							<tr>
 								<th>No truck</th>
 								<th>:</th>
-								<td>{{ $info["so"]->SupirAktif[0]->Supir->plat_nomor == null ? "-" : $info["so"]->SupirAktif[0]->Supir->plat_nomor }}</td>
+								<td>{{ $info["so"]->is_sementara == 1 ? '-' : ($info["so"]->SupirAktif[0]->Supir->plat_nomor == null ? "-" : $info["so"]->SupirAktif[0]->Supir->plat_nomor) }}</td>
 							</tr>
 							<tr>
 								<th>No HP</th>
 								<th>:</th>
-								<td>{{ $info["so"]->SupirAktif[0]->Supir->no_telepon == null ? "-" : $info["so"]->SupirAktif[0]->Supir->no_telepon }}</td>
+								<td>{{ $info["so"]->is_sementara == 1 ? '-' : ($info["so"]->SupirAktif[0]->Supir->no_telepon == null ? "-" : $info["so"]->SupirAktif[0]->Supir->no_telepon) }}</td>
 							</tr> 
 							<tr>
 								<th>Lampiran</th>

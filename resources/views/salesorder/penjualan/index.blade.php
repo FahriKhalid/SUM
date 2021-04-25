@@ -75,6 +75,9 @@
 					</tr>
 				</thead> 
 			</table>
+			<div>
+				<div class="legend bg-warning"></div> SO Sementara
+			</div>
 		</div>
 	</div>
 </div>
@@ -95,7 +98,7 @@
     |--------------------------------------------------------------------------
     */ 
 
-	var data_table = [
+	var columns = [
         {data: 'check', 	  name: 'check', orderable: false, searchable: false}, 
         {data: 'no_so',       name: 'no_so'}, 
         {data: 'kuantitas',   name: 'kuantitas'},  
@@ -105,8 +108,24 @@
         {data: 'status',      name: 'status'}, 
         {data: 'action',      name: 'action', orderable: false,},
     ];
-    
-    var table_so = table('#tabel-so', '{{url('penjualan/salesorder/data')}}/'+'{{$id}}', data_table);
+     
+    var table_so = $('#tabel-so').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url : '{{url('penjualan/salesorder/data')}}/'+'{{$id}}', 
+        },
+        columns: columns,
+        responsive: true,
+        colReorder: true,
+        createdRow: function ( row, data, index ) { 
+        	if(data['is_sementara'] == 1){
+        		$(row).addClass('bg-yellow text-white');
+        	}
+		}, 
+    });  
+
+
 	
 
 	/*
