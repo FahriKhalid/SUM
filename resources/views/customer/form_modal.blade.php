@@ -12,16 +12,16 @@
                 <input type="hidden" name="id">
                 <div class="modal-body">
                     <div class="form-group">
+                        <label>Nama Customer <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="nama_customer" placeholder="Wajib di isi">
+                    </div>
+                    <div class="form-group">
                         <label>Nama Perusahaan</label>
                         <input type="text" class="form-control" name="nama_perusahaan" placeholder="Opsional">
                     </div>
                     <div class="form-group">
                         <label>Nomor NPWP</label>
                         <input type="text" class="form-control" name="nomor_npwp" placeholder="Opsional">
-                    </div>
-                    <div class="form-group">
-                        <label>Nama Customer <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="nama_customer" placeholder="Wajib di isi">
                     </div>
                     <div class="form-group">
                         <label>Email</label>
