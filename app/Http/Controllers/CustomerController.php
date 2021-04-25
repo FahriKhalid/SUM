@@ -56,10 +56,10 @@ class CustomerController extends Controller
     public function store(Request $request)
     { 
         $rules = [
-            'nama_perusahaan'       => 'required',
-            'nomor_npwp'            => 'required',
+            'nama_perusahaan'       => 'nullable',
+            'nomor_npwp'            => 'nullable',
             'nama_customer'         => 'required',
-            'email'                 => 'required|email',
+            'email'                 => 'nullable|email',
             'telpon'                => 'required',
             'alamat'                => 'required'
         ];
@@ -129,11 +129,11 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $rules = [ 
-            'nama_perusahaan'       => 'required',
-            'nomor_npwp'            => 'required',
+        $rules = [
+            'nama_perusahaan'       => 'nullable',
+            'nomor_npwp'            => 'nullable',
             'nama_customer'         => 'required',
-            'email'                 => 'required|email',
+            'email'                 => 'nullable|email',
             'telpon'                => 'required',
             'alamat'                => 'required'
         ];
