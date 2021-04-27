@@ -127,7 +127,7 @@
 									<span>IDR</span>
 								</td>
 								<td align="right">
-									<span>{{ Helper::currency(Helper::toFixed($sub_total) ,2) }}</span>
+									<span>{{ Helper::currency(Helper::toFixed($sub_total, 2)) }}</span>
 								</td>
 							</tr>
 						</table>
@@ -139,7 +139,7 @@
 									<span>IDR</span>
 								</td>
 								<td align="right">
-									<span>{{ Helper::currency(Helper::toFixed($sub_total) ,2) }}</span>
+									<span>{{ Helper::currency(Helper::toFixed($sub_total, 2)) }}</span>
 								</td>
 							</tr>
 						</table> 
@@ -151,7 +151,7 @@
 									<span>IDR</span>
 								</td>
 								<td align="right">
-									<span>{{ Helper::currency(Helper::toFixed($info["invoice"]->ppn) ,2) }}</span>
+									<span>{{ Helper::currency(Helper::toFixed($info["invoice"]->ppn ,2)) }}</span>
 								</td>
 							</tr>
 						</table> 
@@ -163,7 +163,7 @@
 									<span>IDR</span>
 								</td>
 								<td align="right">
-									<span>{{ Helper::currency(Helper::toFixed($info["invoice"]->total) ,2) }}</span>
+									<span>{{ Helper::currency(Helper::toFixed($info["invoice"]->total ,2)) }}</span>
 								</td>
 							</tr>
 						</table>

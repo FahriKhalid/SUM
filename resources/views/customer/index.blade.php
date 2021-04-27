@@ -60,6 +60,8 @@
 		$("#title-modal-form-customer").html("Form tambah customer");
 		$("#form-customer")[0].reset();
 		$("#modal-form-customer").modal("show");
+
+		$("#form-customer #perusahaan").find("input, textarea").prop("disabled", true);
 	}
 
 	/*
@@ -208,8 +210,26 @@
 	            errorHandling(jqXHR.status, exception); 
 	        }
 	    })
-	})
+	});
 
+	function kategori(value)
+	{
+		 
+	}
+
+
+	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+	  	e.target // newly activated tab
+	  	e.relatedTarget // previous active tab
+
+	  	if(e.target.text == "Perusahaan") {
+	  		$("#form-customer #perorangan").find("input, textarea").prop("disabled", true);
+			$("#form-customer #perusahaan").find("input, textarea").prop("disabled", false);
+	  	} else {
+	  		//$("#form-customer #perusahaan").find("input, textarea").prop("disabled", true);
+			//$("#form-customer #perorangan").find("input, textarea").prop("disabled", false);
+	  	}
+	});
 </script>
 
 @endsection

@@ -25,9 +25,9 @@ class CustomerController extends Controller
     {
         $data = $customer->query();
 
-        return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($id){
-            return '<a href="javascript:void(0);" did="'.Helper::encodex($id->id_customer).'" class="btn btn-sm btn-primary edit"><i class="fa fa-edit"></i></a>
-            <a href="javascript:void(0);" url="/customer/destroy/'.Helper::encodex($id->id_customer).'" class="btn btn-sm btn-danger hapus"><i class="fa fa-trash"></i></a>';
+        return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){
+            return '<a href="javascript:void(0);" kategori="'.$data->kategori.'" did="'.Helper::encodex($data->id_customer).'" class="btn btn-sm btn-primary edit"><i class="fa fa-edit"></i></a>
+            <a href="javascript:void(0);" url="/customer/destroy/'.Helper::encodex($data->id_customer).'" class="btn btn-sm btn-danger hapus"><i class="fa fa-trash"></i></a>';
         })->addColumn('perusahaan', function ($query) {
             return $query->perusahaan == null ? '-' : $query->perusahaan;
         })->addColumn('no_npwp', function ($query) {
@@ -91,6 +91,7 @@ class CustomerController extends Controller
             $data->alamat = $request->alamat;
             $data->no_npwp = $request->nomor_npwp; 
             $data->created_by = Auth::user()->id_user; 
+            $data->kategori = $request->kategori;
             $data->save();
             return response()->json(['status' => 'success', 'message' => 'Tambah customer berhasil']); 
         } catch (\Exception $e) {
@@ -164,6 +165,7 @@ class CustomerController extends Controller
             $data->telpon = $request->telpon;
             $data->alamat = $request->alamat;
             $data->no_npwp = $request->nomor_npwp; 
+            $data->kategori = $request->kategori;
             $data->updated_by = Auth::user()->id_user; 
             $data->save();
             return response()->json(['status' => 'success', 'message' => 'Update customer berhasil']); 
