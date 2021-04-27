@@ -9,8 +9,8 @@
             </div>
             <nav class="alert-primary">
                 <div class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
-                    <a class="nav-item text-dark nav-link active" onclick="kategori('perorangan')" id="nav-home-tab" data-toggle="tab" href="#nav-1" role="tab" aria-controls="nav-home" aria-selected="true">Perorangan</a>
-                    <a class="nav-item text-dark nav-link" onclick="kategori('perusahaan')" id="nav-home-tab" data-toggle="tab" href="#nav-2" role="tab" aria-controls="nav-home" aria-selected="true">Perusahaan</a> 
+                    <a class="nav-item text-dark nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-1" role="tab" aria-controls="nav-home" aria-selected="true">Perorangan</a>
+                    <a class="nav-item text-dark nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-2" role="tab" aria-controls="nav-home" aria-selected="true">Perusahaan</a> 
                 </div>
             </nav>
             <form id="form-customer">

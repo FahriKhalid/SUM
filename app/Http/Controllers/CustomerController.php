@@ -156,15 +156,18 @@ class CustomerController extends Controller
         if($validator->fails()){ 
             return response()->json(['status' => 'error_validate', 'message' => $validator->errors()->all()]); 
         }
-
+        //dd($request->all());
         try {
             $data = Customer::findOrFail(Helper::decodex($id));
             $data->nama = $request->nama_customer;
-            $data->perusahaan = $request->nama_perusahaan;
-            $data->email = $request->email;
+            if ($request->kategori == "perusahaan") {
+                $data->perusahaan = $request->nama_perusahaan;
+                $data->email = $request->email;
+                $data->no_npwp = $request->nomor_npwp; 
+            }
+            
             $data->telpon = $request->telpon;
             $data->alamat = $request->alamat;
-            $data->no_npwp = $request->nomor_npwp; 
             $data->kategori = $request->kategori;
             $data->updated_by = Auth::user()->id_user; 
             $data->save();

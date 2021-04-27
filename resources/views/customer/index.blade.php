@@ -32,7 +32,7 @@
                                 <th>Nama Customer</th>
                                 <th>Email</th>
                                 <th>Telpon</th>
-                                <th>Alamat</th>
+                                <th>Kategori</th>
                                 <th width="70px">Aksi</th>
                             </tr>
                         </thead> 
@@ -77,7 +77,7 @@
         {data: 'nama',		  name: 'nama'},
         {data: 'email',    	  name: 'email'},
         {data: 'telpon',      name: 'telpon'}, 
-        {data: 'alamat',      name: 'alamat'}, 
+        {data: 'kategori',      name: 'kategori'}, 
         {data: 'action',      name: 'action', orderable: false,},
     ];
     
@@ -143,6 +143,7 @@
     	e.preventDefault();
 
     	var id = $(this).attr("did");
+    	var kategori = $(this).attr("kategori");
 
     	$.ajax({
 			url : '{{url('customer/show')}}/'+id, 
@@ -153,6 +154,15 @@
 				add = false;
 				$("#title-modal-form-customer").html("Form edit customer");
 				$("#modal-form-customer").modal("show");
+				if (kategori == "perorangan") {
+                	$('.nav-tabs a[href="#nav-1"]').tab('show');
+                	$("#form-customer #perorangan").find("input, textarea").prop("disabled", false);
+					$("#form-customer #perusahaan").find("input, textarea").prop("disabled", true);
+                } else {
+                	$('.nav-tabs a[href="#nav-2"]').tab('show');
+                	$("#form-customer #perorangan").find("input, textarea").prop("disabled", true);
+					$("#form-customer #perusahaan").find("input, textarea").prop("disabled", false);
+                } 
                 loader(".modal-content", true);
 			},
 			success : function(resp){
@@ -212,11 +222,6 @@
 	    })
 	});
 
-	function kategori(value)
-	{
-		 
-	}
-
 
 	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 	  	e.target // newly activated tab
@@ -226,8 +231,8 @@
 	  		$("#form-customer #perorangan").find("input, textarea").prop("disabled", true);
 			$("#form-customer #perusahaan").find("input, textarea").prop("disabled", false);
 	  	} else {
-	  		//$("#form-customer #perusahaan").find("input, textarea").prop("disabled", true);
-			//$("#form-customer #perorangan").find("input, textarea").prop("disabled", false);
+	  		$("#form-customer #perusahaan").find("input, textarea").prop("disabled", true);
+			$("#form-customer #perorangan").find("input, textarea").prop("disabled", false);
 	  	}
 	});
 </script>
