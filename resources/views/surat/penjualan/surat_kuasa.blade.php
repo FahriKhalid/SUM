@@ -102,7 +102,7 @@
 			@php($total += $skso->nilai)
 			<tr>
 				<td align="center">{{ $skso->SOPO->Barang->Produk->nama }}</td>  
-				<td align="center">{{ $skso->kuantitas }} MT</td> 
+				<td align="center">{{ Helper::currency($skso->kuantitas) }} MT</td> 
 				<td align="center">{{ $skso->SOPO->SO->no_so }}</td> 
 				<td align="center">{{ $info["surat_kuasa"]->Gudang->nama }}</td> 
 				<td align="center">{{ $info["surat_kuasa"]->SO->no_so_pengambilan }}</td>

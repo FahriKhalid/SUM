@@ -348,6 +348,22 @@
             }
         }
 
+        if($("input.float:text").length > 0)
+        { 
+            input_float();
+
+            function input_float(){
+                $("input.float:text").inputmask('numeric', {
+                    groupSeparator: '.',
+                    radixPoint : ',',
+                    autoGroup: true,
+                    digits: 1,
+                    digitsOptional: true,
+                    placeholder: '0,0',
+                });
+            }
+        }
+
         if($("input.number:text").length > 0)
         { 
             input_number();

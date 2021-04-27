@@ -63,7 +63,7 @@
         @foreach($info["skso"] as $skso)
         <tr>
             <td>{{ $skso->SOPO->Barang->Produk->nama}}</td>
-            <td>{{ $skso->kuantitas }} MT</td>
+            <td>{{ Helper::currency($skso->kuantitas) }} MT</td>
             <td>{{ $skso->SOPO->SO->no_so }}</td>
             <td>{{ $info["sk"]->Gudang->nama }}</td>
         </tr>

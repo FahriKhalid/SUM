@@ -83,11 +83,11 @@
 									<td>{{ $loop->iteration }}.</td>
 									<td>{{ $so_po->Barang->Produk->nama }}</td>
 									<td>{{ $so_po->Barang->Produk->spesifikasi }}</td>
-									<td class="p-1">
+									<td class="p-1"> 
 										<input type="hidden" name="id_so_po[]" value="{{ Helper::encodex($so_po->id_so_po) }}">
 										<div class="d-flex">
 											<div class="input-group">
-												<input type="text" disabled class="form-control number sisa_kuantitas" value="{{ SuratKuasaService::sisaKuantitasSOPO($so_po->id_so_po) }}">
+												<input type="text" disabled class="form-control float sisa_kuantitas" sisa="{{ Helper::currency(Helper::toFixed(SuratKuasaService::sisaKuantitasSOPO($so_po->id_so_po), 1)) }}" value="{{ Helper::currency(Helper::toFixed(SuratKuasaService::sisaKuantitasSOPO($so_po->id_so_po), 1)) }} ">
 												<div class="input-group-append">
 													<span class="input-group-text">MT</span>
 												</div>
@@ -98,7 +98,7 @@
 											</div>
 
 											<div class="input-group">
-												<input type="text" name="kuantitas[]" autocomplete="off" class="form-control number" value="{{ SuratKuasaService::sisaKuantitasSOPO($so_po->id_so_po) }}">
+												<input type="text" name="kuantitas[]" autocomplete="off" class="form-control float" value="0">
 												<div class="input-group-append">
 													<span class="input-group-text">MT</span>
 												</div>
@@ -112,7 +112,7 @@
 							<tfoot>
 								<tr>
 									<td colspan="3" align="right"><b>TOTAL</b></td> 
-									<td class="align-right"> <span id="total-kuantitas">{{ $total }}</span> MT</td> 
+									<td class="align-right"> <span id="total-kuantitas">0</span> MT</td> 
 								</tr>
 							</tfoot>			
 						</table>
@@ -177,28 +177,48 @@
 		} 
 	});
 
+	$("body").delegate("input[name='kuantitas[]']", "keyup", function(e){
+		
+		let closest = $(this).closest("tr");
+ 		var kuantitas = $(this).val();
+ 		var sisa_kuantitas = $(this).closest("td").find(".sisa_kuantitas");
+ 		let jumlah_stok = sisa_kuantitas.attr("sisa");
+
+ 		if(e.keyCode == 8) {
+			if(kuantitas == ""){ 
+				sisa_kuantitas.val(jumlah_stok);
+			} else {
+				let hasil = convertNumeric(jumlah_stok) - convertNumeric(kuantitas);
+				sisa_kuantitas.val(formatNumber(hasil, 1));
+			}
+		} else {	  
+			if(kuantitas == ""){
+				sisa_kuantitas.val(jumlah_stok);
+			} else {
+				if(convertNumeric(kuantitas) > convertNumeric(jumlah_stok)){
+					alert("Kuantitas tidak boleh melebihi dari jumlah stok");
+					$(this).val(jumlah_stok)
+					sisa_kuantitas.val(0.0);
+				} else {
+					let hasil = convertNumeric(jumlah_stok) - convertNumeric(kuantitas);
+					sisa_kuantitas.val(formatNumber(hasil, 1)); 
+				}
+			}
+		} 
+
+		totalKuantitas();
+	});
+
+
 	function totalKuantitas()
 	{	
 		var jumlah = 0;
 		$("#tbody-po").find("tr").each(function(){
-			jumlah += parseFloat($(this).find("input[name='kuantitas[]']").val());
+			jumlah +=  $(this).find("input[name='kuantitas[]']").val() == "" ? 0 : convertNumeric($(this).find("input[name='kuantitas[]']").val());
 		}); 
-		$("#total-kuantitas").html(jumlah);
+		$("#total-kuantitas").html(formatNumber(jumlah, 1));
 	}
 
-
-	$("body").delegate("input[name='kuantitas[]']", "keyup", function(){
-		totalKuantitas();
- 		var jumlah = $(this).val();
- 		var sisa = parseInt($(this).closest("td").find(".sisa_kuantitas").val());
-
- 		if(jumlah > sisa){
- 			$(this).val(sisa);
- 			totalKuantitas();
- 			alert("Jumlah kuantitas tidak boleh lebih dari sisa kuantitas");
- 		}
- 		
-	});
 </script>
 
 @endsection

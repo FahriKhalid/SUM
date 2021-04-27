@@ -40,8 +40,7 @@ class SuratKuasaService
         } else {
             $kuantitas = SKSO::where("id_so_po", $id_so_po)->sum("kuantitas");
             $sisa = $po->kuantitas - $kuantitas;
-        }
-
+        }  
         return $sisa;
     }
 

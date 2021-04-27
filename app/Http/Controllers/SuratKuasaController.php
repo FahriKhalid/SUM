@@ -84,7 +84,7 @@ class SuratKuasaController extends Controller
         })->addColumn('gudang', function($data){             
             return $data->Gudang->nama;            
         })->addColumn('kuantitas', function($data){             
-            return $data->totalKuantitasPO();            
+            return Helper::currency($data->totalKuantitasPO());            
         })->addColumn('created_by', function($data){             
             return $data->CreatedBy->nama;            
         })->rawColumns(['action'])->make(true);
@@ -178,12 +178,11 @@ class SuratKuasaController extends Controller
                 if($request->kuantitas[$i] != 0)
                 {
                     $id_so_po = Helper::decodex($request->id_so_po[$i]);
-                    $this->SuratKuasaService->validateMaxKuantitasSO($id_so_po, $request->kuantitas[$i]);
-
+                    $this->SuratKuasaService->validateMaxKuantitasSO($id_so_po, Helper::decimal($request->kuantitas[$i]));
                     $data_skso[] = [
                         "id_sk" => $sk->id_sk,
                         "id_so_po" => $id_so_po,
-                        "kuantitas" => $request->kuantitas[$i],
+                        "kuantitas" => Helper::decimal($request->kuantitas[$i]),
                         "created_by" => Auth::user()->id_user
                     ];
                 } 
@@ -322,8 +321,8 @@ class SuratKuasaController extends Controller
                     $id_sk_so = Helper::decodex($request->id_sk_so[$i]);
 
                     $skso = SKSO::findOrFail($id_sk_so);
-                    $this->SuratKuasaService->validateMaxKuantitasSO($skso->id_so_po, $request->kuantitas[$i], $id_sk_so);
-                    $skso->kuantitas = $request->kuantitas[$i];
+                    $this->SuratKuasaService->validateMaxKuantitasSO($skso->id_so_po, Helper::decimal($request->kuantitas[$i]), $id_sk_so);
+                    $skso->kuantitas = Helper::decimal($request->kuantitas[$i]);
                     $skso->updated_by = Auth::user()->id_user;
                     $skso->save();
                      
