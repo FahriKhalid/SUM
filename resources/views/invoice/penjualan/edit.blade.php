@@ -81,7 +81,7 @@
 						<tbody> 
 							@php($sub_total = 0)
 							@foreach($info["invoice"]->SO->SOPO as $sopo)
-							@php($sub_total += floor(($sopo->Barang->harga_jual / 1.1) * $sopo->kuantitas) )
+							@php($sub_total += ($sopo->Barang->harga_jual / 1.1) * $sopo->kuantitas) 
 							<tr>
 								<td>{{ $loop->iteration }}.</td>
 								<td>{{ $sopo->Barang->Produk->nama }}</td>
@@ -90,13 +90,13 @@
 								<td> 
 									<div class="d-flex justify-content-between">
 										<div>IDR</div>
-										<div>{{ Helper::currency(Helper::toFixed(floor(($sopo->Barang->harga_jual / 1.1)), 2)) }}</div>	
+										<div>{{ Helper::currency(Helper::toFixed(($sopo->Barang->harga_jual / 1.1), 2)) }}</div>	
 									</div>
 								</td>
 								<td width="250px">
 									<div class="d-flex justify-content-between">
 										<div>IDR</div>
-										<div>{{ Helper::currency(Helper::toFixed(floor((($sopo->Barang->harga_jual / 1.1) * $sopo->kuantitas)), 2))  }}</div>
+										<div>{{ Helper::currency(Helper::toFixed((($sopo->Barang->harga_jual / 1.1) * $sopo->kuantitas), 2))  }}</div>
 									</div>
 								</td>
 							</tr>
@@ -106,9 +106,9 @@
 								{{-- <td>
 									<div class="d-flex justify-content-between">
 										<div>IDR</div>
-										<div>{{ Helper::currency(floor($sub_total)) }}</div>
+										<div>{{ Helper::currency($sub_total)) }}</div>
 									</div>
-									<input type="hidden" class="form-control" value="{{ floor($sub_total) }}" name="sub_total">
+									<input type="hidden" class="form-control" value="{{($sub_total) }}" name="sub_total">
 								</td> --}}
 								<td class="p-1">
 									<div class="input-group">
@@ -126,7 +126,7 @@
 										<div class="input-group-prepend">
 											<span class="input-group-text">IDR</span>
 										</div> 
-										<input type="text" class="form-control numeric" value="{{ Helper::currency(floor($info["invoice"]->ppn)) }}" name="ppn">
+										<input type="text" class="form-control numeric" value="{{ Helper::currency($info["invoice"]->ppn) }}" name="ppn">
 									</div>
 								</td>
 							</tr>

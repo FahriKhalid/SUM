@@ -28,13 +28,13 @@
 			<td> 
 				<div class="d-flex justify-content-between">
 					<div>IDR</div>
-					<div>{{ Helper::currency(floor(($sopo->Barang->harga_jual / 1.1))) }}</div>	
+					<div>{{ Helper::currency($sopo->Barang->harga_jual / 1.1) }}</div>	
 				</div>
 			</td>
 			<td width="250px">
 				<div class="d-flex justify-content-between">
 					<div>IDR</div>
-					<div>{{ Helper::currency(floor((($sopo->Barang->harga_jual / 1.1) * $sopo->kuantitas)))  }}</div>
+					<div>{{ Helper::currency(($sopo->Barang->harga_jual / 1.1) * $sopo->kuantitas)  }}</div>
 				</div>
 			</td>
 		</tr>
@@ -57,7 +57,7 @@
 					<div class="input-group-prepend">
 						<span class="input-group-text">IDR</span>
 					</div> 
-					<input type="text" class="form-control numeric" value="{{ floor($sub_total / 10) }}" name="ppn">
+					<input type="text" class="form-control numeric" value="{{ ($sub_total / 10) }}" name="ppn">
 				</div>
 			</td>
 		</tr>
@@ -68,7 +68,7 @@
 					<div class="input-group-prepend">
 						<span class="input-group-text">IDR</span>
 					</div> 
-					<input type="text" readonly class="form-control numeric" value="{{ Helper::currency(floor($sub_total) + floor($sub_total / 10)) }}" name="total">
+					<input type="text" readonly class="form-control numeric" value="{{ Helper::currency($sub_total) + ($sub_total / 10) }}" name="total">
 				</div>
 			</td>
 		</tr>

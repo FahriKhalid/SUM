@@ -299,17 +299,17 @@
 		parent.find("tr").each(function(){
 			var nilai = $(this).find(".nilai:not(input)").text();
 			if(nilai != "" && nilai != "0,00"){
-				total += convertNumeric($(this).find(".nilai:not(input)").text());
+				total += convertNumeric($(this).find(".nilai:not(input)").text()); 
 			}
 		});	
  
-		parent.find("input[name=sub_total]").val(total)
+		parent.find("input[name=sub_total]").val(formatNumber(total, 2))
 
 		let ppn = total * 10 / 100;
-		let total_harga = total - ppn; 
+		let total_harga = (total) + (ppn); 
 
 		parent.find("input[name=ppn]").val(formatNumber(ppn, 2));
-		parent.find("input[name=total]").val(formatNumber(total, 2));
+		parent.find("input[name=total]").val(formatNumber(total_harga, 2));
 	}
 	
 	$("#table-po").delegate(".remove", "click", function(){

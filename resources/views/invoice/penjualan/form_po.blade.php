@@ -3,7 +3,7 @@ $total = 0;
 @endphp
 @foreach($info["po"] as $barang)
 @php($kuantitas = \App\Services\SoService::sisaKuantitasPO($barang->id_barang))
-@php($harga_jual = Helper::currency(Helper::toFixed(floor(($barang->harga_jual / 1.1)) ,2)))
+@php($harga_jual = Helper::currency(Helper::toFixed(($barang->harga_jual / 1.1) ,2)))
 @php($total += \App\Services\SoService::sisaKuantitasPO($barang->id_barang)) 
 
 <tr class="{{ \App\Services\SoService::sisaKuantitasPO($barang->id_barang) == 0 ? 'bg-red' : '' }}">

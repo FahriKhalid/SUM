@@ -78,7 +78,7 @@
 								<span>IDR</span>
 							</td>
 							<td align="right">
-								<span>{{ Helper::currency(Helper::toFixed((floor(($sopo->Barang->harga_jual / 1.1))) ,2)) }}</span>
+								<span>{{ Helper::currency(Helper::toFixed((($sopo->Barang->harga_jual / 1.1)) ,2)) }}</span>
 							</td>
 						</tr>
 					</table>
@@ -90,7 +90,7 @@
 								<span>IDR</span>
 							</td>
 							<td align="right">
-								<span>{{ Helper::currency(Helper::toFixed(floor((($sopo->Barang->harga_jual / 1.1) * $sopo->kuantitas)) ,2)) }}</span>
+								<span>{{ Helper::currency(Helper::toFixed((($sopo->Barang->harga_jual / 1.1) * $sopo->kuantitas) ,2)) }}</span>
 							</td>
 						</tr>
 					</table> 
@@ -127,7 +127,7 @@
 									<span>IDR</span>
 								</td>
 								<td align="right">
-									<span>{{ Helper::currency(Helper::toFixed(floor($sub_total) ,2)) }}</span>
+									<span>{{ Helper::currency(Helper::toFixed($sub_total) ,2) }}</span>
 								</td>
 							</tr>
 						</table>
@@ -139,7 +139,7 @@
 									<span>IDR</span>
 								</td>
 								<td align="right">
-									<span>{{ Helper::currency(Helper::toFixed(floor($sub_total) ,2)) }}</span>
+									<span>{{ Helper::currency(Helper::toFixed($sub_total) ,2) }}</span>
 								</td>
 							</tr>
 						</table> 
@@ -151,7 +151,7 @@
 									<span>IDR</span>
 								</td>
 								<td align="right">
-									<span>{{ Helper::currency(Helper::toFixed(floor($info["invoice"]->ppn) ,2)) }}</span>
+									<span>{{ Helper::currency(Helper::toFixed($info["invoice"]->ppn) ,2) }}</span>
 								</td>
 							</tr>
 						</table> 
@@ -163,7 +163,7 @@
 									<span>IDR</span>
 								</td>
 								<td align="right">
-									<span>{{ Helper::currency(Helper::toFixed(floor($info["invoice"]->total) ,2)) }}</span>
+									<span>{{ Helper::currency(Helper::toFixed($info["invoice"]->total) ,2) }}</span>
 								</td>
 							</tr>
 						</table>
@@ -174,7 +174,7 @@
 	</table>
 
 	<p align="justify">
-		Terbilang <b style="margin-left: 50px">#{{ Helper::penyebut(floor($info["invoice"]->total)) }} Rupiah</b>
+		Terbilang <b style="margin-left: 50px">#{{ Helper::penyebut($info["invoice"]->total) }} Rupiah</b>
 	</p>  
 
 	<p>Pelunasan ke rekening kami nomor:</p>
