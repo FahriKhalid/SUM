@@ -9,12 +9,12 @@
 	            <a href="{{ url("penjualan/invoice/index/".$id) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
 	        </div>  
 	    </div> 
-	    @if(PembayaranService::isBayar(Helper::decodex($id)))
+	    {{-- @if(PembayaranService::isBayar(Helper::decodex($id)))
 	    <div class="alert alert-warning mt-3">
 	    	<h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Warning</h4>
 	        Pembayaran belum ada. Tidak dapat menambahkan invoice!
 	    </div>
-	    @endif
+	    @endif --}}
 		<div class="card mt-3"> 
 			<nav class="alert-primary">
 				<div class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">

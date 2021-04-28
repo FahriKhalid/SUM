@@ -38,11 +38,15 @@
 	<div class="card-body border-top d-flex justify-content-between"> 
 		<div> 
 		</div>
-		@if(!PembayaranService::isBayar(Helper::decodex($id)))
+		{{-- @if(!PembayaranService::isBayar(Helper::decodex($id)))
 		<div>
 			@csrf
 			<button class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> 
 		</div>
-		@endif
+		@endif --}}
+		<div>
+			@csrf
+			<button class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> 
+		</div>
 	</div>
 </form>
