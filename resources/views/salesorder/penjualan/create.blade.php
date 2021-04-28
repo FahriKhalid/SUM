@@ -9,12 +9,12 @@
 	            <a href="{{ url("penjualan/salesorder/index/".$id) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
 	        </div>  
 	    </div> 
-	    @if(PembayaranService::isBayar(Helper::decodex($id)))
+	    {{-- @if(PembayaranService::isBayar(Helper::decodex($id)))
 	    <div class="alert alert-warning mt-3">
 	    	<h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Warning</h4>
 	        Pembayaran belum lunas. Tidak dapat menambahkan data sales order!
 	    </div>
-	    @endif
+	    @endif --}}
 		<div class="card mt-3">  
 			<form id="form-so" enctype="multipart/form-data"> 
 				<div class="card-body" id="layout-parent"> 
@@ -143,11 +143,14 @@
 					<div>
 						<div class="legend bg-red"></div> Stok Habis
 					</div>
-					@if(!PembayaranService::isBayar(Helper::decodex($id)))
+					{{-- @if(!PembayaranService::isBayar(Helper::decodex($id)))
 					@csrf
 					<input type="hidden" name="id_skpp" value="{{ $id }}">
 					<button class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> 
-					@endif
+					@endif --}}
+					@csrf
+					<input type="hidden" name="id_skpp" value="{{ $id }}">
+					<button class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> 
 				</div>
 			</form>
 		</div>

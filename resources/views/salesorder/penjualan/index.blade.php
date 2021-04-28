@@ -41,7 +41,7 @@
 						<tr>
 							<td>{{ $loop->iteration }}.</td>
 							<td>{{ $po->Produk->nama }}</td>
-							<td>{{ (int)$po->kuantitas - (int)$po->totalKuantitasPO() }} MT</td>
+							<td>{{ (float)$po->kuantitas - (float)$po->totalKuantitasPO() }} MT</td>
 							 
 						</tr>
 					@endforeach
