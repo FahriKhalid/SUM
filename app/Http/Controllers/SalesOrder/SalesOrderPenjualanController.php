@@ -141,7 +141,7 @@ class SalesOrderPenjualanController extends Controller
     {
         $rules = [
             'id_skpp'               => 'required',
-            'nomor_so'              => 'required|unique:tr_so,no_so',
+            'nomor_so'              => 'required',
             'nomor_so_pengambilan'  => 'required',
             'supir'                 => 'required|exists:ms_supir,id_supir',
             'tujuan'                => 'required',  
@@ -189,8 +189,7 @@ class SalesOrderPenjualanController extends Controller
         }
 
         DB::beginTransaction();
-        try {
-
+        try { 
             // cek total kuantitas tidak boleh kosong
             $this->SoService->validateAllKuantitas($request->kuantitas);
 
