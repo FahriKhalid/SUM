@@ -275,7 +275,7 @@ class SalesOrderPenjualanController extends Controller
         $id_so = Helper::decodex($id);
 
         $rules = [ 
-            'nomor_so'              => 'required|unique:tr_so,no_so,'.$id_so.',id_so',
+            'nomor_so'              => 'required|unique:tr_so,no_so,'.$id_so.',id_so,deleted_at,NULL',
             'nomor_so_pengambilan'  => 'required',
             'supir'                 => 'required|exists:ms_supir,id_supir',
             'tujuan'                => 'required',   
