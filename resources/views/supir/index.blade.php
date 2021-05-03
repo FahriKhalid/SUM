@@ -70,9 +70,9 @@
 	var data_table = [
         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false}, 
         {data: 'nama',		  name: 'nama'},
-        {data: 'plat_nomor',		  name: 'plat_nomor'},
-        {data: 'kendaraan',		  name: 'kendaraan'},
-        {data: 'no_telepon',		  name: 'no_telepon'},
+        {data: 'no_telepon',  name: 'no_telepon'},
+        {data: 'plat_nomor',  name: 'plat_nomor'},
+        {data: 'kendaraan',	  name: 'kendaraan'},
         {data: 'is_aktif',    name: 'is_aktif'}, 
         {data: 'created_by',  name: 'created_by'},
         {data: 'created_at',  name: 'created_at'}, 

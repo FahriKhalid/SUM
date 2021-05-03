@@ -89,7 +89,7 @@
 										<input type="hidden" name="id_po[]" value="{{ Helper::encodex($barang->id_barang) }}">
 										<div class="d-flex">
 											<div class="input-group">
-												<input type="text" disabled class="form-control number sisa_kuantitas" value="{{ \App\Services\SoService::sisaKuantitasPO($barang->id_barang) }}">
+												<input type="text" disabled class="form-control sisa_kuantitas float" value="{{ \App\Services\SoService::sisaKuantitasPO($barang->id_barang) }}">
 												<div class="input-group-append">
 													<span class="input-group-text">MT</span>
 												</div>
@@ -100,7 +100,7 @@
 											</div>
 
 											<div class="input-group">
-												<input type="text" name="kuantitas[]" autocomplete="off" class="form-control number" value="{{ \App\Services\SoService::sisaKuantitasPO($barang->id_barang) }}">
+												<input type="text" name="kuantitas[]" autocomplete="off" class="form-control float" value="{{ \App\Services\SoService::sisaKuantitasPO($barang->id_barang) }}">
 												<div class="input-group-append">
 													<span class="input-group-text">MT</span>
 												</div>
