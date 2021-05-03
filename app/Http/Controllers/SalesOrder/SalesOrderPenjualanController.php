@@ -141,7 +141,7 @@ class SalesOrderPenjualanController extends Controller
     {
         $rules = [
             'id_skpp'               => 'required',
-            'nomor_so'              => 'required',
+            'nomor_so'              => 'required|unique:tr_so,no_so',
             'nomor_so_pengambilan'  => 'required',
             'supir'                 => 'required|exists:ms_supir,id_supir',
             'tujuan'                => 'required',  
@@ -189,7 +189,8 @@ class SalesOrderPenjualanController extends Controller
         }
 
         DB::beginTransaction();
-        try { 
+        try {
+
             // cek total kuantitas tidak boleh kosong
             $this->SoService->validateAllKuantitas($request->kuantitas);
 
@@ -362,17 +363,18 @@ class SalesOrderPenjualanController extends Controller
                     $sopo->updated_by = Auth::user()->id_user;
                     $sopo->save();
                 } 
-            }
-            
+            } 
+
             // update Supir PO
             if ($so->is_sementara == 1) {
                 $this->SupirSoService->store($so->id_so, $request);
             } else {
-                if($so->SupirAktif[0]->Supir->id_supir != $request->supir){ 
+                if(count($so->SupirAktif) < 1) {
+                    $this->SupirSoService->store($so->id_so, $request);
+                } else if($so->SupirAktif[0]->Supir->id_supir != $request->supir){ 
                     $this->SupirSoService->update($request);
                 }
-            }
-            
+            } 
             
             // lampiran
             $nama_file = Helper::RemoveSpecialChar($this->SoService->nomor($id_so));
