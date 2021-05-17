@@ -26,7 +26,7 @@ class DashboardController extends Controller
         $info["total_penjualan"] = $this->DashboardService->totalPenjualan();
         $info["total_pembelian"] = $this->DashboardService->totalPembelian();
         $info["penjualan"] = $this->DashboardService->penjualan();
-        $info["pembelian"] = $this->DashboardService->pembelian();
+        $info["pembelian"] = $this->DashboardService->pembelian(); 
         $info["total_hutang"] = $this->DashboardService->totalHutang(); 
         $info["total_piutang"] = $this->DashboardService->totalPiutang();
         $info["tren"] = $this->DashboardService->dataTrenPenjualanPembelian();
@@ -111,6 +111,8 @@ class DashboardController extends Controller
             "pembelian" => Helper::currency($pembelian),
             "tren_penjualan" => $data_tren["penjualan"],
             "tren_pembelian" => $data_tren["pembelian"],
+            "tren_penjualan_kumulatif" => $data_tren["penjualan_kumulatif"],
+            "tren_pembelian_kumulatif" => $data_tren["pembelian_kumulatif"],
         ]);
     }
 }

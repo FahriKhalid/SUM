@@ -81,8 +81,13 @@ class DashboardService
 		}
 
 		return DB::select(DB::raw("(
-			SELECT * FROM 
+			SELECT *, @running_total:=@running_total + sales AS penjualan_kumulatif
+			, @running_total2:=@running_total2 + purchase AS pembelian_kumulatif FROM 
 			(
+				SELECT *, IFNULL(penjualan, 0) AS sales, IFNULL(pembelian, 0) AS purchase FROM 
+				(
+					SELECT * FROM 
+					(
 						SELECT * FROM 
 						(SELECT adddate('1970-01-01',t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) tanggal FROM 
 				 		(SELECT 0 i union SELECT 1 union SELECT 2 union SELECT 3 union SELECT 4 union SELECT 5 union SELECT 6 union SELECT 7 union SELECT 8 union SELECT 9) t0,
@@ -91,25 +96,35 @@ class DashboardService
 						(SELECT 0 i union SELECT 1 union SELECT 2 union SELECT 3 union SELECT 4 union SELECT 5 union SELECT 6 union SELECT 7 union SELECT 8 union SELECT 9) t3,
 						(SELECT 0 i union SELECT 1 union SELECT 2 union SELECT 3 union SELECT 4 union SELECT 5 union SELECT 6 union SELECT 7 union SELECT 8 union SELECT 9) t4) v
 						WHERE tanggal BETWEEN DATE('".$start."') AND DATE('".$end."')
-			) AS A
-			LEFT JOIN (
-			    SELECT p.created_at, s.kategori, 
-			       SUM(CASE WHEN s.kategori = 'penjualan' THEN jumlah_pembayaran ELSE 0 END) AS penjualan,
-			       SUM(CASE WHEN s.kategori = 'pembelian' THEN jumlah_pembayaran ELSE 0 END) AS pembelian
-			    FROM tr_pembayaran as p 
-			    JOIN tr_skpp as s ON p.id_skpp = s.id_skpp
-			 	GROUP BY DATE(p.created_at)
-			) as B ON A.tanggal = DATE(B.created_at) 
-			ORDER BY A.tanggal
+					) AS A
+					LEFT JOIN (
+					    SELECT p.created_at,
+					       SUM(CASE WHEN s.kategori = 'penjualan' THEN jumlah_pembayaran ELSE 0 END) AS penjualan,
+					       SUM(CASE WHEN s.kategori = 'pembelian' THEN jumlah_pembayaran ELSE 0 END) AS pembelian
+					    FROM tr_pembayaran as p 
+					    JOIN tr_skpp as s ON p.id_skpp = s.id_skpp
+					 	GROUP BY DATE(p.created_at)
+					) 
+					AS B ON A.tanggal = DATE(B.created_at)  
+				)
+				AS C
+				CROSS JOIN (SELECT @running_total := 0) r
+				CROSS JOIN (SELECT @running_total2 := 0) q
+				ORDER BY tanggal
+			)  
+			AS D
 		)"));
 	}
 
+	 
 	public function dataTrenPenjualanPembelian($start = null, $end = null)
 	{
 		$data = $this->queryPenjualanPembelian($start, $end);
  
 		$penjualan = [];
 		$pembelian = [];
+		$penjualan_kumulatif = [];
+		$pembelian_kumulatif = [];
 		foreach (array_chunk($data, 100) as $item) {
 			foreach ($item as $value) {
 				if ($value->penjualan != null) {
@@ -126,11 +141,29 @@ class DashboardService
 					array_push($pembelian, 0);
 				} 
 			} 
+
+			foreach ($item as $value) {
+				if ($value->penjualan_kumulatif != null) {
+					array_push($penjualan_kumulatif, $value->penjualan_kumulatif);
+				} else {
+					array_push($penjualan_kumulatif, 0);
+				} 
+			} 
+
+			foreach ($item as $value) {
+				if ($value->pembelian_kumulatif != null) {
+					array_push($pembelian_kumulatif, $value->pembelian_kumulatif);
+				} else {
+					array_push($pembelian_kumulatif, 0);
+				} 
+			} 
 		} 
 		
 		return array(
 			"penjualan" => $penjualan,
-			"pembelian" => $pembelian
+			"pembelian" => $pembelian,
+			"penjualan_kumulatif" => $penjualan_kumulatif,
+			"pembelian_kumulatif" => $pembelian_kumulatif
 		);
 	}
 

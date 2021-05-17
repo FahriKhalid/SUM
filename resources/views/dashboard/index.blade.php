@@ -139,6 +139,7 @@
             </div>
 
             <div id="chart"></div>
+            <div id="chart-cumulative"></div>
         </div>
     </div> 
 </div>
@@ -192,7 +193,45 @@
     };
 
     var chart_tren = new ApexCharts(document.querySelector("#chart"), options);
-    chart_tren.render(); 
+    chart_tren.render();
+
+
+    var options_cumulative = {
+        series: [{
+            name: 'Penjualan',
+            data: {!! json_encode($info["tren"]["penjualan_kumulatif"]) !!}
+        }, {
+            name: 'Pembelian',
+            data: {!! json_encode($info["tren"]["pembelian_kumulatif"]) !!}
+        }],
+        chart: {
+            height: 350,
+            type: 'area'
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        yaxis: {
+            labels: {
+                formatter: function (value) {
+                  return formatNumber(value, 2);
+                }
+            },
+        },
+        xaxis: {
+            type: 'datetime',
+            categories: dateRange(start, end)
+        },
+        tooltip: {
+            x: { format: 'dd/MM/yy HH:mm' },
+        },
+    }; 
+
+    var chart_tren_cumulative = new ApexCharts(document.querySelector("#chart-cumulative"), options_cumulative);
+    chart_tren_cumulative.render(); 
 
     $('input[name="dates"]').daterangepicker({
         startDate: start,
@@ -243,6 +282,23 @@
             {
                 name : 'Pembelian',
                 data : resp.tren_pembelian
+            }
+        ]);
+
+        chart_tren_cumulative.updateOptions( {
+            xaxis: { 
+                categories: dates
+            }
+        });
+
+        chart_tren_cumulative.updateSeries([
+            {
+                name : 'Penjualan',
+                data : resp.tren_penjualan_kumulatif
+            },
+            {
+                name : 'Pembelian',
+                data : resp.tren_pembelian_kumulatif
             }
         ]);
     }
