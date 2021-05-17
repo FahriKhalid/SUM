@@ -28,7 +28,7 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ Helper::currency($info["total_penjualan"]) }}</div>
                         </div>
                         <div class="col-auto"> 
-                            <i class="fas fa-arrow-circle-down fa-2x text-gray-300"></i>
+                            <i class="fas fa-arrow-circle-up fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ Helper::currency($info["total_pembelian"]) }}</div>
                         </div>
                         <div class="col-auto"> 
-                            <i class="fas fa-arrow-circle-up fa-2x text-gray-300"></i>
+                            <i class="fas fa-arrow-circle-down fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
