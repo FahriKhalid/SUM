@@ -214,9 +214,10 @@
             name: 'Pembelian',
             data: {!! json_encode($info["tren"]["pembelian"]) !!}
         }],
-        chart: {
+        chart: { 
             height: 350,
-            type: 'area'
+            type: 'bar',
+            stacked: true
         },
         dataLabels: {
             enabled: false
@@ -230,6 +231,9 @@
                   return formatNumber(value, 2);
                 }
             },
+            labels: {
+              minWidth: 40
+            }
         },
         xaxis: {
             type: 'datetime',
@@ -252,7 +256,7 @@
             name: 'Pembelian',
             data: {!! json_encode($info["tren"]["pembelian_kumulatif"]) !!}
         }],
-        chart: {
+        chart: { 
             height: 350,
             type: 'area'
         },
@@ -268,6 +272,9 @@
                   return formatNumber(value, 2);
                 }
             },
+            labels: {
+              minWidth: 40
+            }
         },
         xaxis: {
             type: 'datetime',
