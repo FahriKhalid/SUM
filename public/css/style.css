@@ -168,3 +168,8 @@ ol { margin-left: -23px !important; }
 .border-top-warning {
     border-top: .25rem solid #f6c23e !important;
 }
+
+.form-style {
+    background: #eaecf4;
+    border: none;
+}

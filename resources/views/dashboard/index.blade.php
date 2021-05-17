@@ -95,9 +95,9 @@
                 </div>
                 <div>
                     <div class="input-group">
-                        <input class="form-control" name="dates">
+                        <input class="form-control form-style" name="dates">
                         <div class="input-group-append">
-                            <span class="input-group-text" id="basic-addon2"><i class="fa fa-calendar"></i></span>
+                            <span class="input-group-text border-0" id="basic-addon2"><i class="fa fa-calendar"></i></span>
                         </div>
                     </div>
                 </div>
