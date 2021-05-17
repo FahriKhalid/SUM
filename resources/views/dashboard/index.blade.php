@@ -91,7 +91,7 @@
         <div class="card-body bg-white">
             <div class="d-flex justify-content-between">
                 <div>
-
+                    <h6 class="m-0 font-weight-bold text-dark">TREN PENJUALAN & PEMBELIAN</h6>
                 </div>
                 <div>
                     <div class="input-group">
@@ -145,7 +145,7 @@
             <div class="card shadow-sm border-top-warning">
                 <div class="card-body">
                     <div class="text-center mb-4">
-                        <h6 class="m-0 font-weight-bold text-dark">YOUR TOP CUSTOMERS</h6>
+                        <h6 class="m-0 font-weight-bold text-dark header-text">YOUR TOP CUSTOMERS</h6>
                     </div>
                     <div class="row"> 
                         <div class="col-md-4">
