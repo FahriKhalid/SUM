@@ -101,8 +101,7 @@
 .modal {
     overflow-y: auto !important;
 }
- 
-/* Input field */
+  
 .select2-selection__rendered {  
     color: #858796 !important;
 }
