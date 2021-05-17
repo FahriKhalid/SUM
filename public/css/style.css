@@ -85,7 +85,6 @@
     font-size: 15px;
 }
 
-
 .checkbox-center {
     display: flex;
     justify-content: center;
@@ -127,4 +126,46 @@ ol { margin-left: -23px !important; }
 
 .sidebar.toggled .nav-item .collapse {
     z-index: 2 !important;
+}
+
+.text-top-selling {
+    font-weight: bold;
+    color: #1cc88a;
+    font-size: 20px;
+}
+
+.font-size-20 {
+    font-size: 20px;
+}
+
+.podium-center {
+    position: absolute; 
+    left: 0;
+    right: 0;
+}
+
+.podium-left {
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    width: 50%;
+}
+
+.podium-right {
+    position: absolute;
+    top: 70px;
+    left: 150px;
+    width: 100%;
+}
+
+.border-top-success {
+    border-top: .25rem solid #1cc88a !important;
+}
+
+.border-top-primary {
+    border-top: .25rem solid #4e73df !important;
+}
+
+.border-top-warning {
+    border-top: .25rem solid #f6c23e !important;
 }

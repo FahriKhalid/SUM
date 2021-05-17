@@ -6,8 +6,7 @@
 
 @section('content')
 
-<div class="container-fluid mt-4">
-
+<div class="container-fluid mt-4 mb-4">
     <div class="row mb-3">
         <div class="col-md-12 d-flex justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">DASHBOARD</h6>   
@@ -136,11 +135,55 @@
                         </div>
                     </div>
                 </div> 
-            </div>
-
+            </div> 
             <div id="chart"></div>
             <div id="chart-cumulative"></div>
         </div>
+    </div> 
+
+    <div class="row mt-4 card-deck"> 
+            <div class="card shadow-sm border-top-warning">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h6 class="m-0 font-weight-bold text-dark">YOUR TOP CUSTOMERS</h6>
+                    </div>
+                    <div class="row"> 
+                        <div class="col-md-5">
+                            <img src="{{ asset('img/feedback.png') }}" width="100%">
+                        </div>
+                        <div class="col-md-7">
+                            <ul class="list-group list-group-flush">
+                                @foreach($info["top_customers"] as $top_customers)
+                                    <li class="list-group-item border-0 text-dark font-weight-bold">{{ $top_customers->nama }} 
+                                        <div class="text-warning font-size-20">Rp {{ Helper::currency($top_customers->total) }}</div>
+                                    </li> 
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+
+ 
+            <div class="card shadow-sm border-top-success">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h6 class="m-0 font-weight-bold text-dark">TOP SELLING PRODUCTS</h6>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <img src="{{ asset('img/cart_bag.jpg') }}" width="100%">
+                        </div>
+                        <div class="col-md-7">
+                            <ul class="list-group list-group-flush">
+                                @foreach($info["top_products"] as $top_products)
+                                    <li class="list-group-item border-0 text-dark font-weight-bold"><div class="text-top-selling">{{ $top_products->total }}</div> {{ $top_products->nama }}</li>
+                                @endforeach 
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div> 
     </div> 
 </div>
 

@@ -215,6 +215,16 @@ class DashboardService
 			return 0;
 		} 
 	}
+
+	public function topCustomers()
+	{
+		return DB::table("vw_top_customers")->get();
+	}
+
+	public function topProducts()
+	{
+		return DB::table("vw_top_products")->get();
+	}
 }
 
 
