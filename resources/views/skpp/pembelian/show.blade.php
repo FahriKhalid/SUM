@@ -66,15 +66,13 @@
 		</div>
 
 		<div class="card mt-3 ">  
-			<nav class="alert-primary">
-				<div class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
-					<a class="nav-item text-dark nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-1" role="tab" aria-controls="nav-home" aria-selected="true">Pengajuan SO</a>
-					<a class="nav-item text-dark nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-2" role="tab" aria-controls="nav-home" aria-selected="true">Booking & pembayaran</a>
-					<a class="nav-item text-dark nav-link" id="nav-agt-keluarga-tab" data-toggle="tab" href="#nav-3" role="tab" aria-controls="nav-agt-keluarga" aria-selected="true">SKPP</a> 
+			<nav class="alert-primary border-bottom">
+				<div class="nav nav-tabs nav-justified alert-info" id="nav-tab" role="tablist">
+					<a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-1" role="tab" aria-controls="nav-home" aria-selected="true">Pengajuan SO</a>
+					<a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-2" role="tab" aria-controls="nav-home" aria-selected="true">Booking & pembayaran</a>
+					<a class="nav-item nav-link" id="nav-agt-keluarga-tab" data-toggle="tab" href="#nav-3" role="tab" aria-controls="nav-agt-keluarga" aria-selected="true">SKPP</a> 
 				</div>
 			</nav>
-
-			
 			<div class="tab-content">
 				<div class="tab-pane fade show active" id="nav-1">
 					<div class="card-body">

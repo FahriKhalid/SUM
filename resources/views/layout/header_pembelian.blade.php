@@ -12,5 +12,6 @@
         <li class="nav-item">
             <a class="nav-link text-muted {{ Request::segment(2) == 'invoice' ? 'active' : ''}}" href="{{ url('pembelian/invoice/index/'.$id) }}">Invoice</a>
         </li>       
+        <span class="nav-indicator"></span>
     </ul> 
 </div>
