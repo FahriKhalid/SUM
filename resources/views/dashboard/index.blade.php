@@ -148,13 +148,14 @@
                         <h6 class="m-0 font-weight-bold text-dark">YOUR TOP CUSTOMERS</h6>
                     </div>
                     <div class="row"> 
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <img src="{{ asset('img/feedback.png') }}" width="100%">
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-md-8">
                             <ul class="list-group list-group-flush">
                                 @foreach($info["top_customers"] as $top_customers)
-                                    <li class="list-group-item border-0 text-dark font-weight-bold">{{ $top_customers->nama }} 
+                                    <li class="list-group-item border-0 text-dark font-weight-bold">
+                                        <div>{{ $top_customers->kategori == 'perusahaan' ?  $top_customers->nama.' - '.$top_customers->perusahaan : $top_customers->nama }}</div>
                                         <div class="text-warning font-size-20">Rp {{ Helper::currency($top_customers->total) }}</div>
                                     </li> 
                                 @endforeach
@@ -171,14 +172,18 @@
                         <h6 class="m-0 font-weight-bold text-dark">TOP SELLING PRODUCTS</h6>
                     </div>
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <img src="{{ asset('img/cart_bag.jpg') }}" width="100%">
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-md-8">
                             <ul class="list-group list-group-flush">
                                 @foreach($info["top_products"] as $top_products)
-                                    <li class="list-group-item border-0 text-dark font-weight-bold"><div class="text-top-selling">{{ $top_products->total }}</div> {{ $top_products->nama }}</li>
-                                @endforeach 
+                                    <li class="list-group-item border-0 text-dark font-weight-bold">
+                                        <div class="text-top-selling">{{ $top_products->total }} MT</div> 
+                                        <div>{{ $top_products->nama }} <small class="text-muted">{{ $top_products->spesifikasi }}</small></div>
+                                        
+                                    </li>
+                                @endforeach
                             </ul>
                         </div>
                     </div>
