@@ -79,6 +79,7 @@ class DashboardService
 			$start = Carbon::now()->startOfMonth();
 			$end = Carbon::now()->endOfMonth();
 		}
+		
 		return DB::select(DB::raw("(
 			SELECT *, @running_total:=@running_total + sales AS penjualan_kumulatif
 			, @running_total2:=@running_total2 + purchase AS pembelian_kumulatif FROM 
