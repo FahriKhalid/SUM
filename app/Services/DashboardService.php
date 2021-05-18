@@ -132,31 +132,25 @@ class DashboardService
 				} else {
 					array_push($penjualan, 0);
 				} 
-			} 
 
-			foreach ($item as $value) {
 				if ($value->pembelian != null) {
 					array_push($pembelian, $value->pembelian);
 				} else {
 					array_push($pembelian, 0);
 				} 
-			} 
 
-			foreach ($item as $value) {
 				if ($value->penjualan_kumulatif != null) {
 					array_push($penjualan_kumulatif, $value->penjualan_kumulatif);
 				} else {
 					array_push($penjualan_kumulatif, 0);
 				} 
-			} 
 
-			foreach ($item as $value) {
 				if ($value->pembelian_kumulatif != null) {
 					array_push($pembelian_kumulatif, $value->pembelian_kumulatif);
 				} else {
 					array_push($pembelian_kumulatif, 0);
 				} 
-			} 
+			}  
 		} 
 		
 		return array(
