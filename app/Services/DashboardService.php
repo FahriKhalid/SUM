@@ -73,7 +73,7 @@ class DashboardService
 	}
 
 
-	public function queryPenjualanPembelian($start = null, $end = null)
+	public function queryTrenPenjualanPembelian($start = null, $end = null)
 	{
 		if($start == null || $end == null){
 			$start = Carbon::now()->startOfMonth();
@@ -119,7 +119,7 @@ class DashboardService
 	 
 	public function dataTrenPenjualanPembelian($start = null, $end = null)
 	{
-		$data = $this->queryPenjualanPembelian($start, $end);
+		$data = $this->queryTrenPenjualanPembelian($start, $end);
  
 		$penjualan = [];
 		$pembelian = [];
