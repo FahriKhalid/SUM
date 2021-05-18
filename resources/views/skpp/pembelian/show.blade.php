@@ -66,8 +66,8 @@
 		</div>
 
 		<div class="card mt-3 ">  
-			<nav class="alert-primary border-bottom">
-				<div class="nav nav-tabs nav-justified alert-info" id="nav-tab" role="tablist">
+			<nav class="alert-primary">
+				<div class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
 					<a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-1" role="tab" aria-controls="nav-home" aria-selected="true">Pengajuan SO</a>
 					<a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-2" role="tab" aria-controls="nav-home" aria-selected="true">Booking & pembayaran</a>
 					<a class="nav-item nav-link" id="nav-agt-keluarga-tab" data-toggle="tab" href="#nav-3" role="tab" aria-controls="nav-agt-keluarga" aria-selected="true">SKPP</a> 
@@ -98,9 +98,7 @@
 				</div>
 				<div class="tab-pane fade" id="nav-3">
 					<object data="{{ asset('file_skpp/'.$info["skpp"]->file_skpp) }}#view=FitH" type="application/pdf" width="100%" height="800px">
-						<div class="text-center">
-							<p>File SKPP kosong!</p>
-						</div>
+						@include('layout.not_found', ['message' => 'File tidak ditemukan'])
 					</object>
 				</div>
 			</div>

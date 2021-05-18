@@ -126,14 +126,35 @@
 
 					<div class="form-group mt-3">
 	                    <label>Status <span class="text-danger">*</span></label>
-                    	<div class="form-group">
+                    	{{-- <div class="form-group">
 							@foreach($info["status"] as $status)
 	                    		<div class="custom-control custom-radio custom-control-inline">
 								  	<input type="radio" value="{{ $status->id_status }}" id="{{ $status->status }}" {{ $loop->iteration == 1 ? 'checked' : '' }} name="status" class="custom-control-input">
 								  	<label class="custom-control-label" for="{{ $status->status }}">{{ $status->status }}</label>
 								</div>
                     		@endforeach
-                        </div> 
+                        </div> --}} 
+
+
+                        <div class="row">
+                        	<div class="col-md-6">
+                        		<div class="btn-group btn-block btn-group-toggle" data-toggle="buttons">
+                        			@foreach($info["status"] as $status) 
+										<label class="btn btn-outline-primary mr-2 active" style="border-radius: 10px">
+										    <input type="radio" value="{{ $status->id_status }}" id="{{ $status->status }}" {{ $loop->iteration == 1 ? 'checked' : '' }} name="status"> 
+										    @if(strtolower($status->status) == 'hold')
+										    	<i class="fas fz-20 fa-box"></i>
+										    @elseif(strtolower($status->status) == 'on process')
+										    	<i class="fas fz-20 fa-truck-moving"></i>
+										    @else
+										    	<i class="fas fz-20 fa-truck-loading"></i>
+										    @endif
+										    <div>{{ $status->status }}</div>
+										 </label>
+		                    		@endforeach 
+								</div>
+                        	</div>
+                        </div>
 	                </div>  
 
 	                @include('layout.form_tambah_lampiran')

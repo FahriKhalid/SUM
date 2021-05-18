@@ -223,3 +223,10 @@ ol { margin-left: -23px !important; }
      position: relative;
 }
  
+.fz-20{
+    font-size: 20px;
+}
+
+.br-10{
+    border-radius: 10px;
+}

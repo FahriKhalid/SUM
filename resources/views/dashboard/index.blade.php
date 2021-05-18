@@ -95,9 +95,9 @@
                 </div>
                 <div>
                     <div class="input-group">
-                        <input class="form-control form-style" name="dates">
+                        <input class="form-control bg-light border-0" name="dates">
                         <div class="input-group-append">
-                            <span class="input-group-text border-0" id="basic-addon2"><i class="fa fa-calendar"></i></span>
+                            <span class="input-group-text border-0 bg-light" id="basic-addon2"><i class="fa fa-calendar"></i></span>
                         </div>
                     </div>
                 </div>
@@ -149,7 +149,7 @@
                     </div>
                     <div class="row"> 
                         <div class="col-md-4">
-                            <img src="{{ asset('img/feedback.png') }}" width="100%">
+                            <img src="{{ asset('img/feedback.png') }}" class="d-none d-md-block" width="100%">
                         </div>
                         <div class="col-md-8">
                             <ul class="list-group list-group-flush">
@@ -173,7 +173,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            <img src="{{ asset('img/cart_bag.jpg') }}" width="100%">
+                            <img src="{{ asset('img/cart_bag.jpg') }}" class="d-none d-md-block" width="100%">
                         </div>
                         <div class="col-md-8">
                             <ul class="list-group list-group-flush">
@@ -230,9 +230,6 @@
                 formatter: function (value) {
                   return formatNumber(value, 2);
                 }
-            },
-            labels: {
-              minWidth: 40
             }
         },
         xaxis: {
@@ -271,9 +268,6 @@
                 formatter: function (value) {
                   return formatNumber(value, 2);
                 }
-            },
-            labels: {
-              minWidth: 40
             }
         },
         xaxis: {

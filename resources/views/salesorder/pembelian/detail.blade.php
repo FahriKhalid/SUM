@@ -59,9 +59,7 @@
     </div>
     <div class="tab-pane fade" id="nav-file-sales-order">
         <object data="{{ asset('file_so/'.$info["sales_order"]->file) }}#view=FitH" type="application/pdf" width="100%" height="800px">
-          <div class="text-center">
-              <p>File sales order kosong!</p>
-          </div>
+          @include('layout.not_found', ['message' => 'File tidak ditemukan'])
         </object>
     </div>
 </div>

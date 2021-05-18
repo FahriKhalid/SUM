@@ -44,9 +44,7 @@
     </div>
     <div class="tab-pane fade" id="nav-faktur-pajak">
         <object data="{{ asset('file_skpp/'.$info["booking"]->file_skpp) }}#view=FitH" type="application/pdf" width="100%" height="800px">
-          <div class="text-center">
-              <p>File SKPP kosong!</p>
-          </div>
+          @include('layout.not_found', ['message' => 'File tidak ditemukan'])
         </object>
     </div>
 </div>

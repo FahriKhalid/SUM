@@ -9,9 +9,7 @@
             </div>
             <div class="modal-body p-0">
             	<object data="" type="application/pdf" width="100%" height="800px" id="view-file-lampiran">
-                    <div class="text-center">
-                      <p>file lampiran tidak ditemukan</p>
-                    </div>
+                    @include('layout.not_found', ['message' => 'File tidak ditemukan'])
                 </object>
             </div> 
             <div class="modal-footer">
