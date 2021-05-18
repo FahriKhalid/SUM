@@ -7,7 +7,7 @@
                 Menu
             </div>
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item" {{ Request::segment(1) == 'dashboard' ? 'active' : '' }}>
+            <li class="nav-item {{ Request::segment(1) == 'dashboard' ? 'active' : '' }}">
                 <a class="nav-link" href="{{ url('dashboard') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
