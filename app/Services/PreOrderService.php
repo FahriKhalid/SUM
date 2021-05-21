@@ -34,7 +34,7 @@ class PreOrderService
 	{
 		$info["pre_order"]          = PreOrder::with('CreatedBy','Produsen','Status')->findOrFail($id);
         $info["po"]                 = Barang::with('Produk')->where("id_pre_order", $id)->get();
-        $info["lampiran"]           = Lampiran::where("id_pre_order", $id)->get();
+        $info["lampiran"]           = Lampiran::where("id_reference", $id)->where("kategori", "PRE ORDER")->get();
         $info["profil_perusahaan"]  = DB::table("ms_profil_perusahaan")->first();
         $pdf = PDF::loadview('surat.pembelian.surat_po', compact('info')); 
         
