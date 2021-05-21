@@ -19,7 +19,7 @@
 	<tbody> 
 		@php($sub_total = 0)
 		@foreach($info["sopo"] as $sopo)
-		@php($sub_total += (($sopo->Barang->harga_jual / 1.1) * $sopo->kuantitas))
+		@php($sub_total += (Helper::toFixed($sopo->Barang->harga_jual / 1.1, 2)) * $sopo->kuantitas)
 		<tr>
 			<td>{{ $loop->iteration }}.</td>
 			<td>{{ $sopo->Barang->Produk->nama }}</td>
@@ -28,13 +28,13 @@
 			<td> 
 				<div class="d-flex justify-content-between">
 					<div>IDR</div>
-					<div>{{ Helper::currency($sopo->Barang->harga_jual / 1.1) }}</div>	
+					<div>{{ Helper::currency(Helper::toFixed($sopo->Barang->harga_jual / 1.1, 2)) }}</div>	
 				</div>
 			</td>
 			<td width="250px">
 				<div class="d-flex justify-content-between">
 					<div>IDR</div>
-					<div>{{ Helper::currency(($sopo->Barang->harga_jual / 1.1) * $sopo->kuantitas)  }}</div>
+					<div>{{ Helper::currency((Helper::toFixed($sopo->Barang->harga_jual / 1.1, 2)) * $sopo->kuantitas)  }}</div>
 				</div>
 			</td>
 		</tr>
@@ -46,7 +46,7 @@
 					<div class="input-group-prepend">
 						<span class="input-group-text">IDR</span>
 					</div> 
-					<input type="text" class="form-control numeric" value="{{ Helper::currency($sub_total) }}" name="sub_total">
+					<input type="text" class="form-control numeric" value="{{ Helper::currency(Helper::toFixed($sub_total, 2)) }}" name="sub_total">
 				</div>
 			</td>
 		</tr>
@@ -57,7 +57,7 @@
 					<div class="input-group-prepend">
 						<span class="input-group-text">IDR</span>
 					</div> 
-					<input type="text" class="form-control numeric" value="{{ ($sub_total / 10) }}" name="ppn">
+					<input type="text" class="form-control numeric" value="{{ Helper::currency(Helper::toFixed($sub_total / 10, 2)) }}" name="ppn">
 				</div>
 			</td>
 		</tr>
@@ -68,7 +68,7 @@
 					<div class="input-group-prepend">
 						<span class="input-group-text">IDR</span>
 					</div> 
-					<input type="text" readonly class="form-control numeric" value="{{ Helper::currency($sub_total) + ($sub_total / 10) }}" name="total">
+					<input type="text" readonly class="form-control numeric" value="{{ Helper::currency(Helper::toFixed($sub_total, 2) + (Helper::toFixed($sub_total / 10, 2)), 2) }}" name="total">
 				</div>
 			</td>
 		</tr>
