@@ -69,7 +69,7 @@ class SupirController extends Controller
     { 
         $rules = [
             'nama_supir'            => 'required',
-            'telepon'               => 'required|numeric',
+            'telepon'               => 'nullable|numeric',
             'plat_nomor'            => 'required',
             'kendaraan'             => 'required|max:50',
         ];
@@ -139,7 +139,7 @@ class SupirController extends Controller
     {
         $rules = [
             'nama_supir'            => 'required',
-            'telepon'               => 'required|numeric',
+            'telepon'               => 'nullable|numeric',
             'plat_nomor'            => 'required',
             'kendaraan'             => 'required|max:50',
         ];
