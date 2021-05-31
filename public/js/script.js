@@ -152,7 +152,7 @@ function table(id, url, columns)
 
 
 function refresh_table(selector){
-    $(selector).DataTable().draw(true);
+    $(selector).DataTable().ajax.reload();
 }
 
 

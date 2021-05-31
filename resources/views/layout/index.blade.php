@@ -420,7 +420,7 @@
 
 
         function refresh_table(selector){
-            $(selector).DataTable().draw(true);
+            $(selector).DataTable().draw(false);
         }
 
 
@@ -615,11 +615,11 @@
         function filterDatatable(selector)
         {
             $("body").delegate(selector+" select", "change", function(){
-                $(selector).DataTable().draw(true);
+                $(selector).DataTable().draw(false);
             });
 
             $("body").delegate(selector+" input:not(.datepicker-table)", "keyup", function(){
-                $(selector).DataTable().draw(true);
+                $(selector).DataTable().draw(false);
             });
 
             $('.datepicker-table').each(function() {
@@ -628,7 +628,7 @@
                     uiLibrary: 'bootstrap4',
                     format: 'dd/mm/yyyy',
                     change: function (e) {
-                        $(selector).DataTable().draw(true);
+                        $(selector).DataTable().draw(false);
                     }
                 });
             }); 
