@@ -38,14 +38,12 @@ class SupirController extends Controller
                 return '<span class="badge badge-danger">Tidak aktif</span>';
             }
  
+        })->addColumn('no_telepon', function ($query) {
+            return $query->no_telepon == null ? '-' : $query->no_telepon;
         })->addColumn('created_by', function($data){ 
-
             return $data->CreatedBy->nama;
-            
         })->addColumn('created_on', function($data){ 
-
             return $data->created_on;
-            
         })->rawColumns(['action', 'is_aktif'])->make(true);
     }
 
