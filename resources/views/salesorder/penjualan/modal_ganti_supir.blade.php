@@ -14,7 +14,7 @@
                     <div class="form-group">
                         <label>Supir Lama</label>
                         <div class="form-group"> 
-                            <input type="text" class="form-control" disabled value="{{ $info["so"]->SupirAktif[0]->Supir->nama == null ? "-" : $info["so"]->SupirAktif[0]->Supir->nama }}">
+                            <input type="text" class="form-control" disabled value="{{ $info["so"]->SupirAktif[0]->Supir->nama == null ? "-" : $info["so"]->SupirAktif[0]->Supir->nama." - ".$info["so"]->SupirAktif[0]->Supir->kendaraan." (".$info["so"]->SupirAktif[0]->Supir->plat_nomor.")" }}">
                         </div> 
                     </div>  
                     <div class="form-group">
