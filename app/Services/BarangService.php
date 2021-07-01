@@ -12,7 +12,7 @@ class BarangService
 	public function store($request, $id, $kategori){
 		try {
 			$new_produk = [];
-            for ($i=0; $i < count($request->new_produk) ; $i++) { 
+            for ($i=0; $i < count($request->new_produk) ; $i++) {  
                 if($kategori == "skpp"){
                     $x["id_skpp"] = $id;
                 }else{
@@ -20,7 +20,7 @@ class BarangService
                 }
                 $x["id_produk"] = $request->new_produk[$i];
                 $x["incoterm"] = $request->new_incoterm[$i];
-                $x["kuantitas"] = $request->new_kuantitas[$i];
+                $x["kuantitas"] = Helper::decimal($request->new_kuantitas[$i]);
                 $x["harga_jual"] = Helper::decimal($request->new_harga_jual[$i]);
                 $x["nilai"] = Helper::decimal($request->new_nilai[$i]);
                 $x["created_by"] = Auth::user()->id_user;
@@ -41,7 +41,7 @@ class BarangService
                 $produk = [
                     "id_produk" => $request->produk[$i],
                     "incoterm" => $request->incoterm[$i],
-                    "kuantitas" => $request->kuantitas[$i],
+                    "kuantitas" => Helper::decimal($request->kuantitas[$i]),
                     "harga_jual" => Helper::decimal($request->harga_jual[$i]),
                     "nilai" => Helper::decimal($request->nilai[$i]),
                     "updated_by" => Auth::user()->id_user,

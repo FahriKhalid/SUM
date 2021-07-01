@@ -185,15 +185,15 @@ class PreOrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {    
         $rules = [
             'status'                => 'required|in:1,2',
             'no_po'                 => 'required|unique:tr_pre_order,no_po',
             'produsen'              => 'required|exists:ms_produsen,id_produsen', 
-            'produk.*'              => 'required|exists:ms_produk,id_produk|distinct', 
-            'kuantitas.*'           => 'required',
-            'harga_beli.*'          => 'required',
-            'nilai.*'               => 'required', 
+            'new_produk.*'              => 'required|exists:ms_produk,id_produk|distinct', 
+            'new_kuantitas.*'           => 'required',
+            'new_harga_beli.*'          => 'required',
+            'new_nilai.*'               => 'required', 
         ]; 
  
         $messages = [
@@ -203,25 +203,25 @@ class PreOrderController extends Controller
             'produsen.required'     => 'Produsen waji diisi', 
             'produsen.exists'       => 'Produsen tidak valid',  
             'produk.*.required'     => 'Produk wajib diisi', 
-            'kuantitas.*.required'  => 'Kuantitas wajib diisi',
-            'harga_beli.*.required' => 'Harga beli wajib diisi',
-            'nilai.*.required'      => 'Nilai wajib diisi', 
+            'new_produk.*.required'  => 'Kuantitas wajib diisi',
+            'new_harga_beli.*.required' => 'Harga beli wajib diisi',
+            'new_nilai.*.required'      => 'Nilai wajib diisi', 
         ];
         
         if($request->is_lampiran == 1)
         {
             $rule_lampiran = [
-                'nama_file.*'         => 'required',
-                'file.*'              => 'required|max:2000|mimes:doc,docx,pdf,jpg,jpeg,png', 
+                'new_nama_file.*'         => 'required',
+                'new_file.*'              => 'required|max:2000|mimes:doc,docx,pdf,jpg,jpeg,png', 
             ];
 
             $rules = array_merge($rules, $rule_lampiran);
 
             $message_lampiran = [
-                'nama_file.*.required' => 'Nama file wajib diisi',
-                'file.*.required' => 'File wajib diisi',
-                'file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
-                'file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
+                'new_nama_file.*.required' => 'Nama file wajib diisi',
+                'new_file.*.required' => 'File wajib diisi',
+                'new_file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
+                'new_file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
             ];
 
             $messages = array_merge($messages, $message_lampiran);

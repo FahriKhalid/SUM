@@ -66,7 +66,7 @@
 			<tr>
 				<td align="center">{{ $po->Produk->nama }}</td> 
 				<td align="center">{{ $po->incoterm }}</td> 
-				<td align="center">{{ $po->kuantitas }} MT</td> 
+				<td align="center">{{ Helper::comma($po->kuantitas) }} MT</td> 
 				<td align="center">{{ Helper::currency($po->harga_jual) }}</td> 
 				<td align="center">{{ Helper::currency($po->nilai) }}</td> 
 			</tr> 

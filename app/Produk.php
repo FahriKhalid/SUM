@@ -37,5 +37,8 @@ class Produk extends Model
         ]);
     }
 
-    
+    public function Stok()
+    {
+        return $this->belongsTo(Stok::class, 'id_produk', 'id_produk')->withDefault();
+    }
 }

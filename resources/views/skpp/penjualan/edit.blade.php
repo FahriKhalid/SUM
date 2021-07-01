@@ -133,7 +133,7 @@
 
 		html.find("select").select2("destroy");
 
-		var clone = html.clone();
+		var clone = html.clone(); 
 
 		clone.find('button:last')
 				.prop("disabled", false)
@@ -152,17 +152,18 @@
 
 		clone.find("input").val("");
 		clone.find("select").val("");
-		clone.find(".kuantitas").val(1);
-		
+		clone.find(".kuantitas").val("0,0");
+				
 		var append = $("#form-parent-po").append(clone);
 
+		append.find("tr:last").attr("newdata", true)
 		append.find("select").select2({
 		    theme : 'bootstrap4',
 		    width : '100%'
 		});
 
 		input_numeric();
-		input_number();
+		input_float();
 		total_harga();
 	}
  
@@ -184,13 +185,11 @@
 
 	$("body").delegate(".harga-jual", "keyup", function(){
 		var harga_jual = $(this).val();
-
 		var closest = $(this).closest("tr");
-		
-		var kuantitas = closest.find(".kuantitas").val();
+		var kuantitas = closest.find(".kuantitas").val().replace(",",".");
 
 		if (harga_jual != "" && harga_jual != "0,00") {
-			var hasil = convertNumeric(harga_jual) * parseInt(kuantitas);
+			var hasil = convertNumeric(harga_jual) * parseFloat(kuantitas);
 			closest.find(".nilai").val(formatNumber(hasil.toFixed(2), 2));
 		} else {
 			closest.find(".nilai").val("0,00");
@@ -199,13 +198,49 @@
  		total_harga();
 	});  
 
-	$("body").delegate(".kuantitas", "keyup", function(){
-		var kuantitas = $(this).val();
-		var closest = $(this).closest("tr");
-		var harga_jual = closest.find(".harga-jual").val();
+	$("body").delegate(".kuantitas", "keyup", function(e){ 
+		let parent = $(this);
+		let closest = parent.closest("tr");
+		let kuantitas = parent.val().replace(",", "."); 
+		let sisa_kuantitas = parent.closest("tr").find(".sisa_kuantitas")
+		let jumlah_stok = sisa_kuantitas.attr("sisa");
+		let harga_jual = closest.find(".harga-jual").val();
+
+		if(e.keyCode == 8) {
+			if (parent.closest("tr").attr("newdata")){
+				var hasil = parseFloat(jumlah_stok) - parseFloat(kuantitas); 
+			} else {
+				var hasil = parseFloat(jumlah_stok) + parseFloat(kuantitas); 
+			}
+			
+			if(kuantitas == ""){
+				sisa_kuantitas.val(jumlah_stok.replace(".", ","));
+			} else { 
+				sisa_kuantitas.val(hasil.toString().replace(".", ","));
+			} 
+		} else {	  
+			let hasil = parseFloat(jumlah_stok) - parseFloat(kuantitas); 
+			if(kuantitas == ""){
+				sisa_kuantitas.val(jumlah_stok.replace(".", ","));
+			} else {
+				if(parseFloat(kuantitas) > parseFloat(jumlah_stok)){
+					alert("Kuantitas tidak boleh melebihi dari jumlah stok"); 
+					parent.val(jumlah_stok.toString().replace(".", ","))
+					sisa_kuantitas.val(0);
+				} else {  
+					sisa_kuantitas.val(hasil.toString().replace(".", ","));
+				} 
+			}
+		}
 
 		if (harga_jual != "" && harga_jual != "0,00") {
-			var hasil = convertNumeric(harga_jual) * parseInt(kuantitas);
+			let hasil = 0;
+			if(parseFloat(kuantitas) > parseFloat(parseFloat)){
+				hasil = convertNumeric(harga_jual) * parseFloat(jumlah_stok);
+			} else {
+				hasil = convertNumeric(harga_jual) * parseFloat(kuantitas);
+			}
+
 			closest.find(".nilai").val(formatNumber(hasil.toFixed(2), 2));
 		} else {
 			closest.find(".nilai").val("0,00");
@@ -222,16 +257,21 @@
 			if(nilai != "" && nilai != "0,00"){
 				total += convertNumeric($(this).find(".nilai").val());
 			}
-		});	
+		});	 
 
-		var ppn = total * 10 / 100;
-		var total_harga = total - ppn; 
-		$("#total-ppn").html(formatNumber(ppn, 2));
-		$("#total-harga").html(formatNumber(total_harga, 2));
+		$("#total-harga").html(formatNumber(total, 2));
 	}
  
 
 	$("body").delegate(".select-produk", "change", function(){
+		let val = $(this).val();
+		let tr = $(this).closest("tr");
+		let sisa_kuantitas = tr.find(".sisa_kuantitas");
+
+		// if(val == ""){
+		// 	tr.removeClass("bg-red");
+		// }
+
 		var array = [];
 		$("#form-parent-po").find("tr").each(function(){
 			var val = $(this).find("select").val();
@@ -243,8 +283,42 @@
 		if(checkIfDuplicateExists(array) === true){
 			$(this).val("").change(); 
 			alert("Produk duplikat, silahkan pilih produk lainnya");
+		} else { 
+			if(val != "") {
+				$.ajax({
+					url : '{{ url('stok/jumlah_stok') }}/'+ val,
+					type : 'GET',
+					dataType : 'json',
+					beforeSend : function()
+					{
+						loader(".card", true); 
+					},
+					success : function(resp)
+					{
+						if(resp > 0){
+							sisa_kuantitas.val(resp.replace(".", ","));
+							sisa_kuantitas.attr("sisa", resp);
+						} else {
+							sisa_kuantitas.val("0,0");
+							sisa_kuantitas.attr("sisa", 0.0);
+						}
+
+						if(parseInt(resp) < 1){  
+							tr.addClass("bg-red");  
+						} else {
+							tr.removeClass("bg-red");
+						}
+
+						loader(".card", false);
+					},
+					error : function(jqXHR, exception){
+						errorHandling(jqXHR.status, exception);
+		                loader(".card", false);
+					}
+				});
+			}
 		}
-	});
+	}); 
 
 	var row_po_remove = null;
 

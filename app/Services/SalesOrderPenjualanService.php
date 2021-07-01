@@ -36,12 +36,12 @@ class SalesOrderPenjualanService
                 if($request->kuantitas[$i] != 0)
                 { 
                     $id_barang = Helper::decodex($request->id_barang[$i]); 
-                    $this->SoService->validateMaxKuantitasPO($id_barang, $request->kuantitas[$i]);  
+                    $this->SoService->validateMaxKuantitasPO($id_barang, Helper::decimal($request->kuantitas[$i]));  
 
                     $data_sopo[] = [
                         "id_barang" => $id_barang,
                         "id_so" => $so->id_so,
-                        "kuantitas" => $request->kuantitas[$i],
+                        "kuantitas" => Helper::decimal($request->kuantitas[$i]),
                         "created_by" => Auth::user()->id_user
                     ];
                 } 

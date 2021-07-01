@@ -79,7 +79,8 @@
 								@endphp
 								@foreach($info["po"] as $barang)
 
-								@php($total += \App\Services\SoService::sisaKuantitasPO($barang->id_barang))
+								@php($sisa = \App\Services\SoService::sisaKuantitasPO($barang->id_barang)) 
+								@php($total += $sisa)
 
 								<tr class="{{ \App\Services\SoService::sisaKuantitasPO($barang->id_barang) == 0 ? 'bg-red' : '' }}">
 									<td>{{ $loop->iteration }}.</td>
@@ -89,7 +90,7 @@
 										<input type="hidden" name="id_po[]" value="{{ Helper::encodex($barang->id_barang) }}">
 										<div class="d-flex">
 											<div class="input-group">
-												<input type="text" disabled class="form-control sisa_kuantitas float" value="{{ \App\Services\SoService::sisaKuantitasPO($barang->id_barang) }}">
+												<input type="text" disabled sisa="{{ $sisa }}" class="form-control sisa_kuantitas float" value="0,0">
 												<div class="input-group-append">
 													<span class="input-group-text">MT</span>
 												</div>
@@ -100,7 +101,7 @@
 											</div>
 
 											<div class="input-group">
-												<input type="text" name="kuantitas[]" autocomplete="off" class="form-control float" value="{{ \App\Services\SoService::sisaKuantitasPO($barang->id_barang) }}">
+												<input type="text" name="kuantitas[]" autocomplete="off" class="form-control float" value="{{ Helper::currency($sisa) }}">
 												<div class="input-group-append">
 													<span class="input-group-text">MT</span>
 												</div>
@@ -116,7 +117,7 @@
 							<tfoot>
 								<tr>
 									<td colspan="3" align="right"><b>TOTAL</b></td> 
-									<td class="align-right"> <span id="total-kuantitas">{{ $total }}</span> MT</td>
+									<td class="align-right"> <span id="total-kuantitas">{{ Helper::currency($total) }}</span> MT</td>
 									<td class="border-none"></td>
 									<td class="border-none"></td>
 								</tr>
@@ -225,25 +226,27 @@
 
 	function totalKuantitas()
 	{	
-		var jumlah = 0;
+		let jumlah = 0;
 		$("#tbody-po").find("tr").each(function(){
-			jumlah += parseFloat($(this).find("input[name='kuantitas[]']").val());
-		}); 
-		$("#total-kuantitas").html(jumlah);
+			jumlah += convertNumeric($(this).find("input[name='kuantitas[]']").val()); 
+		});  
+		$("#total-kuantitas").html(formatNumber(jumlah, 1));
 	}
 
-
 	$("body").delegate("input[name='kuantitas[]']", "keyup", function(){
-		totalKuantitas();
- 		var jumlah = $(this).val();
- 		var sisa = parseInt($(this).closest("td").find(".sisa_kuantitas").val());
+		let parent = $(this);
+ 		let kuantitas = parent.val().toString().replace(",", "."); 
+ 		let sisa = parent.closest("td").find(".sisa_kuantitas").attr("sisa");
+ 		let hasil_sisa = parseFloat(sisa) - parseFloat(kuantitas); 
+ 		parent.closest("td").find(".sisa_kuantitas").val(formatNumber(hasil_sisa.toFixed(2)));
 
- 		if(jumlah > sisa){
- 			$(this).val(sisa);
- 			totalKuantitas();
+ 		if(parseFloat(kuantitas) > parseFloat(sisa)){
+ 			parent.val(sisa.toString().replace(".", ",")); 
+ 			parent.closest("td").find(".sisa_kuantitas").val(0)
  			alert("Jumlah kuantitas tidak boleh lebih dari sisa kuantitas");
  		}
- 		
+
+ 		totalKuantitas();
 	});
 </script>
 

@@ -354,11 +354,11 @@
 
             function input_float(){
                 $("input.float:text").inputmask('numeric', {
-                    groupSeparator: '.',
+                     
                     radixPoint : ',',
                     autoGroup: true,
                     digits: 1,
-                    digitsOptional: true,
+                    digitsOptional: false,
                     placeholder: '0,0',
                 });
             }

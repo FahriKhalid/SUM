@@ -191,52 +191,52 @@ class SkppPenjualanController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {    
         $rules = [
-            'status'                => 'required',
-            'nomor_skpp'            => 'required|unique:tr_skpp,no_skpp',
-            'customer'              => 'required|exists:ms_customer,id_customer',
-            'syarat_penyerahan'     => 'required',
-            'batas_akhir_pengambilan'     => 'required',    
-            'produk.*'              => 'required|exists:ms_produk,id_produk|distinct',
-            'incoterm.*'            => 'required',
-            'kuantitas.*'           => 'required|numeric|min:1',
-            'harga_jual.*'          => 'required',
-            'nilai.*'               => 'required',
-            'atm.*'                 => 'required',
+            'status'                        => 'required',
+            'nomor_skpp'                    => 'required|unique:tr_skpp,no_skpp',
+            'customer'                      => 'required|exists:ms_customer,id_customer',
+            'syarat_penyerahan'             => 'required',
+            'batas_akhir_pengambilan'       => 'required',    
+            'new_produk.*'                      => 'required|exists:ms_produk,id_produk|distinct',
+            'new_incoterm.*'                    => 'required',
+            'new_kuantitas.*'                   => 'required|min:1',
+            'new_harga_jual.*'                  => 'required',
+            'new_nilai.*'                       => 'required',
+            'atm.*'                         => 'required',
         ]; 
  
         $messages = [
-            'status.required'               => 'Status tidak valid',
-            'nomor_skpp.required'           => 'Nomor SKPP wajib diisi', 
-            'nomor_skpp.unique'             => 'Nomor SKPP sudah pernah terdaftar pilih nomor SKPP yang lain',
-            'customer.required'             => 'Customer waji diisi', 
-            'customer.exists'               => 'Customer tidak valid',
-            'syarat_penyerahan.required'    => 'Gudang pengambilan wajib diisi',
-            'batas_akhir_pengambilan.required'    => 'Batas akhir pengambilan wajib diisi', 
-            'incoterm.*.required'           => 'Incoterm wajib diisi',
-            'produk.*.required'             => 'Produk wajib diisi', 
-            'kuantitas.*.required'          => 'Kuantitas wajib diisi',
-            'kuantitas.*.min'               => 'Kuantitas tidak boleh 0',
-            'harga_jual.*.required'         => 'Harga jual wajib diisi',
-            'nilai.*.required'              => 'Nilai wajib diisi',
-            'atm.*.required'                  => 'ATM wajib diisi',
-            'atm.*.exists'                    => 'ATM tidak valid'
+            'status.required'                       => 'Status tidak valid',
+            'nomor_skpp.required'                   => 'Nomor SKPP wajib diisi', 
+            'nomor_skpp.unique'                     => 'Nomor SKPP sudah pernah terdaftar pilih nomor SKPP yang lain',
+            'customer.required'                     => 'Customer waji diisi', 
+            'customer.exists'                       => 'Customer tidak valid',
+            'syarat_penyerahan.required'            => 'Gudang pengambilan wajib diisi',
+            'batas_akhir_pengambilan.required'      => 'Batas akhir pengambilan wajib diisi', 
+            'new_incoterm.*.required'                   => 'Incoterm wajib diisi',
+            'new_produk.*.required'                     => 'Produk wajib diisi', 
+            'new_kuantitas.*.required'                  => 'Kuantitas wajib diisi',
+            'new_kuantitas.*.min'                       => 'Kuantitas tidak boleh 0',
+            'new_harga_jual.*.required'                 => 'Harga jual wajib diisi',
+            'new_nilai.*.required'                      => 'Nilai wajib diisi',
+            'atm.*.required'                        => 'ATM wajib diisi',
+            'atm.*.exists'                          => 'ATM tidak valid'
         ];
 
         if($request->is_lampiran == 1){
             $rule_lampiran = [
-                'nama_file.*'         => 'required',
-                'file.*'              => 'required|max:2000|mimes:doc,docx,pdf,jpg,jpeg,png', 
+                'new_nama_file.*'         => 'required',
+                'new_file.*'              => 'required|max:2000|mimes:doc,docx,pdf,jpg,jpeg,png', 
             ];
 
             $rules = array_merge($rules, $rule_lampiran);
 
             $message_lampiran = [
-                'nama_file.*.required' => 'Nama file wajib diisi',
-                'file.*.required' => 'File wajib diisi',
-                'file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
-                'file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
+                'new_nama_file.*.required' => 'Nama file wajib diisi',
+                'new_file.*.required' => 'File wajib diisi',
+                'new_file.*.max' => 'Ukuran file terlalu besar, maks 2 Mb',
+                'new_file.*.mimes' => 'Ekstensi file yang diizinkan hanya jpg, jpeg, png, doc, docx dan pdf',
             ];
 
             $messages = array_merge($messages, $message_lampiran);
@@ -247,7 +247,7 @@ class SkppPenjualanController extends Controller
         if($validator->fails()){ 
             return response()->json(['status' => 'error_validate', 'message' => $validator->errors()->all()]); 
         }
-
+        
         DB::beginTransaction();
         try {
             
@@ -315,9 +315,9 @@ class SkppPenjualanController extends Controller
         $info["skpp"]  = SKPP::with('CreatedBy','Customer','Status','Lampiran')->findOrFail($id_skpp);
         $info["customer"] = Customer::get();
         $info["produk"] = Produk::where("is_aktif", 1)->get();
-        $info["po"] = Barang::where("id_skpp", $id_skpp)->get(); 
+        $info["po"] = Barang::with("Stok")->where("id_skpp", $id_skpp)->get(); 
         $info["atm"] = ATM::where("is_aktif", 1)->get();
-
+         
         $info["id_atm"] = [];
         foreach ($info["skpp"]->SKPPATM as $value) {
             $info["id_atm"][] = $value->id_atm;
@@ -374,7 +374,10 @@ class SkppPenjualanController extends Controller
         {
             $rule_new_produk = [
                 'new_produk.*'      => 'required|exists:ms_produk,id_produk|distinct',
-                'new_incoterm.*'    => 'required' 
+                'new_incoterm.*'    => 'required',
+                'new_harga_jual.*'  => 'required',
+                'new_kuantitas.*'   => 'required',
+                'new_nilai.*'       => 'required'
             ];
 
             $messages_new_produk = [ 
@@ -457,7 +460,7 @@ class SkppPenjualanController extends Controller
             $this->BarangService->update($request, $id);
             
             // insert po
-            if($request->has('new_produk')){
+            if($request->has('new_produk')){ 
                 $this->BarangService->store($request, $id, "skpp");
             }
 

@@ -144,7 +144,7 @@
 						<td>{{ $loop->iteration }}</td>
 						<td>{{ $po->Produk->nama }}</td>
 						<td>{{ $po->incoterm }}</td>
-						<td>{{ $po->kuantitas }} MT</td>
+						<td>{{ Helper::comma($po->kuantitas) }} MT</td>
 						<td>
 							<div class="d-flex justify-content-between">
 								<div>Rp</div>

@@ -19,7 +19,7 @@ class SoService
 
     public function lastKodeSo()
     {
-        $so = SO::selectRaw('left(no_so, 4) as last')->orderBy('last', 'desc')->first();
+        $so = SO::withTrashed()->selectRaw('left(no_so, 4) as last')->orderBy('last', 'desc')->first();
          
         if($so){
             $last_number = sprintf("%04d", ((int)substr($so->last, 0, 4) + 1));
@@ -40,7 +40,7 @@ class SoService
             $kuantitas = $this->sisaKuantitasPO($id_barang, $id_so_po);
         } 
     
-        if($jumlah > $kuantitas){
+        if((float)$jumlah > (float)$kuantitas){
             throw new \Exception("Maksimal kuantitas tidak boleh lebih dari ".  $kuantitas, 1);
         }
     }
@@ -49,14 +49,12 @@ class SoService
     { 
         $po = Barang::findOrFail($id_barang); 
         if($id_so_po != null){
-            $kuantitas = SOPO::where("id_barang", $id_barang)->where("id_so_po", "!=", $id_so_po)->sum("kuantitas");
-            $sisa = $po->kuantitas - $kuantitas;
+            $kuantitas = SOPO::where("id_barang", $id_barang)->where("id_so_po", "!=", $id_so_po)->sum("kuantitas"); 
         } else {
-            $kuantitas = SOPO::where("id_barang", $id_barang)->sum("kuantitas");
-             
-            $sisa = $po->kuantitas - $kuantitas;
+            $kuantitas = SOPO::where("id_barang", $id_barang)->sum("kuantitas"); 
         } 
-
+        
+        $sisa = $po->kuantitas - $kuantitas;
         return $sisa;
     }
 

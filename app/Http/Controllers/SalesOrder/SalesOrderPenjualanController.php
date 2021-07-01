@@ -349,32 +349,13 @@ class SalesOrderPenjualanController extends Controller
             $so->no_so_pengambilan = $request->nomor_so_pengambilan; 
             $so->tujuan = $request->tujuan;
             $so->updated_by = Auth::user()->id_user;
-            $so->save();
- 
-            for ($i=0; $i < count($request->id_so_po) ; $i++) 
-            { 
-                if($request->kuantitas[$i] != 0)
-                {
-                    $id_so_po = Helper::decodex($request->id_so_po[$i]);
+            $so->save(); 
 
-                    $sopo = SOPO::findOrFail($id_so_po);
-                    $this->SoService->validateMaxKuantitasPO($sopo->id_barang, $request->kuantitas[$i], $id_so_po);
-                    $sopo->kuantitas = $request->kuantitas[$i];
-                    $sopo->updated_by = Auth::user()->id_user;
-                    $sopo->save();
-                } 
-            } 
+            // Update SOPO
+            $this->SoPoService->update($request);
 
-            // update Supir PO
-            if ($so->is_sementara == 1) {
-                $this->SupirSoService->store($so->id_so, $request);
-            } else {
-                if(count($so->SupirAktif) < 1) {
-                    $this->SupirSoService->store($so->id_so, $request);
-                } else if($so->SupirAktif[0]->Supir->id_supir != $request->supir){ 
-                    $this->SupirSoService->update($request);
-                }
-            } 
+            // update Supir PO 
+            $this->SupirSoService->update($so, $request); 
             
             // lampiran
             $nama_file = Helper::RemoveSpecialChar($this->SoService->nomor($id_so));

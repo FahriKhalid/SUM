@@ -23,16 +23,19 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $info["total_penjualan"] = $this->DashboardService->totalPenjualan();
-        $info["total_pembelian"] = $this->DashboardService->totalPembelian();
-        $info["penjualan"] = $this->DashboardService->penjualan();
-        $info["pembelian"] = $this->DashboardService->pembelian(); 
-        $info["total_hutang"] = $this->DashboardService->totalHutang(); 
-        $info["total_piutang"] = $this->DashboardService->totalPiutang();
-        $info["tren"] = $this->DashboardService->dataTrenPenjualanPembelian();
-        $info["top_customers"] = $this->DashboardService->topCustomers();
-        $info["top_products"] = $this->DashboardService->topProducts();
-
+        $info["total_penjualan"]    = $this->DashboardService->totalPenjualan();
+        $info["total_pembelian"]    = $this->DashboardService->totalPembelian();
+        $info["penjualan"]          = $this->DashboardService->penjualan();
+        $info["pembelian"]          = $this->DashboardService->pembelian(); 
+        $info["penjualan_produk"]   = $this->DashboardService->penjualanProduk();
+        $info["pembelian_produk"]   = $this->DashboardService->pembelianProduk(); 
+        $info["total_hutang"]       = $this->DashboardService->totalHutang(); 
+        $info["total_piutang"]      = $this->DashboardService->totalPiutang();
+        $info["tren"]               = $this->DashboardService->dataTrenPenjualanPembelian();
+        $info["top_customers"]      = $this->DashboardService->topCustomers();
+        $info["top_products"]       = $this->DashboardService->topProducts();
+        $info["tren_produk"]        = $this->DashboardService->dataTrenProduk(); 
+         
         return view('dashboard.index', compact("info"));
     }
 
@@ -107,14 +110,21 @@ class DashboardController extends Controller
         $penjualan = $this->DashboardService->penjualan($request->start, $request->end);
         $pembelian = $this->DashboardService->pembelian($request->start, $request->end);
         $data_tren = $this->DashboardService->dataTrenPenjualanPembelian($request->start, $request->end);
+        $penjualan_produk = $this->DashboardService->penjualanProduk($request->start, $request->end);
+        $pembelian_produk = $this->DashboardService->pembelianProduk($request->start, $request->end);
+        $data_tren_produk = $this->DashboardService->dataTrenProduk($request->start, $request->end);
         
         return response()->json([
             "penjualan" => Helper::currency($penjualan),
             "pembelian" => Helper::currency($pembelian),
+            "penjualan_produk" => $penjualan_produk,
+            "pembelian_produk" => $pembelian_produk,
             "tren_penjualan" => $data_tren["penjualan"],
             "tren_pembelian" => $data_tren["pembelian"],
             "tren_penjualan_kumulatif" => $data_tren["penjualan_kumulatif"],
             "tren_pembelian_kumulatif" => $data_tren["pembelian_kumulatif"],
+            "tren_penjualan_produk" => $data_tren_produk["penjualan"],
+            "tren_pembelian_produk" => $data_tren_produk["pembelian"],
         ]);
     }
 }

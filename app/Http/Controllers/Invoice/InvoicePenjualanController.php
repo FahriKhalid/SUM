@@ -183,7 +183,7 @@ class InvoicePenjualanController extends Controller
 
         $rules = [ 
             'id_po.*'       => 'required',
-            'kuantitas.*'   => 'required|numeric|min:1',
+            'kuantitas.*'   => 'required|min:1',
             'harga_jual.*'  => 'required',
             'nilai.*'       => 'nullable',
             'sub_total'     => 'required',  

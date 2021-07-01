@@ -242,41 +242,43 @@
     */
 
     $("body").delegate(".kuantitas", "keyup", function(e){
-    	let closest = $(this).closest("tr");
-		let kuantitas = $(this).val(); 
-		let sisa_kuantitas = $(this).closest("td").find(".sisa_kuantitas")
-		let harga_jual = closest.find(".harga-jual").val(); 
+    	let parent = $(this);
+    	let closest = parent.closest("tr");
+		let kuantitas = parent.val().replace(",", "."); 
+		let sisa_kuantitas = parent.closest("td").find(".sisa_kuantitas")
 		let jumlah_stok = sisa_kuantitas.attr("sisa");
+		let harga_jual = closest.find(".harga-jual").val();
 
 		if(e.keyCode == 8) {
+			let hasil = parseFloat(jumlah_stok) - parseFloat(kuantitas); 
 			if(kuantitas == ""){
-				sisa_kuantitas.val(jumlah_stok);
-			} else {
-				sisa_kuantitas.val(parseInt(jumlah_stok) - parseInt(kuantitas));
-			}
+				sisa_kuantitas.val(jumlah_stok.replace(".", ","));
+			} else { 
+				sisa_kuantitas.val(hasil.toString().replace(".", ","));
+			} 
 		} else {	  
+			let hasil = parseFloat(jumlah_stok) - parseFloat(kuantitas); 
+			console.log(hasil)
 			if(kuantitas == ""){
-				sisa_kuantitas.val(jumlah_stok);
+				sisa_kuantitas.val(jumlah_stok.replace(".", ","));
 			} else {
-				 
-				if(parseInt(kuantitas) > parseInt(jumlah_stok)){
-					alert("Kuantitas tidak boleh melebihi dari jumlah stok");
-					$(this).val(jumlah_stok)
+				if(parseFloat(kuantitas) > parseFloat(jumlah_stok)){
+					alert("Kuantitas tidak boleh melebihi dari jumlah stok"); 
+					parent.val(jumlah_stok.toString().replace(".", ","))
 					sisa_kuantitas.val(0);
-				} else {
-					sisa_kuantitas.val(parseInt(jumlah_stok) - parseInt(kuantitas));
-				}
-				
+				} else {  
+					sisa_kuantitas.val(hasil.toString().replace(".", ","));
+				} 
 			}
 		} 
 		
 		if (kuantitas != "") {
 			if (harga_jual != "" && harga_jual != "0,00") {
 				let hasil = 0;
-				if(parseInt(kuantitas) > parseInt(jumlah_stok)){
-					hasil = convertNumeric(harga_jual) * parseInt(jumlah_stok);
+				if(parseFloat(kuantitas) > parseFloat(jumlah_stok)){
+					hasil = convertNumeric(harga_jual) * parseFloat(jumlah_stok);
 				} else {
-					hasil = convertNumeric(harga_jual) * parseInt(kuantitas);
+					hasil = convertNumeric(harga_jual) * parseFloat(kuantitas);
 				}
 				closest.find(".nilai").html(formatNumber(hasil.toFixed(2), 2));
 				closest.find(".nilai").val(formatNumber(hasil.toFixed(2), 2));

@@ -97,7 +97,7 @@
 								<td> 
 									<div class="d-flex">
 										<div class="input-group">
-											<input type="text" disabled class="form-control number sisa_kuantitas" value="0" im-insert="true" style="text-align: right;">
+											<input type="text" disabled class="form-control float sisa_kuantitas" value="0" im-insert="true" style="text-align: right;">
 											<div class="input-group-append">
 												<span class="input-group-text">MT</span>
 											</div>
@@ -106,7 +106,7 @@
 											<i class="fa fa-arrow-right"></i>
 										</div> 
 										<div class="input-group"> 
-			                                <input type="text" value="0" class="form-control kuantitas number" name="kuantitas[]">
+			                                <input type="text" value="0" class="form-control float kuantitas" name="kuantitas[]">
 			                                <div class="input-group-append">
 			                                    <span class="input-group-text">MT</span>
 			                                </div>
@@ -208,6 +208,7 @@
 				.find('i').removeClass("fa-plus").addClass("fa-minus");
 		clone.removeClass("bg-red");
 		clone.find("input").val("");
+		clone.find(".sisa_kuantitas").val("0,0").attr("sisa", "0");
 		clone.find(".kuantitas").val(0);
 		
 		var append = $("#form-parent-po").append(clone);
@@ -218,7 +219,7 @@
 		});
 
 		input_numeric();
-		input_number();
+		input_float();
 		total_harga();
 	}
  
@@ -231,13 +232,11 @@
 
 	$("body").delegate(".harga-jual", "keyup", function(){
 		var harga_jual = $(this).val();
-
 		var closest = $(this).closest("tr");
-		
-		var kuantitas = closest.find(".kuantitas").val();
+		var kuantitas = closest.find(".kuantitas").val().replace(",",".");
 
 		if (harga_jual != "" && harga_jual != "0,00") {
-			var hasil = convertNumeric(harga_jual) * parseInt(kuantitas);
+			var hasil = convertNumeric(harga_jual) * parseFloat(kuantitas);
 			closest.find(".nilai").val(formatNumber(hasil.toFixed(2), 2));
 		} else {
 			closest.find(".nilai").val("0,00");
@@ -248,27 +247,27 @@
 
 	$("body").delegate(".kuantitas", "keyup", function(e){
 
-		let kuantitas = $(this).val(); 
+		let kuantitas = $(this).val().replace(",", "."); 
 		let sisa_kuantitas = $(this).closest("tr").find(".sisa_kuantitas")
 		let jumlah_stok = sisa_kuantitas.attr("sisa");
+		let hasil = parseFloat(jumlah_stok) - parseFloat(kuantitas); 
 
 		if(e.keyCode == 8) {
 			if(kuantitas == ""){
-				sisa_kuantitas.val(jumlah_stok);
-			} else {
-				sisa_kuantitas.val(parseInt(jumlah_stok) - parseInt(kuantitas));
+				sisa_kuantitas.val(jumlah_stok.replace(".", ","));
+			} else { 
+				sisa_kuantitas.val(hasil.toString().replace(".", ","));
 			}
 		} else {	  
 			if(kuantitas == ""){
-				sisa_kuantitas.val(jumlah_stok);
+				sisa_kuantitas.val(jumlah_stok.replace(".", ","));
 			} else {
-				 
-				if(parseInt(kuantitas) > parseInt(jumlah_stok)){
+				if(parseFloat(kuantitas) > parseFloat(jumlah_stok)){
 					alert("Kuantitas tidak boleh melebihi dari jumlah stok");
 					$(this).val(jumlah_stok)
 					sisa_kuantitas.val(0);
-				} else {
-					sisa_kuantitas.val(parseInt(jumlah_stok) - parseInt(kuantitas));
+				} else {  
+					sisa_kuantitas.val(hasil.toString().replace(".", ","));
 				}
 				
 			}
@@ -281,10 +280,10 @@
 
 		if (harga_jual != "" && harga_jual != "0,00") {
 			let hasil = 0;
-			if(parseInt(kuantitas) > parseInt(jumlah_stok)){
-				hasil = convertNumeric(harga_jual) * parseInt(jumlah_stok);
+			if(parseFloat(kuantitas) > parseFloat(parseFloat)){
+				hasil = convertNumeric(harga_jual) * parseFloat(jumlah_stok);
 			} else {
-				hasil = convertNumeric(harga_jual) * parseInt(kuantitas);
+				hasil = convertNumeric(harga_jual) * parseFloat(kuantitas);
 			}
 
 			closest.find(".nilai").val(formatNumber(hasil.toFixed(2), 2));
@@ -307,7 +306,6 @@
 
 		// var ppn = total * 10 / 100;
 		// var total_harga = total - ppn; 
-
 		//$("#total-ppn").html(formatNumber(ppn, 2));
 
 		$("#total-harga").html(formatNumber(total, 2));
@@ -335,8 +333,6 @@
 			tr.removeClass("bg-red");
 			alert("Produk duplikat, silahkan pilih produk lainnya");
 		} else { 
-			
-
 			if(val != "") {
 				$.ajax({
 					url : '{{ url('stok/jumlah_stok') }}/'+ val,
@@ -344,12 +340,17 @@
 					dataType : 'json',
 					beforeSend : function()
 					{
-						loader(".card", true);
+						loader(".card", true); 
 					},
 					success : function(resp)
 					{
-						sisa_kuantitas.val(resp);
-						sisa_kuantitas.attr("sisa", resp);
+						if(resp > 0){
+							sisa_kuantitas.val(resp.replace(".", ","));
+							sisa_kuantitas.attr("sisa", resp);
+						} else {
+							sisa_kuantitas.val("0,0");
+							sisa_kuantitas.attr("sisa", 0.0);
+						}
 
 						if(parseInt(resp) < 1){  
 							tr.addClass("bg-red");  

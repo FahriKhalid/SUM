@@ -77,6 +77,10 @@ class Helper {
 		return str_replace(',', '.', $number);
 	}
 
+	public static function comma($number){
+		return str_replace('.', ',', $number);
+	}
+
 	public static function currency($number) {
 		$number = str_replace('.', ',', $number);
 	    while (true) {

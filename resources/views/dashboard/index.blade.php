@@ -88,7 +88,7 @@
     </div> 
 
     <div class="card shadow-sm" id="card-filter">
-        <div class="card-body bg-white">
+        <div class="card-body">
             <div class="d-flex justify-content-between">
                 <div>
                     <h6 class="m-0 font-weight-bold text-dark">TREN PENJUALAN & PEMBELIAN</h6>
@@ -104,40 +104,101 @@
             </div>
         </div>
         <div class="card-body">  
-            <div class="row">  
-                <div class="col-xl-6 border-right col-md-6 mb-4">
-                    <div class="h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">TOTAL PENJUALAN</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="penjualan">{{ Helper::currency($info["penjualan"]) }}</div>
+            <div class="">
+                
+                <div class="row">  
+                    <div class="col-md-6 mb-3">
+                         <div class="card">
+                            <div class="row">
+                                <div class="col-xs-6 col-md-6 border-right">
+                                    <div class="">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                        TOTAL PENJUALAN
+                                                    </div> 
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="penjualan">{{ Helper::currency($info["penjualan"]) }}</div>  
+                                                </div> 
+                                                <div class="col-auto"> 
+                                                    <i class="fas fa-arrow-circle-up fa-2x text-primary"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-arrow-circle-up fa-2x text-primary"></i>
+
+                                <div class="col-xs-6 col-md-6">
+                                    <div class="">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                        TOTAL PEMBELIAN
+                                                    </div>
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="pembelian">{{ Helper::currency($info["pembelian"]) }}</div>
+                                                </div>
+                                                <div class="col-auto"> 
+                                                    <i class="fas fa-arrow-circle-down fa-2x text-success"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>  
+                            </div> 
+                         </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="row">
+                                <div class="col-xs-6 col-md-6 border-right">
+                                    <div class="">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                        TOTAL PUPUK KELUAR
+                                                    </div> 
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="penjualan-produk">{{ $info["penjualan_produk"] }} MT</div>  
+                                                </div> 
+                                                <div class="col-auto"> 
+                                                    <i class="fas fa-arrow-circle-up fa-2x text-primary"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                                <div class="col-xs-6 col-md-6">
+                                    <div class="">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                        TOTAL PUPUK MASUK
+                                                    </div>
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="pembelian-produk">{{ $info["pembelian_produk"] }} MT</div>
+                                                </div>
+                                                <div class="col-auto"> 
+                                                    <i class="fas fa-arrow-circle-down fa-2x text-success"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> 
                             </div>
                         </div>
                     </div>
-                </div> 
-                <div class="col-xl-6  col-md-6 mb-4">
-                    <div class="h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">TOTAL PEMBELIAN</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="pembelian">{{ Helper::currency($info["pembelian"]) }}</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-arrow-circle-down fa-2x text-success"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> 
-            </div> 
-            <div id="chart"></div>
-            <div id="chart-cumulative"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div id="chart-cumulative"></div> 
+                </div>
+                <div class="col-md-6">
+                    <div id="chart"></div>
+                </div>
+            </div>
         </div>
     </div> 
 
@@ -206,18 +267,33 @@
     let start = moment().clone().startOf('month');
     let end = moment().clone().endOf('month'); 
 
+    let penjualan = {!! json_encode($info["tren_produk"]["penjualan"]) !!};
+    let pembelian = {!! json_encode($info["tren_produk"]["pembelian"]) !!};
+
     var options = {
         series: [{
             name: 'Penjualan',
-            data: {!! json_encode($info["tren"]["penjualan"]) !!}
+            data: penjualan
         }, {
             name: 'Pembelian',
-            data: {!! json_encode($info["tren"]["pembelian"]) !!}
+            data: pembelian
         }],
         chart: { 
             height: 350,
             type: 'bar',
-            stacked: true
+            events: {
+              dataPointSelection: function(event, chartContext, config) {
+                
+                // if(config.seriesIndex == 0){
+                //     console.log(penjualan[config.dataPointIndex])
+                // }
+                // if(config.seriesIndex == 1){
+                //     console.log(pembelian[config.dataPointIndex])
+                // } 
+
+                console.log(config.w.globals.series[config.seriesIndex][config.dataPointIndex])
+              }
+            }
         },
         dataLabels: {
             enabled: false
@@ -228,7 +304,7 @@
         yaxis: {
             labels: {
                 formatter: function (value) {
-                  return formatNumber(value, 2);
+                  return formatNumber(value, 1) + " MT";
                 }
             }
         },
@@ -266,7 +342,7 @@
         yaxis: {
             labels: {
                 formatter: function (value) {
-                  return formatNumber(value, 2);
+                  return "Rp " + formatNumber(value, 2);
                 }
             }
         },
@@ -303,6 +379,8 @@
             success : function(resp){
                 $("#penjualan").html(resp.penjualan);
                 $("#pembelian").html(resp.pembelian); 
+                $("#penjualan-produk").html(resp.penjualan_produk + " MT");
+                $("#pembelian-produk").html(resp.pembelian_produk + " MT");
                 updateChart(start, end, resp);
                 loader('#card-filter', false);
             },
@@ -326,11 +404,11 @@
         chart_tren.updateSeries([
             {
                 name : 'Penjualan',
-                data : resp.tren_penjualan
+                data : resp.tren_penjualan_produk
             },
             {
                 name : 'Pembelian',
-                data : resp.tren_pembelian
+                data : resp.tren_pembelian_produk
             }
         ]);
 

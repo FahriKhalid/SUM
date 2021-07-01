@@ -38,11 +38,11 @@
 				</thead>
 				<tbody>
 					@foreach($info["po"] as $po)
+					@php($kuantitas = (float)$po->kuantitas - (float)$po->totalKuantitasPO())
 						<tr>
 							<td>{{ $loop->iteration }}.</td>
 							<td>{{ $po->Produk->nama }}</td>
-							<td>{{ (float)$po->kuantitas - (float)$po->totalKuantitasPO() }} MT</td>
-							 
+							<td>{{ Helper::comma(Helper::toFixed($kuantitas, 1)) }} MT</td>
 						</tr>
 					@endforeach
 				</tbody>

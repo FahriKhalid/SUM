@@ -56,4 +56,9 @@ class Barang extends Model
     {
         return $this->SOPO()->sum("kuantitas");
     }
+
+    public function Stok()
+    {
+        return $this->belongsTo(Stok::class, 'id_produk', 'id_produk')->withDefault();
+    }
 }

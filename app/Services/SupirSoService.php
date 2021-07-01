@@ -25,14 +25,23 @@ class SupirSoService
         }
     } 
 
-    public function update($request)
+    public function update($so, $request)
     {
-        $id = Helper::decodex($request->id_supir_so);
         try { 
-            $supir = SupirSO::findOrFail($id);
-            $supir->id_supir = $request->supir;
-            $supir->updated_by = Auth::user()->id_user;
-            $supir->save();       
+            if ($so->is_sementara == 1) {
+                self::store($so->id_so, $request);
+            } else {
+                if(count($so->SupirAktif) < 1) {
+                    self::store($so->id_so, $request);
+                } else if($so->SupirAktif[0]->Supir->id_supir != $request->supir){ 
+                    $id = Helper::decodex($request->id_supir_so);
+                    $supir = SupirSO::findOrFail($id);
+                    $supir->id_supir = $request->supir;
+                    $supir->updated_by = Auth::user()->id_user;
+                    $supir->save();       
+
+                }
+            }   
         } catch (\Exception $e) {
             throw new Exception("Update supir tidak berhasil. ".$e->getMessage(), 1);
         }

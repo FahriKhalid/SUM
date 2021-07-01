@@ -5,6 +5,7 @@ use App\Services\BarangService;
 use App\Pembayaran;
 use App\Barang;
 use App\SKPP;
+use App\SOPO;
 use Carbon\Carbon;
 use Helper;
 use Auth;
@@ -18,7 +19,6 @@ class DashboardService
 			$query->where("kategori", "penjualan");
 		})->sum("jumlah_pembayaran"); 
 	}
-
 
 	public function totalPembelian()
 	{
@@ -57,7 +57,6 @@ class DashboardService
 		->sum("jumlah_pembayaran"); 
 	}
 
-
 	public function pembelian($from = null, $to = null)
 	{
 		if($from == null || $to == null){
@@ -72,6 +71,47 @@ class DashboardService
 		->sum("jumlah_pembayaran"); 
 	}
 
+	public function penjualanProduk($from = null, $to = null)
+	{
+		if($from == null || $to == null){
+			$from = Carbon::now()->startOfMonth();
+			$to = Carbon::now()->endOfMonth();
+		}
+
+		return SOPO::whereHas("SO", function($query){
+			$query->whereHas("SKPP", function($query){
+				$query->where("kategori", "penjualan");
+			});
+		})->whereBetween("created_at", [$from, $to])->sum("kuantitas"); 
+	}
+
+	public function pembelianProduk($from = null, $to = null)
+	{
+		if($from == null || $to == null){
+			$from = Carbon::now()->startOfMonth();
+			$to = Carbon::now()->endOfMonth();
+		}
+
+		return SOPO::whereHas("SO", function($query){
+			$query->whereHas("SKPP", function($query){
+				$query->where("kategori", "pembelian");
+			});
+		})->whereBetween("created_at", [$from, $to])->sum("kuantitas"); 
+	}
+
+	// public function dataSumTrenProduk($start = null, $end = null)
+	// {
+	// 	$data = $this->dataTrenProduk($start, $end);
+
+	// 	$penjualan = 0;
+	// 	$pembelian = 0;
+	// 	foreach ($data as $item) { 
+	// 		$penjualan += $item->penjualan;  
+	// 		$pembelian += $item->pembelian;
+	// 	}
+
+	// 	return ["penjualan" => $penjualan, "pembelian" => $pembelian];
+	// }
 
 	public function queryTrenPenjualanPembelian($start = null, $end = null)
 	{
@@ -116,15 +156,64 @@ class DashboardService
 		)"));
 	}
 
+	public function queryTrenProduk($start = null, $end = null){
+
+		if($start == null || $end == null){
+			$start = Carbon::now()->startOfMonth();
+			$end = Carbon::now()->endOfMonth();
+		}
+		
+		return DB::select(DB::raw("(
+			SELECT tanggal, IFNULL(penjualan, 0) AS penjualan, IFNULL(pembelian, 0) AS pembelian FROM 
+			(
+				SELECT * FROM 
+				(SELECT adddate('1970-01-01',t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) tanggal FROM 
+				(SELECT 0 i union SELECT 1 union SELECT 2 union SELECT 3 union SELECT 4 union SELECT 5 union SELECT 6 union SELECT 7 union SELECT 8 union SELECT 9) t0,
+				(SELECT 0 i union SELECT 1 union SELECT 2 union SELECT 3 union SELECT 4 union SELECT 5 union SELECT 6 union SELECT 7 union SELECT 8 union SELECT 9) t1,
+				(SELECT 0 i union SELECT 1 union SELECT 2 union SELECT 3 union SELECT 4 union SELECT 5 union SELECT 6 union SELECT 7 union SELECT 8 union SELECT 9) t2,
+				(SELECT 0 i union SELECT 1 union SELECT 2 union SELECT 3 union SELECT 4 union SELECT 5 union SELECT 6 union SELECT 7 union SELECT 8 union SELECT 9) t3,
+				(SELECT 0 i union SELECT 1 union SELECT 2 union SELECT 3 union SELECT 4 union SELECT 5 union SELECT 6 union SELECT 7 union SELECT 8 union SELECT 9) t4) v
+				WHERE tanggal BETWEEN DATE('".$start."') AND DATE('".$end."')
+			) AS A 
+			LEFT JOIN (
+				SELECT *, SUM(CASE WHEN kategori = 'penjualan' THEN kuantitas ELSE 0 END) AS penjualan, 
+				SUM(CASE WHEN kategori = 'pembelian' THEN kuantitas ELSE 0 END) AS pembelian
+				FROM(
+					SELECT a.created_at, 'penjualan' AS 'kategori', e.nama, a.kuantitas
+					FROM tr_so_po a
+					JOIN tr_so b ON a.id_so = b.id_so
+					JOIN tr_skpp c ON c.id_skpp = b.id_skpp
+					JOIN tr_barang d ON d.id_skpp = c.id_skpp
+					JOIN ms_produk e ON e.id_produk = d.id_produk
+					WHERE c.kategori = 'penjualan' 
+					AND c.deleted_at IS NULL 
+					
+					UNION ALL 
+					
+					SELECT b.created_at, 'pembelian' AS 'kategori', e.nama, b.kuantitas  
+					FROM tr_so a
+					JOIN tr_so_po b ON b.id_so = a.id_so
+					JOIN tr_skpp c ON c.id_skpp = a.id_skpp
+					JOIN tr_barang d ON b.id_barang = d.id_barang
+					JOIN ms_produk e ON e.id_produk = d.id_produk
+					WHERE  c.kategori = 'pembelian' 
+					AND a.deleted_at IS NULL 
+				) AS X GROUP BY DATE(created_at)
+			) 
+			AS B ON A.tanggal = DATE(B.created_at)  
+			ORDER BY A.tanggal ASC
+		)"));
+	}
+
 	 
 	public function dataTrenPenjualanPembelian($start = null, $end = null)
 	{
 		$data = $this->queryTrenPenjualanPembelian($start, $end);
- 
+
 		$penjualan = [];
 		$pembelian = [];
 		$penjualan_kumulatif = [];
-		$pembelian_kumulatif = [];
+		$pembelian_kumulatif = []; 
 		foreach (array_chunk($data, 100) as $item) {
 			foreach ($item as $value) {
 				if ($value->penjualan != null) {
@@ -149,7 +238,7 @@ class DashboardService
 					array_push($pembelian_kumulatif, $value->pembelian_kumulatif);
 				} else {
 					array_push($pembelian_kumulatif, 0);
-				} 
+				}  
 			}  
 		} 
 		
@@ -159,6 +248,42 @@ class DashboardService
 			"penjualan_kumulatif" => $penjualan_kumulatif,
 			"pembelian_kumulatif" => $pembelian_kumulatif
 		);
+	}
+
+
+
+	public function dataTrenProduk($start = null, $end = null)
+	{
+		if($start == null || $end == null){
+			$start = Carbon::now()->startOfMonth(); 
+			$end = Carbon::now()->endOfMonth();
+		}
+
+		$data = $this->queryTrenProduk($start, $end);
+
+		$penjualan = [];
+		$pembelian = [];
+		foreach (array_chunk($data, 100) as $item) {
+			foreach ($item as $value) {
+				if ($value->penjualan != null) {
+					array_push($penjualan, $value->penjualan);
+				} else {
+					array_push($penjualan, 0);
+				} 
+
+				if ($value->pembelian != null) {
+					array_push($pembelian, $value->pembelian);
+				} else {
+					array_push($pembelian, 0);
+				}  
+			}  
+		} 
+
+		return array(
+			"penjualan" => $penjualan,
+			"pembelian" => $pembelian
+		);
+		
 	}
 
 	public function bayar_penjualan()

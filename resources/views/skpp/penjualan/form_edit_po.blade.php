@@ -7,7 +7,7 @@
 		<tr> 
 			<th>Produk <span class="text-danger">*</span></th>
 			<th>Incoterm <span class="text-danger">*</span></th>
-			<th width="170px">Kuantitas <span class="text-danger">*</span></th>
+			<th width="300px">Kuantitas <span class="text-danger">*</span></th>
 			<th>Harga jual <span class="text-danger">*</span></th>
 			<th>Nilai <span class="text-danger">*</span></th>
 			<th width="1px">
@@ -16,13 +16,13 @@
 		</tr>
 	</thead>
 	<tbody id="form-parent-po">
-		@forelse($info["po"] as $barang)
-
+		@forelse($info["po"] as $barang) 
 		@php 
-			$total += floatval($barang->nilai);
+			$total += floatval($barang->nilai); 
+			$sisa = (float)$barang->Stok->jumlah - (float)$barang->kuantitas;
+			$x = (float)$barang->Stok->jumlah;
 		@endphp
-
-		<tr> 
+		<tr newdata="false"> 
 			<td> 
 				<input type="hidden" class="id-po" name="id_po[]" value="{{ Helper::encodex($barang->id_barang) }}">
 				<select class="form-control select2 select-produk" title="Pilih Produk" name="produk[]">
@@ -36,12 +36,23 @@
 				<input type="text" class="form-control" value="{{ $barang->incoterm }}" name="incoterm[]">
 			</td>
 			<td>
-				<div class="input-group"> 
-		            <input type="text" class="form-control kuantitas number" value="{{ $barang->kuantitas }}" name="kuantitas[]">
-		            <div class="input-group-append">
-		                <span class="input-group-text">MT</span>
-		            </div>
-		        </div> 
+				<div class="d-flex">
+					<div class="input-group"> 
+			            <input type="text" disabled sisa="{{ $x }}" class="form-control sisa_kuantitas float" value="{{ Helper::currency($sisa) }}">
+			            <div class="input-group-append">
+			                <span class="input-group-text">MT</span>
+			            </div>
+			        </div> 
+			        <div class="ml-2 mr-2 align-self-center">
+						<i class="fa fa-arrow-right"></i>
+					</div> 
+					<div class="input-group">  
+			            <input type="text" kuantitas="{{ $barang->kuantitas }}" class="form-control kuantitas float" value="{{ Helper::currency($barang->kuantitas) }}" name="kuantitas[]">
+			            <div class="input-group-append">
+			                <span class="input-group-text">MT</span>
+			            </div>
+			        </div> 
+			    </div>
 			</td>
 			<td>
 				<div class="input-group"> 

@@ -14,7 +14,7 @@ $total = 0;
 		<input type="hidden" name="id_barang[]" value="{{ Helper::encodex($barang->id_barang) }}">
 		<div class="d-flex">
 			<div class="input-group">
-				<input type="text" disabled class="form-control number sisa_kuantitas" sisa="{{ $kuantitas }}" value="{{ $kuantitas }}">
+				<input type="text" disabled sisa="{{ $kuantitas }}" class="form-control float sisa_kuantitas" value="{{ Helper::currency($kuantitas) }}">
 				<div class="input-group-append">
 					<span class="input-group-text">MT</span>
 				</div>
@@ -25,7 +25,7 @@ $total = 0;
 			</div>
 
 			<div class="input-group">
-				<input type="text" name="kuantitas[]" autocomplete="off" class="form-control number kuantitas" value="0">
+				<input type="text" name="kuantitas[]" autocomplete="off" class="form-control float kuantitas" value="0">
 				<div class="input-group-append">
 					<span class="input-group-text">MT</span>
 				</div>

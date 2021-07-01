@@ -18,7 +18,7 @@ class SkppAtmService
 	            $x["id_skpp"] = $id_skpp;
 	            $atm[] = $x;
 	        }
-	        DB::table("tr_skpp_atm")->insert($atm);
+	        SKPPATM::insert($atm);
 		} catch (\Exception $e) {
 		 	throw new \Exception("Tambah atm tidak berhasil ". $e->getMessage(), 1);
 		}
