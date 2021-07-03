@@ -81,6 +81,11 @@
 								<td> {{ $info["so"]->SKPP->no_skpp }}</td>
 							</tr> 
 							<tr>
+			                    <th>Tanggal</th>
+			                    <th>:</th>
+			                    <td>{{ $info["so"]->tanggal == null ? '-' : Helper::dateFormat($info["so"]->tanggal, true, 'd/m/Y') }}</td>
+			                </tr>
+							<tr>
 								<th>Nomor SO</th>
 								<th>:</th>
 								<td>{{ $info["so"]->no_so }}</td>

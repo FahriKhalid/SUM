@@ -196,7 +196,7 @@ class InvoicePenjualanController extends Controller
         ]; 
  
         $messages = [ 
-            'tanggal.required'          => 'Tanggal tidak boleh kosong',           
+            'tanggal.required'          => 'Tanggal wajib diisi',           
             'id_po.*.required'          => 'Id PO wajib diisi',
             'kuantitas.*.required'      => 'Kuantitas wajib diisi',
             'kuantitas.*.min'           => 'Kuantitas tidak boleh 0',
@@ -278,6 +278,7 @@ class InvoicePenjualanController extends Controller
         $id_invoice = Helper::decodex($id);
 
         $rules = [
+            'tanggal'               => 'required',
             'nomor_tagihan'         => 'required|string|max:4|min:4',
             'nomor_faktur_pajak'    => 'required|unique:tr_invoice,no_faktur_pajak,'.$id_invoice.',id_invoice', 
             'sub_total'             => 'required',  
@@ -288,11 +289,12 @@ class InvoicePenjualanController extends Controller
         ]; 
  
         $messages = [
+            'tanggal.required'              => 'Tanggal wajib diisi',      
             'nomor_tagihan.required'        => 'Nomor tagihan wajib diisi',  
             'nomor_tagihan.max'             => 'Karakter nomor tagihan terlalu panjang. Maks 4 karakter',
             'nomor_tagihan.min'             => 'Karakter nomor tagihan terlalu pendek. Min 4 karakter',
             'nomor_faktur_pajak.required'   => 'Nomor faktur pajak wajib diisi', 
-            'nomor_resi.required'                   => 'Nomor resi wajib diisi',  
+            'nomor_resi.required'           => 'Nomor resi wajib diisi',  
             'nomor_faktur_pajak.unique'     => 'Nomor faktur pajak sudah pernah terdaftar pilih nomor faktur pajak yang lain',   
             'sub_total.required'            => 'Sub total wajib diisi', 
             'ppn.required'                  => 'PPN wajib diisi', 
@@ -313,6 +315,7 @@ class InvoicePenjualanController extends Controller
         try {  
 
             $invoice = Invoice::findOrFail($id_invoice); 
+            $invoice->tanggal = Helper::dateFormat($request->tanggal, true, 'Y-m-d');
             $invoice->no_tagihan = $request->nomor_tagihan;
             $invoice->no_faktur_pajak = $request->nomor_faktur_pajak;
             $invoice->no_resi = $request->nomor_resi;

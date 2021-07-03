@@ -1,4 +1,4 @@
-@extends('surat.index')
+@extends('surat.index', ["tanggal" => $info["invoice"]->tanggal])
 @section('content')
 
 @section('title')

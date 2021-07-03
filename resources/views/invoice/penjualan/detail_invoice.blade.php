@@ -20,6 +20,11 @@
                     </td>
                 </tr> 
                 <tr>
+                    <th>Tanggal</th>
+                    <th>:</th>
+                    <td>{{ $info["invoice"]->tanggal == null ? '-' : Helper::dateFormat($info["invoice"]->tanggal, true, 'd/m/Y') }}</td>
+                </tr>
+                <tr>
                     <th>Nomor tagihan</th>
                     <th>:</th>
                     <td>{{ $info["invoice"]->no_tagihan == null ? '-' : $info["invoice"]->no_tagihan }}</td>

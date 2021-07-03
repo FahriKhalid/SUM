@@ -21,6 +21,11 @@
                     <td>{{ $info["sales_order"]->SKPP->no_skpp }}</td>
                 </tr>
                 <tr>
+                    <th>Tanggal</th>
+                    <th>:</th>
+                    <td>{{ $info["sales_order"]->tanggal == null ? '-' : Helper::dateFormat($info["sales_order"]->tanggal, true, 'd/m/Y') }}</td>
+                </tr>
+                <tr>
                     <th>Nomor sales order</th>
                     <th>:</th>
                     <td>{{ $info["sales_order"]->no_so }}</td>
