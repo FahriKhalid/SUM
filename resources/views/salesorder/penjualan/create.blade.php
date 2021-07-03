@@ -20,27 +20,34 @@
 				<div class="card-body" id="layout-parent"> 
 
 					<div class="form-row ">
-						<div class="form-group col-md-4">
+						<div class="form-group col-md-6">
+	                        <label>Tanggal <span class="text-danger">*</span></label>
+	                        <div class="form-group"> 
+	                            <input type="text" class="form-control datepicker" value="{{ date('d/m/Y') }}" name="tanggal" placeholder="Wajib di isi"> 
+	                        </div>
+	                    </div> 
+						<div class="form-group col-md-6">
 	                        <label>Nomor SKPP <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
 	                            <input class="form-control" disabled value="{{ $info["skpp"]->no_skpp }}" placeholder="Wajib di isi"> 
 	                        </div>
-	                    </div> 
-						<div class="form-group col-md-4">
+	                    </div>  
+					</div>
+
+					<div class="form-row">
+						<div class="form-group col-md-6">
 	                        <label>Nomor Sales Order <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
 	                            <input class="form-control" name="nomor_so" value="{{ $info["no_so"] }}" placeholder="Wajib di isi"> 
 	                        </div>
 	                    </div>  
-	                    <div class="form-group col-md-4">
+	                    <div class="form-group col-md-6">
 	                        <label>Nomor Sales Order Pengambilan <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
 	                            <input class="form-control" name="nomor_so_pengambilan" placeholder="Wajib di isi"> 
 	                        </div>
 	                    </div>  
 					</div>
-
-					
 					<div class="form-row">
 		                <div class="form-group col-md-6">
 		                    <label>Penanggung jawab <span class="text-danger">*</span></label>

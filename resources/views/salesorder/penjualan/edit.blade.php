@@ -27,28 +27,34 @@
 				<div class="card-body" id="layout-parent"> 
 
 					<div class="form-row ">
-						<div class="form-group col-md-4">
+						<div class="form-group col-md-6">
+	                        <label>Tanggal <span class="text-danger">*</span></label>
+	                        <div class="form-group"> 
+	                            <input type="text" class="form-control datepicker" name="tanggal" value="{{ Helper::dateFormat($info["so"]->tanggal, false, 'd/m/Y') }}" placeholder="Wajib di isi"> 
+	                        </div>
+	                    </div> 
+						<div class="form-group col-md-6">
 	                        <label>Nomor SKPP <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
 	                            <input class="form-control" disabled value="{{ $info["so"]->SKPP->no_skpp }}" placeholder="Wajib diisi"> 
 	                        </div>
-	                    </div> 
-						<div class="form-group col-md-4">
+	                    </div>  
+					</div>
+
+					<div class="form-row">
+						<div class="form-group col-md-6">
 	                        <label>Nomor Sales Order <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
 	                            <input class="form-control" name="nomor_so" value="{{ $info["so"]->no_so }}" placeholder="Wajib diisi"> 
 	                        </div>
 	                    </div> 
-	                    <div class="form-group col-md-4">
+	                    <div class="form-group col-md-6">
 	                        <label>Nomor Sales Order pengambilan<span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
 	                            <input class="form-control" name="nomor_so_pengambilan" value="{{ $info["so"]->no_so_pengambilan }}" placeholder="Wajib diisi"> 
 	                        </div>
 	                    </div> 
-	                     
 					</div>
-
-					
 					<div class="form-row">
 		                <div class="form-group col-md-6">
 		                    <label>Penanggung jawab <span class="text-danger">*</span></label>

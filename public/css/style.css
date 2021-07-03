@@ -230,3 +230,11 @@ ol { margin-left: -23px !important; }
 .br-10{
     border-radius: 10px;
 }
+
+.bg-c-blue {
+    background: linear-gradient(45deg,#4e73df,#c7ffa8);
+}
+
+.bg-c-success {
+    background: linear-gradient(45deg,#4e73df,#c7ffa8);
+}

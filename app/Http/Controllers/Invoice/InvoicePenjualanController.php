@@ -109,6 +109,7 @@ class InvoicePenjualanController extends Controller
     public function store(Request $request, $id)
     { 
         $rules = [
+            'tanggal'               => 'required',
             'nomor_tagihan'         => 'required|string|max:4|min:4',
             'nomor_faktur_pajak'    => 'required|unique:tr_invoice,no_faktur_pajak',
             'so'                    => 'required',
@@ -120,6 +121,7 @@ class InvoicePenjualanController extends Controller
         ]; 
  
         $messages = [
+            'tanggal.required'              => 'Tanggal wajib diisi',
             'nomor_tagihan.required'        => 'Nomor tagihan wajib diisi', 
             'nomor_tagihan.max'             => 'Karakter nomor tagihan terlalu panjang. Maks 4 karakter',
             'nomor_tagihan.min'             => 'Karakter nomor tagihan terlalu pendek. Min 4 karakter',
@@ -150,6 +152,7 @@ class InvoicePenjualanController extends Controller
             $namafile = 'faktur-pajak-'.$request->nomor_faktur_pajak.'.'.$file->getClientOriginalExtension();
 
             $invoice = new Invoice();
+            $invoice->tanggal = Helper::dateFormat($request->tanggal, true, 'Y-m-d');
             $invoice->id_skpp = $id_skpp;
             $invoice->id_so = Helper::decodex($request->so);
             $invoice->no_tagihan = $request->nomor_tagihan;
@@ -182,6 +185,7 @@ class InvoicePenjualanController extends Controller
         $id_skpp = Helper::decodex($id);
 
         $rules = [ 
+            'tanggal'       => 'required',
             'id_po.*'       => 'required',
             'kuantitas.*'   => 'required|min:1',
             'harga_jual.*'  => 'required',
@@ -192,6 +196,7 @@ class InvoicePenjualanController extends Controller
         ]; 
  
         $messages = [ 
+            'tanggal.required'          => 'Tanggal tidak boleh kosong',           
             'id_po.*.required'          => 'Id PO wajib diisi',
             'kuantitas.*.required'      => 'Kuantitas wajib diisi',
             'kuantitas.*.min'           => 'Kuantitas tidak boleh 0',
@@ -214,6 +219,7 @@ class InvoicePenjualanController extends Controller
             $result = $this->SalesOrderPenjualanService->storeSoSementara($request, $id_skpp);
 
             $invoice = new Invoice();
+            $invoice->tanggal = Helper::dateFormat($request->tanggal, true, 'Y-m-d');
             $invoice->id_skpp = $id_skpp;
             $invoice->id_so = $result["id_so"];
             $invoice->ppn = Helper::decimal($request->ppn);

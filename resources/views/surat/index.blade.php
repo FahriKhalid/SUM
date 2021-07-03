@@ -138,7 +138,13 @@
 		
 		<div class="text-center" style="margin-top: -20px">
 			@yield('title') 
-			<div>{{ Helper::dateIndo(date('Y-m-d')) }}</div>
+			<div>
+				@if(isset($tanggal))
+					{{ Helper::dateIndo($tanggal) }}
+				@else
+					{{ Helper::dateIndo(date('Y-m-d')) }}
+				@endif
+			</div>
 		</div>
 		
 		@yield('content')

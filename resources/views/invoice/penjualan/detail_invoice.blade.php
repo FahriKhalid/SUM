@@ -16,7 +16,7 @@
                     <th width="1px">:</th>
                     <td>
                         <div>{{ $info["invoice"]->SKPP->Customer->perusahaan }}</div>
-                        <div>{{ $info["invoice"]->SKPP->Customer->alamat }}</div>
+                        <div><i class="fas fa-map-marker-alt"></i> {{ $info["invoice"]->SKPP->Customer->alamat }}</div>
                     </td>
                 </tr> 
                 <tr>

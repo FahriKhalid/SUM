@@ -15,11 +15,27 @@
 	        Pembayaran belum lunas. Tidak dapat edit invoice!
 	    </div>
 	    @endif --}}
+	    <div class="card border-0 shadow-sm p-3 mt-3 bg-c-blue">
+	    	<table class="table table-borderless table-sm text-white" style="margin-bottom: 0px"> 
+                <tbody>
+                    <tr>
+                        <td width="10%"><b>Customer</b></td>
+                        <td width="1%">:</td>
+                        <td>{{ $info["invoice"]->SKPP->Customer->kategori == "perusahaan" ? $info["invoice"]->SKPP->Customer->perusahaan ." - ". $info["invoice"]->SKPP->Customer->nama : $info["invoice"]->SKPP->Customer->nama }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Nomor SKPP</b></td>
+                        <td>:</td>
+                        <td>{{ $info["invoice"]->SKPP->no_skpp }}</td>
+                    </tr>
+                </tbody>
+            </table>
+	    </div>
 		<div class="card mt-3"> 
 			<form id="form-so" enctype="multipart/form-data"> 
 				<div class="card-body" id="layout-parent">  
 					<div class="form-row ">
-						<div class="form-group col-md-6">
+						{{-- <div class="form-group col-md-6">
 	                        <div class="form-group"> 
 	                        	<label>Customer <span class="text-danger">*</span></label>
 	                            <input class="form-control" disabled value="{{ $info["invoice"]->SKPP->Customer->perusahaan }}" placeholder="Wajib di isi"> 
@@ -30,7 +46,13 @@
 	                        	<label>Alamat <span class="text-danger">*</span></label>
 	                            <input class="form-control" disabled value="{{ $info["invoice"]->SKPP->Customer->alamat }}" placeholder="Wajib diisi"> 
 	                        </div>
-	                    </div> 
+	                    </div>  --}}
+	                    <div class="form-group col-md-6">
+	                        <div class="form-group"> 
+	                        	<label>Tanggal <span class="text-danger">*</span></label>
+	                            <input class="form-control datepicker" name="tanggal" value="{{ Helper::dateFormat($info["invoice"]->tanggal, true, 'd/m/Y') }}" placeholder="Wajib diisi"> 
+	                        </div>
+	                    </div>
 
 						<div class="form-group col-md-6">
 	                        <div class="form-group"> 
@@ -59,7 +81,7 @@
 	                        </div> 
 	                    </div> 
 
-	                    <div class="form-group col-md-12"> 
+	                    <div class="form-group col-md-6"> 
 	                        <div class="form-group"> 
 	                        	<label>Nomor Sales Order <span class="text-danger">*</span></label> 
 	                        	<input type="text" disabled class="form-control" value="{{ $info["invoice"]->SO->no_so }}">

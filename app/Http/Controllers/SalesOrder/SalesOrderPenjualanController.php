@@ -88,6 +88,8 @@ class SalesOrderPenjualanController extends Controller
                         <a class="dropdown-item hapus" url="'.url('penjualan/salesorder/destroy/'.Helper::encodex($data->id_so)).'"  href="javascript:void(0);"><i class="fa fa-trash"></i> Hapus</a>
                     </div>
                 </div>';
+        })->addColumn('tanggal', function($data){ 
+            return $data->tanggal == null ? '-' : Helper::dateFormat($data->tanggal, true, 'd/m/Y');
         })->addColumn('no_so', function($data){ 
             return '<a href="'.url('penjualan/salesorder/show/'.Helper::encodex($data->id_so)).'">'.$data->no_so.'</a>';
         })->addColumn('supir', function($data){ 
@@ -140,6 +142,7 @@ class SalesOrderPenjualanController extends Controller
     public function store($id, Request $request)
     {
         $rules = [
+            'tanggal'               => 'required',
             'id_skpp'               => 'required',
             'nomor_so'              => 'required|unique:tr_so,no_so',
             'nomor_so_pengambilan'  => 'required',
@@ -153,6 +156,7 @@ class SalesOrderPenjualanController extends Controller
         ]; 
  
         $messages = [
+            'tanggal.required'      => 'Tanggal wajib diisi',
             'nomor_so.required'     => 'Nomor sales order wajib diisi', 
             'nomor_so.unique'       => 'Nomor sales order sudah pernah terdaftar pilih nomor sales order yang lain',
             'nomor_so_pengambilan.required'  => 'Nomor sales order pengaambilan wajib diisi',
@@ -197,6 +201,7 @@ class SalesOrderPenjualanController extends Controller
             // insert SO
             $so = new SO();
             $so->id_skpp = Helper::decodex($request->id_skpp);
+            $so->tanggal = Helper::dateFormat($request->tanggal, true, 'Y-m-d');
             $so->no_so = $request->nomor_so; 
             $so->no_so_pengambilan = $request->nomor_so_pengambilan; 
             $so->tujuan = $request->tujuan;
@@ -275,6 +280,7 @@ class SalesOrderPenjualanController extends Controller
         $id_so = Helper::decodex($id);
 
         $rules = [ 
+            'tanggal'               => 'required',
             'nomor_so'              => 'required|unique:tr_so,no_so,'.$id_so.',id_so,deleted_at,NULL',
             'nomor_so_pengambilan'  => 'required',
             'supir'                 => 'required|exists:ms_supir,id_supir',
@@ -285,6 +291,7 @@ class SalesOrderPenjualanController extends Controller
         ]; 
  
         $messages = [
+            'tanggal.required'      => 'Tanggal wajib diisi',
             'nomor_so.required'     => 'Nomor sales order wajib diisi', 
             'nomor_so.unique'       => 'Nomor sales order sudah pernah terdaftar pilih nomor sales order yang lain',
             'nomor_so_pengambilan.required'  => 'Nomor sales order pengaambilan wajib diisi',
@@ -344,6 +351,7 @@ class SalesOrderPenjualanController extends Controller
 
             // insert SO
             $so = SO::findOrFail($id_so); 
+            $so->tanggal = Helper::dateFormat($request->tanggal, true, 'Y-m-d');
             $so->is_sementara = 0;
             $so->no_so = $request->nomor_so; 
             $so->no_so_pengambilan = $request->nomor_so_pengambilan; 

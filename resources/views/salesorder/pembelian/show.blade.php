@@ -68,6 +68,7 @@
 						<th>Nomor SO</th> 
 						<th>Nomor SKPP</th>
 						<th>Total Kuantitas</th> 
+						<th>Tanggal</th> 
 						<th>Created by</th> 
 						<th>Created at</th> 
 						<th width="70px">Aksi</th>
@@ -100,6 +101,7 @@
         {data: 'no_so',       name: 'no_so'}, 
         {data: 'no_skpp',  	  name: 'no_skpp'},   
         {data: 'kuantitas',   name: 'kuantitas'},   
+        {data: 'tanggal',     name: 'tanggal'}, 
         {data: 'created_by',  name: 'created_by'}, 
         {data: 'created_at',  name: 'created_at'}, 
         {data: 'action',      name: 'action', orderable: false,},

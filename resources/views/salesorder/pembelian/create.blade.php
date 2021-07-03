@@ -28,19 +28,25 @@
 				<div class="card-body" id="layout-parent"> 
 					<input type="hidden" name="id_pre_order" value="{{ Helper::encodex($info["skpp"]->id_pre_order) }}">
 					<div class="form-row ">
-						<div class="form-group col-md-4">
+						<div class="form-group col-md-6"> 
+	                        <label>Tanggal <span class="text-danger">*</span></label>
+	                        <div class="form-group"> 
+	                            <input type="text" class="form-control datepicker" value="{{ date('d/m/Y') }}" name="tanggal" placeholder="Wajib di isi"> 
+	                        </div>
+	                    </div>
+						<div class="form-group col-md-6">
 	                        <label>Nomor SKPP <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
 	                            <input class="form-control" disabled value="{{ $info["skpp"]->no_skpp }}" placeholder="Wajib di isi"> 
 	                        </div>
 	                    </div> 
-						<div class="form-group col-md-4">
+						<div class="form-group col-md-6">
 	                        <label>Nomor Sales Order <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
 	                            <input class="form-control" name="nomor_so" placeholder="Wajib di isi"> 
 	                        </div>
 	                    </div> 
-	                    <div class="form-group col-md-4">
+	                    <div class="form-group col-md-6">
 	                        <label>File <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
 	                            <input type="file" accept="application/pdf" class="form-control" name="file" placeholder="Wajib di isi"> 

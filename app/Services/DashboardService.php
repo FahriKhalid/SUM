@@ -186,6 +186,8 @@ class DashboardService
 					JOIN tr_barang d ON d.id_skpp = c.id_skpp
 					JOIN ms_produk e ON e.id_produk = d.id_produk
 					WHERE c.kategori = 'penjualan' 
+					AND a.deleted_at IS NULL  
+					AND b.deleted_at IS NULL
 					AND c.deleted_at IS NULL 
 					
 					UNION ALL 
@@ -196,8 +198,10 @@ class DashboardService
 					JOIN tr_skpp c ON c.id_skpp = a.id_skpp
 					JOIN tr_barang d ON b.id_barang = d.id_barang
 					JOIN ms_produk e ON e.id_produk = d.id_produk
-					WHERE  c.kategori = 'pembelian' 
-					AND a.deleted_at IS NULL 
+					WHERE c.kategori = 'pembelian' 
+					AND a.deleted_at IS NULL  
+					AND b.deleted_at IS NULL
+					AND c.deleted_at IS NULL
 				) AS X GROUP BY DATE(created_at)
 			) 
 			AS B ON A.tanggal = DATE(B.created_at)  

@@ -107,7 +107,7 @@
             <div class="">
                 
                 <div class="row">  
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-12 mb-3">
                          <div class="card">
                             <div class="row">
                                 <div class="col-xs-6 col-md-6 border-right">
@@ -149,7 +149,7 @@
                          </div>
                     </div>
 
-                    <div class="col-md-6 mb-3">
+                    {{-- <div class="col-md-6 mb-3">
                         <div class="card">
                             <div class="row">
                                 <div class="col-xs-6 col-md-6 border-right">
@@ -188,16 +188,16 @@
                                 </div> 
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div id="chart-cumulative"></div> 
                 </div>
-                <div class="col-md-6">
+                {{-- <div class="col-md-6">
                     <div id="chart"></div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div> 

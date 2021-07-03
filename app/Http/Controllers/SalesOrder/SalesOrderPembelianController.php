@@ -88,6 +88,8 @@ class SalesOrderPembelianController extends Controller
                         '.$aksi.'
                     </div>
                 </div>';
+        })->addColumn('tanggal', function($data){ 
+            return $data->tanggal == null ? '-' : Helper::dateFormat($data->tanggal, true, 'd/m/Y');
         })->addColumn('no_so', function($data){ 
             return $data->no_so;
         })->addColumn('kuantitas', function($data){ 
@@ -131,6 +133,7 @@ class SalesOrderPembelianController extends Controller
         $id_pre_order = Helper::decodex($request->id_pre_order);
 
         $rules = [
+            'tanggal'               => 'required',
             'id_skpp'               => 'required',
             'nomor_so'              => 'required|unique:tr_so,no_so,NULL,id_so,deleted_at,NULL', 
             'id_barang'             => 'required|array',
@@ -143,6 +146,7 @@ class SalesOrderPembelianController extends Controller
         ]; 
  
         $messages = [
+            'tanggal.required'      => 'Tanggal wajib diisi',
             'nomor_so.required'     => 'Nomor sales order wajib diisi', 
             'nomor_so.unique'       => 'Nomor sales order sudah pernah terdaftar pilih nomor sales order yang lain',
             'supir.required'        => 'Penanggung jawab wajib diisi', 
@@ -176,6 +180,7 @@ class SalesOrderPembelianController extends Controller
         try { 
             $so = new SO();
             $so->id_skpp = Helper::decodex($request->id_skpp);
+            $so->tanggal = Helper::dateFormat($request->tanggal, true, 'Y-m-d');
             $so->no_so = $request->nomor_so;  
             $so->id_status = $request->status;
             $so->created_by = Auth::user()->id_user;
@@ -263,11 +268,13 @@ class SalesOrderPembelianController extends Controller
         $id_so = Helper::decodex($id);
 
         $rules = [ 
+            'tanggal'               => 'required',
             'nomor_so'              => 'required|unique:tr_so,no_so,'.$id_so.',id_so',   
             'file'                  => 'nullable|sometimes|max:2000|mimes:pdf'
         ]; 
  
         $messages = [
+            'tanggal.required'      => 'Tanggal wajib diisi',
             'nomor_so.required'     => 'Nomor sales order wajib diisi', 
             'nomor_so.unique'       => 'Nomor sales order sudah pernah terdaftar pilih nomor sales order yang lain',  
             'file.max'              => 'Ukuran file sales order terlalu besar. Maks 2 Mb',
@@ -290,7 +297,7 @@ class SalesOrderPembelianController extends Controller
             {
                 rename("file_so/".$so->file, "file_so/".Helper::RemoveSpecialChar($request->nomor_so).'.pdf');
             }
-
+            $so->tanggal = Helper::dateFormat($request->tanggal, true, 'Y-m-d');
             $so->no_so = $request->nomor_so;  
             $so->updated_by = Auth::user()->id_user;
 

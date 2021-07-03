@@ -1,6 +1,6 @@
 @extends('layout.index')
 @section('title', 'SUM - Create Invoice')
-@section('content')
+@section('content')  
 	@php($sub_total = 0)
 	<div class="container-fluid mt-4 mb-4">
 	    <div class="row">
@@ -15,8 +15,25 @@
 	        Pembayaran belum ada. Tidak dapat menambahkan invoice!
 	    </div>
 	    @endif --}}
-		<div class="card mt-3"> 
-			<nav class="alert-primary">
+
+	    <div class="card border-0 shadow-sm p-3 mt-3 bg-c-blue">
+	    	<table class="table table-borderless table-sm text-white" style="margin-bottom: 0px"> 
+                <tbody>
+                    <tr>
+                        <td width="10%"><b>Customer</b></td>
+                        <td width="1%">:</td>
+                        <td>{{ $info["skpp"]->Customer->kategori == "perusahaan" ? $info["skpp"]->Customer->perusahaan ." - ". $info["skpp"]->Customer->nama : $info["skpp"]->Customer->nama }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Nomor SKPP</b></td>
+                        <td>:</td>
+                        <td>{{ $info["skpp"]->no_skpp }}</td>
+                    </tr>
+                </tbody>
+            </table>
+	    </div>
+		<div class="card mt-3">  
+			<nav class="border-bottom">
 				<div class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
 					<a class="nav-item text-dark nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-1" role="tab" aria-controls="nav-home" aria-selected="true">Dengan SO</a>
 					<a class="nav-item text-dark nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-2" role="tab" aria-controls="nav-home" aria-selected="true">Tanpa SO</a> 

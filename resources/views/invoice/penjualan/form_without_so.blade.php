@@ -1,19 +1,13 @@
 <form id="form-without-so"> 
 	<div class="card-body" id="layout-parent">  
-		<div class="form-row ">
-			<div class="form-group col-md-6">
+		<div class="form-row "> 
+			<div class="form-group col-md-12">
 				<div class="form-group"> 
-					<label>Customer <span class="text-danger">*</span></label>
-					<input class="form-control" disabled value="{{ $info["skpp"]->Customer->kategori == "perusahaan" ? $info["skpp"]->Customer->perusahaan : $info["skpp"]->Customer->nama }}" placeholder="Wajib di isi"> 
-				</div> 
-			</div> 
-			<div class="form-group col-md-6"> 
-				<div class="form-group">  
-					<label>Alamat <span class="text-danger">*</span></label>
-					<input class="form-control" disabled value="{{ $info["skpp"]->Customer->alamat }}" placeholder="Wajib diisi"> 
-				</div>
-			</div>   
-		</div> 
+		            <label>Tanggal <span class="text-danger">*</span></label>
+		            <input type="text" class="form-control datepicker" value="{{ date('d/m/Y') }}" name="tanggal" placeholder="Wajib di isi"> 
+		        </div>
+			</div>
+		</div>  
 		<div class="table">
 			<table class="table table-sm table-bordered" id="table-po">
 				<thead>

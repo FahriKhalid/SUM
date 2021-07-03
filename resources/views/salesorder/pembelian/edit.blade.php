@@ -22,19 +22,25 @@
 				<div class="card-body" id="layout-parent"> 
 
 					<div class="form-row ">
-						<div class="form-group col-md-4">
+						<div class="form-group col-md-6"> 
+	                        <label>Tanggal <span class="text-danger">*</span></label>
+	                        <div class="form-group"> 
+	                            <input type="text" class="form-control datepicker" value="{{ Helper::dateFormat($info["so"]->tanggal, false, 'd/m/Y') }}" name="tanggal" placeholder="Wajib di isi"> 
+	                        </div>
+	                    </div>
+						<div class="form-group col-md-6">
 	                        <label>Nomor SKPP <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
 	                            <input class="form-control" disabled value="{{ $info["so"]->SKPP->no_skpp }}" placeholder="Wajib di isi"> 
 	                        </div>
 	                    </div> 
-						<div class="form-group col-md-4">
+						<div class="form-group col-md-6">
 	                        <label>Nomor Sales Order <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
 	                            <input class="form-control" name="nomor_so" value="{{ $info["so"]->no_so }}" placeholder="Wajib di isi"> 
 	                        </div>
 	                    </div> 
-	                    <div class="form-group col-md-4">
+	                    <div class="form-group col-md-6">
 	                        <label>File <span class="text-danger">*</span></label>
 	                        <div class="form-group">  
 	                            <div class="input-group"> 

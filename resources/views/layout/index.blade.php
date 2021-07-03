@@ -473,12 +473,13 @@
         |--------------------------------------------------------------------------
         */
 
-        $('.datepicker').datepicker({
-            showOtherMonths: true,
-            uiLibrary: 'bootstrap4',
-            format: 'dd/mm/yyyy'
-        });
-
+        $('.datepicker').each(function() {
+            $(this).datepicker({
+                showOtherMonths: true,
+                uiLibrary: 'bootstrap4',
+                format: 'dd/mm/yyyy'
+            });
+        });  
 
         /*
         |--------------------------------------------------------------------------
@@ -633,6 +634,7 @@
                 });
             }); 
         }
+ 
     </script>
     @yield('footer')
 

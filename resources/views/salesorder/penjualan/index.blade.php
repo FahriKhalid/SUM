@@ -71,6 +71,7 @@
 						<th>Alat angkut</th> 
 						<th>Tujuan</th> 
 						<th>Status</th> 
+						<th>Tanggal</th>
 						<th width="70px">Aksi</th>
 					</tr>
 				</thead> 
@@ -106,6 +107,7 @@
         {data: 'alat_angkut', name: 'alat_angkut'}, 
         {data: 'tujuan',      name: 'tujuan'},
         {data: 'status',      name: 'status'}, 
+        {data: 'tanggal',       name: 'tanggal'}, 
         {data: 'action',      name: 'action', orderable: false,},
     ];
      
