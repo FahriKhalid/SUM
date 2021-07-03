@@ -317,8 +317,8 @@
         },
     };
 
-    var chart_tren = new ApexCharts(document.querySelector("#chart"), options);
-    chart_tren.render();
+    // var chart_tren = new ApexCharts(document.querySelector("#chart"), options);
+    // chart_tren.render();
 
 
     var options_cumulative = {
@@ -395,22 +395,22 @@
     {
         let dates = dateRange(start, end);
 
-        chart_tren.updateOptions( {
-            xaxis: { 
-                categories: dates
-            }
-        });
+        // chart_tren.updateOptions( {
+        //     xaxis: { 
+        //         categories: dates
+        //     }
+        // });
 
-        chart_tren.updateSeries([
-            {
-                name : 'Penjualan',
-                data : resp.tren_penjualan_produk
-            },
-            {
-                name : 'Pembelian',
-                data : resp.tren_pembelian_produk
-            }
-        ]);
+        // chart_tren.updateSeries([
+        //     {
+        //         name : 'Penjualan',
+        //         data : resp.tren_penjualan_produk
+        //     },
+        //     {
+        //         name : 'Pembelian',
+        //         data : resp.tren_pembelian_produk
+        //     }
+        // ]);
 
         chart_tren_cumulative.updateOptions( {
             xaxis: { 
