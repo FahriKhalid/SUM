@@ -15,7 +15,7 @@
                     <th width="200px">Customer</th>
                     <th width="1px">:</th>
                     <td>
-                        <div>{{ $info["invoice"]->SKPP->Customer->perusahaan }}</div>
+                        <div>{{ $info["invoice"]->SKPP->Customer->kategori == "perusahaan" ? $info["invoice"]->SKPP->Customer->perusahaan ." - ". $info["invoice"]->SKPP->Customer->nama : $info["invoice"]->SKPP->Customer->nama }}</div>
                         <div><i class="fas fa-map-marker-alt"></i> {{ $info["invoice"]->SKPP->Customer->alamat }}</div>
                     </td>
                 </tr> 
