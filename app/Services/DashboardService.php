@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Services\BarangService;
 use App\Pembayaran;
 use App\Barang;
+use App\VwStok;
 use App\SKPP;
 use App\SOPO;
 use Carbon\Carbon;
@@ -214,23 +215,23 @@ class DashboardService
 	{
 		$data = $this->queryTrenPenjualanPembelian($start, $end);
 
-		$penjualan = [];
-		$pembelian = [];
+		// $penjualan = [];
+		// $pembelian = [];
 		$penjualan_kumulatif = [];
 		$pembelian_kumulatif = []; 
 		foreach (array_chunk($data, 100) as $item) {
 			foreach ($item as $value) {
-				if ($value->penjualan != null) {
-					array_push($penjualan, $value->penjualan);
-				} else {
-					array_push($penjualan, 0);
-				} 
+				// if ($value->penjualan != null) {
+				// 	array_push($penjualan, $value->penjualan);
+				// } else {
+				// 	array_push($penjualan, 0);
+				// } 
 
-				if ($value->pembelian != null) {
-					array_push($pembelian, $value->pembelian);
-				} else {
-					array_push($pembelian, 0);
-				} 
+				// if ($value->pembelian != null) {
+				// 	array_push($pembelian, $value->pembelian);
+				// } else {
+				// 	array_push($pembelian, 0);
+				// } 
 
 				if ($value->penjualan_kumulatif != null) {
 					array_push($penjualan_kumulatif, $value->penjualan_kumulatif);
@@ -247,8 +248,8 @@ class DashboardService
 		} 
 		
 		return array(
-			"penjualan" => $penjualan,
-			"pembelian" => $pembelian,
+			// "penjualan" => $penjualan,
+			// "pembelian" => $pembelian,
 			"penjualan_kumulatif" => $penjualan_kumulatif,
 			"pembelian_kumulatif" => $pembelian_kumulatif
 		);
@@ -347,6 +348,27 @@ class DashboardService
 	public function topProducts()
 	{
 		return DB::table("vw_top_products")->get();
+	}
+
+	public function stokProduk()
+	{
+		return VwStok::get();
+	}
+
+	public function dataTrenStokProduk()
+	{
+		$data = self::stokProduk();
+
+		$array = [];
+		foreach ($data as $value) { 
+			$x["produk"] = $value->nama . '<br>' . $value->spesifikasi;
+			$x["jumlah"] = (float) $value->jumlah;  
+			array_push($array, $x);
+		}  
+
+		return array(
+			"data" => $array
+		);
 	}
 }
 

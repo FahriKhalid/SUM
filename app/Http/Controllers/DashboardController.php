@@ -35,7 +35,9 @@ class DashboardController extends Controller
         $info["top_customers"]      = $this->DashboardService->topCustomers();
         $info["top_products"]       = $this->DashboardService->topProducts();
         $info["tren_produk"]        = $this->DashboardService->dataTrenProduk(); 
-         
+        $info["stok_produk"]        = $this->DashboardService->stokProduk();
+        $info["chart_stok_produk"]  = $this->DashboardService->dataTrenStokProduk();
+ 
         return view('dashboard.index', compact("info"));
     }
 
@@ -119,8 +121,8 @@ class DashboardController extends Controller
             "pembelian" => Helper::currency($pembelian),
             "penjualan_produk" => $penjualan_produk,
             "pembelian_produk" => $pembelian_produk,
-            "tren_penjualan" => $data_tren["penjualan"],
-            "tren_pembelian" => $data_tren["pembelian"],
+            // "tren_penjualan" => $data_tren["penjualan"],
+            // "tren_pembelian" => $data_tren["pembelian"],
             "tren_penjualan_kumulatif" => $data_tren["penjualan_kumulatif"],
             "tren_pembelian_kumulatif" => $data_tren["pembelian_kumulatif"],
             "tren_penjualan_produk" => $data_tren_produk["penjualan"],

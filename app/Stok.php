@@ -38,4 +38,9 @@ class Stok extends Model
     {
         return $this->belongsTo(Barang::class,'id_barang','id_barang')->withDefault();
     }
+
+    public function Produk()
+    {
+        return $this->belongsTo(Produk::class,'id_produk','id_produk')->withDefault();
+    }
 }

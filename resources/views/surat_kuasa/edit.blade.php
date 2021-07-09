@@ -32,8 +32,7 @@
 	                            <input class="form-control" name="nomor_sk" value="{{ $info["sk"]->no_sk }}" placeholder="Wajib di isi"> 
 	                        </div>
 	                    </div> 
-					</div>
-
+					</div> 
 					
 					<div class="form-row"> 
 		                <div class="form-group col-md-6">
@@ -41,7 +40,7 @@
 		                    <div class="form-group"> 
 		                        <select class="form-control select2" name="supir">
 		                        	@foreach($info["supir"] as $supir)
-		                        		<option value="{{ $supir->id_supir }}">{{ $supir->nama }} - {{ $supir->plat_nomor }} - {{ $supir->kendaraan }}</option>
+		                        		<option {{ $info["sk"]->id_supir == $supir->id_supir ? "selected" : "" }} value="{{ $supir->id_supir }}">{{ $supir->nama }} - {{ $supir->plat_nomor }} - {{ $supir->kendaraan }}</option>
 		                        	@endforeach
 		                        </select>
 		                    </div> 
@@ -51,7 +50,7 @@
 	                        <div class="form-group"> 
 	                            <select class="form-control select2" name="gudang">
 		                        	@foreach($info["gudang"] as $gudang)
-		                        		<option value="{{ $gudang->id_gudang }}">{{ $gudang->nama }}</option>
+		                        		<option {{ $info["sk"]->id_gudang == $gudang->id_gudang ? "selected" : "" }} value="{{ $gudang->id_gudang }}">{{ $gudang->nama }}</option>
 		                        	@endforeach
 		                        </select>
 	                        </div>
