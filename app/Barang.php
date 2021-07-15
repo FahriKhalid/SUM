@@ -39,12 +39,12 @@ class Barang extends Model
 
     public function SKPP()
     {
-        return $this->belongsTo(SKPP::class,'id_skpp','id_skpp')->withDefault();
+        return $this->belongsTo(SKPP::class,'id_skpp','id_skpp')->withDefault()->withTrashed();
     }
 
     public function Produk()
     {
-        return $this->belongsTo(Produk::class,'id_produk','id_produk')->withDefault();
+        return $this->belongsTo(Produk::class,'id_produk','id_produk')->withDefault()->withTrashed();
     }
 
     public function SOPO()

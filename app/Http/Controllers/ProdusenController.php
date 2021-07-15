@@ -170,7 +170,9 @@ class ProdusenController extends Controller
     public function destroy($id)
     {
         try {
-            Produsen::findOrFail(Helper::decodex($id))->delete();
+            $produsen = Produsen::findOrFail(Helper::decodex($id));
+            $produsen->update(['deleted_by' => Auth::user()->id_user]);
+            $produsen->delete();
             return response()->json(['status' => 'success', 'message' => 'Hapus produsen berhasil']); 
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 

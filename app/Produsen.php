@@ -3,10 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 
 class Produsen extends Model
 {
+    use SoftDeletes;
+    
     protected $table = 'ms_produsen';
     protected $primaryKey = 'id_produsen';
     protected $keyType = 'string';

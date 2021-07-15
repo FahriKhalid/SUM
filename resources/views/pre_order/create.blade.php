@@ -119,24 +119,8 @@
 @endsection
 
 @section('footer')
- 
+<script type="text/javascript" src="{{ asset('js/lampiran.js') }}"></script>
 <script type="text/javascript">
-	$("body").delegate("#show-form-lampiran", "click", function(){
-		if($(this).is(":checked")){
-            $("#form-lampiran").removeClass("d-none"); 
-        }else{
-            $("#form-lampiran").addClass("d-none");
-        }
-	});
-
-	$("body").delegate("#show-form-ongkir", "click", function(){
-		if($(this).is(":checked")){
-            $("#form-ongkir").removeClass("d-none"); 
-        }else{
-            $("#form-ongkir").addClass("d-none");
-        }
-	});
-
 	function addRowPO()
 	{ 
 		var html = $("#form-parent-po").find("tr:last");

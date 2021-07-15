@@ -175,7 +175,9 @@ class ProdukController extends Controller
     public function destroy($id)
     {
         try {
-            Produk::findOrFail(Helper::decodex($id))->delete();
+            $produk = Produk::findOrFail(Helper::decodex($id)); 
+            $produk->update(['deleted_by' => Auth::user()->id_user]);
+            $produk->delete();
             return response()->json(['status' => 'success', 'message' => 'Hapus produk berhasil']); 
         } catch (QueryException $e) {
             if($e->getCode() == "23000"){

@@ -188,7 +188,9 @@ class GudangController extends Controller
     public function destroy($id)
     {
         try {
-            Gudang::findOrFail(Helper::decodex($id))->delete();
+            $gudang = Gudang::findOrFail(Helper::decodex($id));
+            $gudang->update(['deleted_by' => Auth::user()->id_user]);
+            $gudang->delete();
             return response()->json(['status' => 'success', 'message' => 'Hapus gudang berhasil']); 
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 

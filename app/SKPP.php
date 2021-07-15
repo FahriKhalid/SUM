@@ -39,7 +39,7 @@ class SKPP extends Model
 
     public function Customer()
     {
-        return $this->belongsTo(Customer::class,'id_customer','id_customer')->withDefault();
+        return $this->belongsTo(Customer::class,'id_customer','id_customer')->withDefault()->withTrashed();
     } 
 
     public function Status()
@@ -79,7 +79,7 @@ class SKPP extends Model
 
     public function Barang()
     {
-        return $this->hasMany(Barang::class,'id_skpp','id_skpp');   
+        return $this->hasMany(Barang::class,'id_skpp','id_skpp');
     }
 
     public function SO()

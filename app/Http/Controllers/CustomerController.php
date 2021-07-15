@@ -187,7 +187,9 @@ class CustomerController extends Controller
     public function destroy($id)
     {
         try {
-            Customer::findOrFail(Helper::decodex($id))->delete();
+            $customer = Customer::findOrFail(Helper::decodex($id));
+            $customer->update(['deleted_by' => Auth::user()->id_user]);
+            $customer->delete();
             return response()->json(['status' => 'success', 'message' => 'Hapus customer berhasil']); 
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 

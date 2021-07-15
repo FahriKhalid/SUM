@@ -55,12 +55,12 @@ class SuratKuasa extends Model
  
     public function Supir()
     {
-        return $this->belongsTo(Supir::class,'id_supir','id_supir')->withDefault();
+        return $this->belongsTo(Supir::class,'id_supir','id_supir')->withDefault()->withTrashed();
     }
 
     public function Gudang()
     {
-        return $this->belongsTo(Gudang::class,'id_gudang','id_gudang')->withDefault();
+        return $this->belongsTo(Gudang::class,'id_gudang','id_gudang')->withDefault()->withTrashed();
     } 
 
     public function SKSO()

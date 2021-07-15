@@ -63,7 +63,7 @@ class SO extends Model
 
     public function Supir()
     {
-        return $this->belongsTo(Supir::class,'id_supir','id_supir')->withDefault();
+        return $this->belongsTo(Supir::class,'id_supir','id_supir')->withDefault()->withTrashed();
     }
 
     public function SupirSO()

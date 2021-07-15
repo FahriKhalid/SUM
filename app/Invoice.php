@@ -39,7 +39,7 @@ class Invoice extends Model
 
     public function SKPP()
     {
-        return $this->belongsTo(SKPP::class,'id_skpp','id_skpp')->withDefault();
+        return $this->belongsTo(SKPP::class,'id_skpp','id_skpp')->withDefault()->withTrashed();
     }
 
     public function SO()

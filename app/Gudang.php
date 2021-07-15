@@ -3,10 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 
 class Gudang extends Model
 {
+    use SoftDeletes;
+    
     protected $table = 'ms_gudang';
     protected $primaryKey = 'id_gudang';
     protected $keyType = 'string';
@@ -39,6 +42,6 @@ class Gudang extends Model
 
     public function Produsen()
     {
-        return $this->belongsTo(Produsen::class, 'id_produsen', 'id_produsen')->withDefault();
+        return $this->belongsTo(Produsen::class, 'id_produsen', 'id_produsen')->withDefault()->withTrashed();
     }
 }

@@ -182,7 +182,9 @@ class SupirController extends Controller
     public function destroy($id)
     {
         try {
-            Supir::findOrFail(Helper::decodex($id))->delete();
+            $supir = Supir::findOrFail(Helper::decodex($id));
+            $supir->update(['deleted_by' => Auth::user()->id_user]);
+            $supir->delete();
             return response()->json(['status' => 'success', 'message' => 'Hapus supir berhasil']); 
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 

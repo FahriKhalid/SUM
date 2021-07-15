@@ -221,7 +221,9 @@ class UserController extends Controller
     public function destroy($id)
     {
         try {
-            User::findOrFail(Helper::decodex($id))->delete();
+            $user = User::findOrFail(Helper::decodex($id));
+            $user->update(['deleted_by' => Auth::user()->id_user]);
+            $user->delete();
             return response()->json(['status' => 'success', 'message' => 'Hapus user berhasil']); 
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
