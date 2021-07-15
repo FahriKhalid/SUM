@@ -123,8 +123,7 @@
 <script type="text/javascript">
 	function addRowPO()
 	{ 
-		var html = $("#form-parent-po").find("tr:last");
-
+		var html = $("#form-parent-po").find("tr:last"); 
 		html.find("select").select2("destroy");
 
 		var clone = html.clone();
@@ -133,15 +132,11 @@
 		clone.find('button:last').addClass("remove-row-po").removeClass("btn-success")
 				.addClass("btn-danger")
 				.attr("onclick", "")
-				.find('i').removeClass("fa-plus").addClass("fa-minus");
+				.find('i').removeClass("fa-plus").addClass("fa-minus"); 
+		clone.find("input").val(""); 
+		clone.find(".kuantitas").val(1);  
 
-		clone.find("input").val("");
-
-		clone.find(".kuantitas").val(1); 
- 
-		 
-		var append = $("#form-parent-po").append(clone);
-
+		var append = $("#form-parent-po").append(clone); 
 		append.find("select").select2({
 		    theme : 'bootstrap4',
 		    width : '100%'
@@ -172,14 +167,10 @@
 	});
 
 
-	$("body").delegate(".harga-beli", "keyup", function(){
-
-		var harga_jual = $(this).val();
-
-		var closest = $(this).closest("tr");
-		
-		var kuantitas = closest.find(".kuantitas").val(); 
-
+	$("body").delegate(".harga-beli", "keyup", function(){ 
+		var harga_jual = $(this).val(); 
+		var closest = $(this).closest("tr"); 
+		var kuantitas = closest.find(".kuantitas").val();  
 		if (harga_jual != "" && harga_jual != "0,00") {
 			var hasil = convertNumeric(harga_jual) * parseInt(kuantitas);
 
@@ -194,20 +185,15 @@
  		total_harga();
 	});  
 
-	$("body").delegate(".kuantitas", "keyup", function(){
-
-		var kuantitas = $(this).val();
-
-		var closest = $(this).closest("tr");
-		
-		var harga_jual = closest.find(".harga-beli").val();
-
+	$("body").delegate(".kuantitas", "keyup", function(){ 
+		var kuantitas = $(this).val(); 
+		var closest = $(this).closest("tr"); 
+		var harga_jual = closest.find(".harga-beli").val(); 
 		if (harga_jual != "" && harga_jual != "0,00") {
 			var hasil = convertNumeric(harga_jual) * parseInt(kuantitas);
 
 			// let ppn = hasil * 0.1;
-			// hasil = hasil + ppn;
-			
+			// hasil = hasil + ppn; 
 			closest.find(".nilai").val(formatNumber(hasil.toFixed(2), 2));
 		} else {
 			closest.find(".nilai").val("0,00");
@@ -293,8 +279,7 @@
 		});
 	}
  
-	$("body").delegate(".select-produk", "change", function(){
- 
+	$("body").delegate(".select-produk", "change", function(){ 
 		var array = [];
 		$("#form-parent-po").find("tr").each(function(){
 			var val = $(this).find("select").val();

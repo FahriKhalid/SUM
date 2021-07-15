@@ -17,7 +17,7 @@
 		<div class="card mt-3">
 			<div class="card-body">
 				<div class="table-responsive">
-                    <table class="table table-bordered" id="tabel-stok" style="width:100%">
+                    <table class="table table-sm table-bordered" id="tabel-stok" style="width:100%">
                         <thead>
                             <tr>
                             	<th width="1px">No</th> 
