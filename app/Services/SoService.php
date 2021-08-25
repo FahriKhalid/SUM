@@ -51,7 +51,7 @@ class SoService
         if($id_so_po != null){
             $kuantitas = SOPO::where("id_barang", $id_barang)->where("id_so_po", "!=", $id_so_po)->sum("kuantitas"); 
         } else {
-            $kuantitas = SOPO::where("id_barang", $id_barang)->sum("kuantitas"); 
+            $kuantitas = SOPO::where("id_barang", $id_barang)->sum("kuantitas");  
         } 
         
         $sisa = $po->kuantitas - $kuantitas;

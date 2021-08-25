@@ -15,7 +15,7 @@ use App\Services\BarangService;
 use App\Services\StokService;
 use App\Services\SkppService;
 use App\Services\AppService;
-use App\Mail\SendEmail;
+use App\Jobs\SendEmailJob; 
 use App\RiwayatEmail;
 use App\Customer;
 use App\Lampiran;
@@ -24,6 +24,7 @@ use App\Status;
 use App\SKPP;
 use App\ATM;
 use App\Barang;
+use Exception;
 use Validator;
 use Helper;
 use Auth;
@@ -636,8 +637,8 @@ class SkppPenjualanController extends Controller
                     $lampiran[] = $x;
                 }  
             }
-            $pdf = $this->SkppService->suratSKPP($id_skpp); 
-            Mail::to($email_tujuan)->send(new SendEmail("SKPP", $pdf["pdf"], $lampiran)); 
+            
+            dispatch(new SendEmailJob($email_tujuan, "SKPP", $id_skpp, $lampiran));
             $this->AppService->storeRiwayatEmail($id_skpp, "skpp");
 
             DB::commit();

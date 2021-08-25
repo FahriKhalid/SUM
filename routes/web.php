@@ -276,6 +276,7 @@ Route::group(['middleware' => ['auth']], function ()
         Route::get('set', 'CookieController@set'); 
         Route::get('unset', 'CookieController@unset');
     });
+    
     Route::group(['prefix' => 'pencarian'], function() {
         Route::get('', 'PencarianController@search');
     });
