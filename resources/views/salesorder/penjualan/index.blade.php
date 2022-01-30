@@ -42,7 +42,7 @@
 						<tr>
 							<td>{{ $loop->iteration }}.</td>
 							<td>{{ $po->Produk->nama }}</td>
-							<td>{{ Helper::comma(Helper::toFixed($kuantitas, 1)) }} MT</td>
+							<td>{{ Helper::comma($kuantitas) }} MT</td>
 						</tr>
 					@endforeach
 				</tbody>
@@ -136,10 +136,41 @@
 	|--------------------------------------------------------------------------
 	*/
 
+	function checkRelationInvoice(id)
+	{
+		$.ajax({
+	        url : '{{url('penjualan/salesorder/check_invoice')}}/'+id,
+	        type : 'GET',  
+			dataType : "json", 
+			beforeSend: function(resp){
+				loader(".modal-content", true);
+			},
+	        success : function(resp)
+	        { 
+	        	if (resp.invoice != null) {
+	        		$("#alert-delete").html('<div class="alert alert-warning">\
+                            <h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Warning</h4>\
+                            Sales order sudah terhubung dengan invoice '+resp.invoice.no_tagihan+ '\
+                            Invoice akan ikut terhapus jika anda menghapus SO '+resp.so.no_so+'\
+                        </div>')
+	        	} else {
+	        		$("#alert-delete").html("")
+	        	}
+
+	            loader(".modal-content", false);
+	        },
+	        error : function (jqXHR, exception) {
+	            errorHandling(jqXHR.status, exception); 
+	            loader(".modal-content", false);
+	        }
+	    })
+	}
+
 	$("body").delegate(".hapus", "click", function(e){
     	e.preventDefault();  
     	$("#form-hapus").attr("action", $(this).attr("url")); 
     	$("#modal-konfirmasi-hapus").modal("show");
+    	checkRelationInvoice($(this).attr("did"));
     });
 
 	$(document).on("submit", "#form-hapus", function(e){
@@ -168,7 +199,7 @@
 	            errorHandling(jqXHR.status, exception); 
 	            loader(".modal-content", false);
 	        }
-	    })
+	    });
 	});
 
 	var no_so = null;

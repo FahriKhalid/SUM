@@ -16,17 +16,18 @@
 	    </div>
 	    @endif --}}
 
-	    @if($info["skpp"]->total_pembayaran == $info["piutang"])
+	{{--     @if($info["skpp"]->total_pembayaran == $info["piutang"])
 		<div class="alert alert-warning mt-3">
 	    	<h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Warning</h4>
 	        Lakukan pembayarn terlebih dahulu, untuk menambahkan sales order.
 	    </div>
-	    @endif
+	    @endif --}}
 
 		<div class="card mt-3"> 
 			<form id="form-so" enctype="multipart/form-data"> 
+				@csrf
 				<div class="card-body" id="layout-parent"> 
-					<input type="hidden" name="id_pre_order" value="{{ Helper::encodex($info["skpp"]->id_pre_order) }}">
+					<input type="hidden" name="id_pre_order" value="{{ $id }}">
 					<div class="form-row ">
 						<div class="form-group col-md-6"> 
 	                        <label>Tanggal <span class="text-danger">*</span></label>
@@ -35,9 +36,9 @@
 	                        </div>
 	                    </div>
 						<div class="form-group col-md-6">
-	                        <label>Nomor SKPP <span class="text-danger">*</span></label>
+	                        <label>Nomor SKPP</label>
 	                        <div class="form-group"> 
-	                            <input class="form-control" disabled value="{{ $info["skpp"]->no_skpp }}" placeholder="Wajib di isi"> 
+	                            <input class="form-control" placeholder="Optional"> 
 	                        </div>
 	                    </div> 
 						<div class="form-group col-md-6">
@@ -95,7 +96,7 @@
 									<th>Spesifikasi</th>
 									<th width="300px">Kuantitas</th> 
 									<th>Incoterm</th>
-									<th>Dokumen</th>
+									{{-- <th>Dokumen</th> --}}
 									{{-- <th width="1px">#</th> --}}
 								</tr>
 							</thead>	
@@ -116,7 +117,7 @@
 										<input type="hidden" name="id_barang[]" value="{{ Helper::encodex($barang->id_barang) }}">
 										<div class="d-flex">
 											<div class="input-group">
-												<input type="text" disabled class="form-control number sisa_kuantitas" value="{{ \App\Services\SoService::sisaKuantitasPO($barang->id_barang) }}">
+												<input type="text" disabled class="form-control float sisa_kuantitas" value="{{ Helper::currency(\App\Services\SoService::sisaKuantitasPO($barang->id_barang)) }}">
 												<div class="input-group-append">
 													<span class="input-group-text">MT</span>
 												</div>
@@ -127,7 +128,7 @@
 											</div>
 
 											<div class="input-group">
-												<input type="text" name="kuantitas[]" autocomplete="off" class="form-control number" value="{{ \App\Services\SoService::sisaKuantitasPO($barang->id_barang) }}">
+												<input type="text" name="kuantitas[]" autocomplete="off" class="form-control float" value="{{ Helper::currency(\App\Services\SoService::sisaKuantitasPO($barang->id_barang)) }}">
 												<div class="input-group-append">
 													<span class="input-group-text">MT</span>
 												</div>
@@ -136,16 +137,16 @@
 										
 									</td> 
 									<td>{{ $barang->incoterm }}</td>
-									<td>{{ $info["skpp"]->no_dokumen }}</td> 
+									{{-- <td>x</td>  --}}
 								</tr> 
 								@endforeach
 							</tbody>
 							<tfoot>
 								<tr>
 									<td colspan="3" align="right"><b>TOTAL</b></td> 
-									<td class="align-right"> <span id="total-kuantitas">{{ $total }}</span> MT</td>
+									<td class="align-right"> <span id="total-kuantitas">{{ Helper::comma($total) }}</span> MT</td>
 									<td class="border-none"></td>
-									<td class="border-none"></td>
+									{{-- <td class="border-none"></td> --}}
 								</tr>
 							</tfoot>			
 						</table>
@@ -164,15 +165,8 @@
 	                </div>  --}}
 				</div>   
 
-				<div class="card-body border-top d-flex justify-content-between">  
-					<div>
-						{{-- <div class="legend bg-red"></div> Stok Habis --}}
-					</div>
-					@if($info["skpp"]->total_pembayaran != $info["piutang"])
-					@csrf
-					<input type="hidden" name="id_skpp" value="{{ Helper::encodex($info["skpp"]->id_skpp) }}">
-					<button class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button> 
-					@endif
+				<div class="card-body border-top d-flex justify-content-between">    
+					<button class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button>  
 				</div>
 			</form>
 		</div>
@@ -232,7 +226,7 @@
 	{	
 		var jumlah = 0;
 		$("#tbody-po").find("tr").each(function(){
-			jumlah += parseFloat($(this).find("input[name='kuantitas[]']").val());
+			jumlah += convertNumeric($(this).find("input[name='kuantitas[]']").val());
 		}); 
 		$("#total-kuantitas").html(jumlah);
 	}
@@ -240,11 +234,11 @@
 
 	$("body").delegate("input[name='kuantitas[]']", "keyup", function(){
 		totalKuantitas();
- 		var jumlah = $(this).val();
- 		var sisa = parseInt($(this).closest("td").find(".sisa_kuantitas").val());
+ 		var jumlah = convertNumeric($(this).val());
+ 		var sisa = convertNumeric($(this).closest("td").find(".sisa_kuantitas").val());
 
  		if(jumlah > sisa){
- 			$(this).val(sisa);
+ 			$(this).val(convertDecimal(sisa));
  			totalKuantitas();
  			alert("Jumlah kuantitas tidak boleh lebih dari sisa kuantitas");
  		}

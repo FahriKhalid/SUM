@@ -18,6 +18,7 @@ use App\RiwayatEmail;
 use App\Customer;
 use App\Lampiran;
 use App\SupirSO;
+use App\Invoice;
 use App\Barang;
 use App\Gudang;
 use App\Produk;
@@ -85,7 +86,7 @@ class SalesOrderPenjualanController extends Controller
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="'.url("penjualan/salesorder/edit/".Helper::encodex($data->id_so)).'"><i class="fa fa-edit"></i> Edit</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item hapus" url="'.url('penjualan/salesorder/destroy/'.Helper::encodex($data->id_so)).'"  href="javascript:void(0);"><i class="fa fa-trash"></i> Hapus</a>
+                        <a class="dropdown-item hapus" did="'.Helper::encodex($data->id_so).'" url="'.url('penjualan/salesorder/destroy/'.Helper::encodex($data->id_so)).'"  href="javascript:void(0);"><i class="fa fa-trash"></i> Hapus</a>
                     </div>
                 </div>';
         })->addColumn('tanggal', function($data){ 
@@ -101,7 +102,7 @@ class SalesOrderPenjualanController extends Controller
                 return $data->SupirAktif[0]->Supir->kendaraan;
             }
         })->addColumn('kuantitas', function($data){ 
-            return $data->totalKuantitasPO().' MT';
+            return Helper::comma($data->totalKuantitasPO()).' MT';
         })->addColumn('status', function($data){ 
             return $data->Status->status;
         })->addColumn('check', function($data){
@@ -387,13 +388,17 @@ class SalesOrderPenjualanController extends Controller
     {
         $id = Helper::decodex($id); 
 
+        DB::beginTransaction();
         try {
             SO::findOrFail($id)->delete();
+            Invoice::where("id_so", $id)->delete();
             SOPO::where("id_so", $id)->delete();
             SupirSO::where("id_so", $id)->delete();
 
+            DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Hapus sales order berhasil']); 
         } catch (\Exception $e) {
+            DB::rollback();
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
         } 
     }
@@ -504,5 +509,23 @@ class SalesOrderPenjualanController extends Controller
             DB::rollback();
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
         }
+    }
+
+    public function check_invoice($id)
+    {
+        $id_so = Helper::decodex($id);
+
+        $data  = SO::with('Invoice')->findOrFail($id_so);
+
+        if ($data->invoice != null) {
+            return response()->json([
+                'so' => $data,
+                'invoice' => $data->invoice
+            ]);
+        }
+
+        return response()->json([
+            'so' => $data
+        ]);
     }
 }

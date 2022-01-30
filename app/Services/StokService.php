@@ -11,11 +11,11 @@ class StokService
 {
     public function add($id_produk, $jumlah)
     {
-    	$barang = Stok::where("id_produk", $id_produk)->first();
+    	$barang = Stok::where("id_produk", $id_produk)->first(); 
 
     	if($barang) // update
     	{  
-	    	$barang->jumlah = (int)$barang->jumlah + (int)$jumlah;
+	    	$barang->jumlah = (float)$barang->jumlah + (float)$jumlah;
 	    	$barang->updated_by = Auth::user()->id_user;
 	    	$barang->save();
     	}
@@ -39,10 +39,10 @@ class StokService
 
             if($stok)
             { 
-                if(((int)$stok->jumlah - (int)$barang->kuantitas) < 0){
+                if(((float)$stok->jumlah - (float)$barang->kuantitas) < 0){
                     throw new \Exception("Stok tidak dapat dikurangi", 1);
                 }
-                $stok->jumlah = (int)$stok->jumlah - (int)$barang->kuantitas;
+                $stok->jumlah = (float)$stok->jumlah - (float)$barang->kuantitas;
                 $stok->save();
             }
         }

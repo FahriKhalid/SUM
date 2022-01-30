@@ -23,6 +23,7 @@ class SalesOrderPenjualanService
     { 
         try {
             $so = new SO;
+            $so->tanggal = Helper::dateFormat($request->tanggal, true, 'Y-m-d');
             $so->id_skpp = $id_skpp;
             $so->no_so = $this->SoService->lastKodeSo();
             $so->is_sementara = 1;

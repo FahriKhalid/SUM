@@ -67,7 +67,7 @@
 								</td>
 								<td>
 									<div class="input-group"> 
-		                                <input type="text" value="1" class="form-control kuantitas number" name="new_kuantitas[]">
+		                                <input type="text" value="1" class="form-control kuantitas float" name="new_kuantitas[]">
 		                                <div class="input-group-append">
 		                                    <span class="input-group-text">MT</span>
 		                                </div>
@@ -143,7 +143,7 @@
 		});
 
 		input_numeric();
-		input_number();
+		input_float();
 		total_harga();
 	}
 
@@ -172,7 +172,9 @@
 		var closest = $(this).closest("tr"); 
 		var kuantitas = closest.find(".kuantitas").val();  
 		if (harga_jual != "" && harga_jual != "0,00") {
-			var hasil = convertNumeric(harga_jual) * parseInt(kuantitas);
+			var hasil = convertNumeric(harga_jual) * convertNumeric(kuantitas);
+
+			console.log(convertNumeric(harga_jual), convertNumeric(kuantitas))
 
 			// let ppn = hasil * 0.1;
 			// hasil = hasil + ppn; 
@@ -190,7 +192,7 @@
 		var closest = $(this).closest("tr"); 
 		var harga_jual = closest.find(".harga-beli").val(); 
 		if (harga_jual != "" && harga_jual != "0,00") {
-			var hasil = convertNumeric(harga_jual) * parseInt(kuantitas);
+			var hasil = convertNumeric(harga_jual) * convertNumeric(kuantitas);
 
 			// let ppn = hasil * 0.1;
 			// hasil = hasil + ppn; 

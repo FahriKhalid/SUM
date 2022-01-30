@@ -21,22 +21,10 @@
         </div>  
     </div>  
     
-    @if($info["skpp"] == null)
-    <div class="text-center">
-        <div>
-            <img src="{{asset('img/add_bg.png')}}" class="mt-4 mb-4" width="200px">
-
-            <p>SKPP masih kosong <br> Silahkan tambah SKPP terlebih dahulu</p>
-            <a href="{{ url('pembelian/skpp/show/'.$id) }}" class="btn btn-success">SKPP</a> 
-        </div> 
-    </div> 
-    @else
     <div class="card mt-3 ">  
-        @if($info["skpp"] != null)
         <div class="card-body bg-white d-flex justify-content-between"> 
             <a class="btn btn-success" href="javascript:void(0)" onclick="show_modal()"><i class="fa fa-plus"></i> Tambah</a>
-        </div> 
-        @endif
+        </div>
         <div class="card-body">
             <table class="table table-bordered" id="tabel-invoice" width="100%">
                 <thead>
@@ -54,7 +42,6 @@
             </table>
         </div>
     </div>
-    @endif 
 </div>
 
 @endsection
@@ -98,9 +85,7 @@
         {data: 'action',      		name: 'action', orderable: false,},
     ];
 
-    @if($info["skpp"] != null)
-    table('#tabel-invoice', '{{url('pembelian/invoice/data')}}/'+'{{ Helper::encodex($info["skpp"]->id_skpp) }}', data_table);
-    @endif
+    table('#tabel-invoice', '{{url('pembelian/invoice/data')}}/'+'{{ $id }}', data_table);
 
     /*
 	|--------------------------------------------------------------------------

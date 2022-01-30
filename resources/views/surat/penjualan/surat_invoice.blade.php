@@ -22,7 +22,7 @@
 					<tr>
 						<td width="150px">Tanggal</td>
 						<td width="1px">:</td>
-						<td>{{ Helper::dateIndo(date('Y-m-d')) }}</td>
+						<td>{{ Helper::dateIndo($info["invoice"]->tanggal) }}</td>
 					</tr>
 					<tr>
 						<td>Nomor Tagihan</td>

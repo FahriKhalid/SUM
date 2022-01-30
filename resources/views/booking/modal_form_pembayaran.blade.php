@@ -1,5 +1,5 @@
 <div class="modal fade" id="modal-form-pembayaran" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content modal-content shadow-lg border-0">
             <div class="modal-header">
                 <h5 class="modal-title" id="title-modal-form-pembayaran" ></h5>
@@ -41,8 +41,8 @@
                                 <div class="input-group"> 
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" readonly class="form-control align-right" name="total_pembayaran">
+                                    </div> 
+                                    <input type="text" class="form-control align-right numeric" value="{{ $info["total_pembayaran"] }}" name="total_pembayaran">
                                 </div> 
                             </div> 
                         </div>
@@ -57,9 +57,9 @@
                                 </div> 
                             </div> 
                         </div>
-                        <div class="col-md-12">
+                        {{-- <div class="col-md-12">
                             <div id="table-barang-pembayaran"></div>
-                        </div>
+                        </div> --}}
                         {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label>Total barang di beli</label>

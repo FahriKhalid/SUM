@@ -61,11 +61,9 @@ class SkppPenjualanController extends Controller
         $this->BarangService = $BarangService;
         $this->SkppService = $SkppService;
         $this->StokService = $StokService;
-        $this->AppService = $AppService;
-        $this->draft = 1;
-        $this->confirm = 2;
+        $this->AppService = $AppService; 
         $this->approve = 3;
-        $this->unapprove = 4;
+        $this->unapprove = 4; 
     }
 
     /**
@@ -125,9 +123,14 @@ class SkppPenjualanController extends Controller
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){ 
 
             $aksi = '';
-            if($data->id_status == 1){
+            if($data->id_status == DRAFT){
                 $aksi .= '<div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="'.url("penjualan/skpp/edit/".Helper::encodex($data->id_skpp)).'"><i class="fa fa-edit"></i> Edit</a>
+                        ';
+            }
+
+            if($data->id_status == CANCEL) {
+                $aksi .='
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item hapus" url="'.url('penjualan/skpp/destroy/'.Helper::encodex($data->id_skpp)).'"  href="javascript:void(0);"><i class="fa fa-trash"></i> Hapus</a>';
             }
@@ -250,8 +253,7 @@ class SkppPenjualanController extends Controller
         }
         
         DB::beginTransaction();
-        try {
-            
+        try { 
             // insert SKPP
             $skpp = new SKPP;
             $skpp->kategori = "penjualan";
@@ -272,6 +274,11 @@ class SkppPenjualanController extends Controller
 
             // insert atm
             $this->SkppAtmService->store($request, $skpp->id_skpp);
+
+            // minus stok if confirm
+            if ($request->status == 2) {
+                $this->SkppService->minusStok($id_skpp);
+            }
 
             if($request->is_lampiran == 1){
                 // insert lampiran
@@ -453,16 +460,21 @@ class SkppPenjualanController extends Controller
             $skpp->id_status = $request->status;
             $skpp->total_pembayaran = $total_pembayaran; 
             $skpp->save();
-    
-            // update atm
-            $this->SkppAtmService->update($request, $id);
 
             // update po
             $this->BarangService->update($request, $id);
             
+            // update atm
+            $this->SkppAtmService->update($request, $id);
+
             // insert po
             if($request->has('new_produk')){ 
                 $this->BarangService->store($request, $id, "skpp");
+            }
+
+            // minus stok
+            if ($request->status == 2) {
+                $this->SkppService->minusStok($id);
             }
 
             //lampiran
@@ -517,10 +529,12 @@ class SkppPenjualanController extends Controller
         DB::beginTransaction();
         try {
             $update = SKPP::findOrFail($id_skpp);
-            $this->SkppService->LogPenjulalan($id_skpp, $update->id_status, $this->confirm, "SKPP di confirm");
-            $update->id_status = $this->confirm;
+            $this->SkppService->LogPenjulalan($id_skpp, $update->id_status, CONFIRM, "SKPP di confirm");
+            $update->id_status = CONFIRM;
             $update->catatan_revisi = null;
             $update->save(); 
+
+            $this->SkppService->minusStok($id_skpp);
 
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Konfirmasi SKPP berhasil']); 
@@ -551,17 +565,60 @@ class SkppPenjualanController extends Controller
         DB::beginTransaction();
         try {
             $update = SKPP::findOrFail($id_skpp);  
-            $this->SkppService->LogPenjulalan($id_skpp, $update->id_status, $this->draft, $request->catatan_revisi);
+            $this->SkppService->LogPenjulalan($id_skpp, $update->id_status, DRAFT, $request->catatan_revisi);
             $this->SkppService->addStok($id_skpp);
-            $update->id_status = $this->draft;
+            $update->id_status = DRAFT;
             $update->catatan_revisi = $request->catatan_revisi;
             $update->save();
+
+            //$this->SkppService->addStok($id_skpp);
 
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Revisi SKPP berhasil']); 
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);    
+        }
+    }
+
+    public function cancel(Request $request, $id)
+    {
+        $rules = [ 
+            'catatan_batal_penjualan'  => 'required'
+        ]; 
+ 
+        $messages = [
+            'catatan_batal_penjualan.required'   => 'Catatan pembatalan penjualan wajib diisi' 
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+ 
+        if($validator->fails()){ 
+            return response()->json(['status' => 'error', 'message' => $validator->errors()->all()]); 
+        }
+
+        $id_skpp = Helper::decodex($id);
+
+        DB::beginTransaction();
+        try {
+            $update = SKPP::findOrFail($id_skpp);  
+            $this->SkppService->LogPenjulalan($id_skpp, $update->id_status, CANCEL, $request->catatan_batal_penjualan);
+            
+            if($update->id_status != DRAFT) {
+                $this->SkppService->addStok($id_skpp);
+            }
+
+            $update->id_status = CANCEL;
+            $update->catatan_revisi = $request->catatan_batal_penjualan;
+            $update->save();
+
+            
+            
+            DB::commit();
+            return response()->json(['status' => 'success', 'message' => 'Batal penjualan berhasil']); 
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['status' => 'error', 'message' => $e->getMessage().' FIle = ' . $e->getLine()]);    
         }
     }
 

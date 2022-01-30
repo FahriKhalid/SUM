@@ -124,12 +124,9 @@ class SkppPembelianController extends Controller
         $info["email"] = PreOrder::findOrFail($id_pre_order)->Produsen->email;
         $info["total_pembayaran"] = $this->SkppService->totalPembayaranSkppPembelianIncludePPN(null, $id_pre_order);
         $info["skpp"] = SKPP::with('PreOrder')->where("id_pre_order", $id_pre_order)->first();
-        if($info["skpp"])
-        {
-            $info["pembayaran"] = Pembayaran::with('CreatedBy')->where("id_skpp", $info["skpp"]->id_skpp)->get(); 
-            $info["last_record"] = $this->PembayaranService->lastRecord($info["skpp"]->id_skpp);
-            $info["piutang"] = $this->PembayaranService->sisaHutang("pembelian", $info["skpp"]->id_skpp);  
-        } 
+        $info["pembayaran"] = Pembayaran::with('CreatedBy')->where("id_pre_order", $id_pre_order)->get(); 
+        $info["last_record"] = $this->PembayaranService->lastRecord("pembelian", $id_pre_order);
+        $info["piutang"] = $this->PembayaranService->sisaHutang("pembelian", $id_pre_order);
         
         return view("skpp.pembelian.show", compact("info", "id"));
     }

@@ -7,93 +7,44 @@
 @endsection
 
 @section('content')
-@include('layout.header_pembelian')
-@include('booking.modal_form_booking')
-@include('booking.modal_detail_booking') 
+@include('layout.header_pembelian') 
 @include('booking.modal_form_pembayaran')
 
 <div class="container-fluid mb-4 mt-4">
 
 	<div class="row">
 		<div class="col-md-12 d-flex justify-content-between">
-			<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-wallet"></i> SKPP</h6>
+			<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-wallet"></i> Kode Booking</h6>
 			<a href="{{ url("skpp") }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
 		</div>  
 	</div>  
 
 	<div id="layout-booking">
-		@if($info["booking"] == null)
+		{{-- @if(count($info["booking"]) < 1)
 		<div class="text-center">
 			<div>
 				<img src="{{ asset('img/add_bg.png') }}" class="mt-4 mb-4" width="200px">
 
 				<p>SKPP masih kosong <br> Klik tombol tambah untuk menambahkan data SKPP</p>
-				<button class="btn btn-success" onclick="showModalBooking()"><i class="fa fa-plus"></i> Tambah</button> 
+				<button class="btn btn-success" onclick="showFormPembayaran('{{ $id }}')"><i class="fa fa-plus"></i> Tambah</button> 
 			</div> 
 		</div>
-		@else
+		@else --}}
 
 		
+ 
 
-		<div class="card mt-3">
-			<div class="card-header bg-white">
-				<button class="btn btn-primary" onclick="showEditSkpp('{{ url('booking/edit/'.Helper::encodex($info["booking"]->id_booking)) }}')">
-					<i class="fa fa-edit"></i> Edit
-				</button> 
-			</div>
+		<div class="card mt-3 ">
 			<div class="card-body">
-				<table class="table table-borderless" style="margin-left: -10px">  
-				<tr>
-					<th width="200px">Nomor SKPP</th>
-					<th width="1px">:</th>
-					<td>{{ $info["booking"]->no_skpp }}</td>
-				</tr>
-				<tr>
-					<th>Total pembayaran</th>
-					<th>:</th>
-					<td>Rp {{ Helper::currency($info["booking"]->total_pembayaran) }}</td>
-				</tr>
-				<tr>
-					<th>Terakhir pembayaran</th>
-					<th>:</th>
-					<td>{{ Helper::dateIndo($info["booking"]->terakhir_pembayaran) }}</td>
-				</tr> 
-			</table> 
-			</div>
+				<button class="btn btn-success" onclick="showFormPembayaran('{{ $id }}')">
+					<i class="fa fa-plus"></i> Tambah 
+				</button>
+				<div id="layout-table-pembayaran">
+					@include('booking.table_pembayaran')
+				</div>
+			</div> 
 		</div>
-
-		<div class="card mt-3 ">  
-			<nav class="alert-primary">
-				<div class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
-					<a class="nav-item text-dark nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-invoice" role="tab" aria-controls="nav-home" aria-selected="true">Booking & pembayaran</a>
-					<a class="nav-item text-dark nav-link" id="nav-agt-keluarga-tab" data-toggle="tab" href="#nav-faktur-pajak" role="tab" aria-controls="nav-agt-keluarga" aria-selected="true">SKPP</a> 
-				</div>
-			</nav>
-
-			
-			<div class="tab-content">
-				<div class="tab-pane fade show active" id="nav-invoice">
-
-					<div class="card-body">
-						<button class="btn btn-success" onclick="showFormPembayaran('{{ Helper::encodex($info["booking"]->id_booking) }}')">
-							<i class="fa fa-plus"></i> Tambah 
-						</button>
-						<div id="layout-table-pembayaran">
-							@include('booking.table_pembayaran')
-						</div>
-
-					</div> 
-				</div>
-				<div class="tab-pane fade" id="nav-faktur-pajak">
-					<object data="{{ asset('file_skpp/'.$info["booking"]->file_skpp) }}#view=FitH" type="application/pdf" width="100%" height="800px">
-						<div class="text-center">
-							<p>File SKPP kosong!</p>
-						</div>
-					</object>
-				</div>
-			</div>
-		</div>
-		@endif
+		{{-- @endif --}}
 	</div> 
 
 </div>
@@ -113,12 +64,6 @@
 	let hapus_pembayaran = false;
 	let id_booking = null;
 
-	function showModalBooking(){
-		aksi = "add";
-		$("#title-modal-form-booking").html("Form tambah SKPP");
-		$("#form-booking")[0].reset();
-		$("#modal-form-booking").modal("show");
-	}
 
 	/*
     |--------------------------------------------------------------------------
@@ -321,7 +266,7 @@
  		$("#modal-form-pembayaran").modal("show");
 
  		$.ajax({
- 			url : '{{ url('booking/sisa_pembayaran') }}/'+id,
+ 			url : '{{ url('pembelian/booking/sisa_pembayaran') }}/'+id,
  			type : 'GET',
  			dataType : 'json',
  			beforeSend : function(){
@@ -338,7 +283,7 @@
 
 
  		$.ajax({
- 			url : '{{ url('booking/sisa_jumlah_barang') }}/'+id,
+ 			url : '{{ url('pembelian/booking/sisa_jumlah_barang') }}/'+id,
  			type : 'GET',
  			dataType : 'json',
  			beforeSend : function(){
@@ -381,7 +326,7 @@
 
     	if(validate === false && id_booking !== null){
     		$.ajax({
-    			url : '{{ url('pembayaran/pembelian/store') }}/'+id_booking,
+    			url : '{{ url('pembelian/pembayaran/store') }}/'+id_booking,
     			method : "POST",
     			data : new FormData(this),
     			contentType : false,
@@ -449,7 +394,7 @@
 			{ 
 				if (resp.status == 'success') {
 					toastr.success(resp.message, { "closeButton": true });   
-					refresh_table("#tabel-booking");
+					//refresh_table("#tabel-booking");
 					$("#layout-table-pembayaran").html(resp.html); 
 					$("#modal-konfirmasi-hapus").modal("hide");    
 

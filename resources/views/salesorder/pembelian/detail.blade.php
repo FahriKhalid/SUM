@@ -51,7 +51,7 @@
                             <td>{{ $loop->iteration }}.</td>
                             <td>{{ $sopo->Barang->Produk->nama }}</td>
                             <td>{{ $sopo->Barang->Produk->spesifikasi }}</td>
-                            <td>{{ $sopo->kuantitas }} MT</td>
+                            <td>{{ Helper::comma($sopo->kuantitas) }} MT</td>
                             <td>{{ $sopo->Barang->incoterm }}</td>
                             <td>{{ substr($sopo->SO->SKPP->no_skpp, 0, 4) }}</td> 
                         </tr>

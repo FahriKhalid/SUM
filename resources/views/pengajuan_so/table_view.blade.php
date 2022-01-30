@@ -24,7 +24,7 @@
                 <td>{{ $loop->iteration }}.</td>
                 <td>{{ $barang->Produk->nama }}</td>
                 <td>{{ $barang->Produk->spesifikasi }}</td>
-                <td>{{ $barang->kuantitas }} MT</td>
+                <td>{{ Helper::comma($barang->kuantitas) }} MT</td>
                 <td>{{ $barang->Barang->incoterm }}</td>
                 <td>{{ substr($info["pengajuan_so"]->PreOrder->SKPP->no_skpp, 0, 4) }}</td> 
             </tr>
@@ -34,7 +34,7 @@
         <tfoot>
             <tr>
                 <td align="right" colspan="3"><b>TOTAL</b></td>
-                <td>{{ $total_kuantum }} MT</td>
+                <td>{{ Helper::comma($total_kuantum) }} MT</td>
                 <td></td>
                 <td></td>
             </tr>

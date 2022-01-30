@@ -24,7 +24,7 @@ class InvoicePembelianController extends Controller
     public function index($id)
     {
         $id_pre_order = Helper::decodex($id);
-        $info["skpp"] = SKPP::where("id_pre_order", $id_pre_order)->first();   
+        $info["skpp"] = SKPP::where("id_pre_order", $id_pre_order)->first();  
         return view('invoice.pembelian.index', compact('info','id'));
     }
 
@@ -38,9 +38,9 @@ class InvoicePembelianController extends Controller
     {  
         $data = $invoice->query()->where(function($query) use ($id){
             if($id != null){
-                $query->where("id_skpp", Helper::decodex($id));
+                $query->where("id_pre_order", Helper::decodex($id));
             }
-        })->with('SKPP');
+        });
 
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){
             return '<div class="btn-group btn-group-sm" role="group">
@@ -107,8 +107,8 @@ class InvoicePembelianController extends Controller
         }
 
         try {
-            $invoice = new Invoice();
-            $invoice->id_skpp = Helper::decodex($request->id_skpp);  
+            $invoice = new Invoice(); 
+            $invoice->id_pre_order = Helper::decodex($request->id_pre_order);
             $invoice->no_tagihan = $request->nomor_tagihan;
             $file_faktur_pajak = Helper::fileUpload($request->file_faktur_pajak, "faktur_pajak");
             $file_invoice = Helper::fileUpload($request->file_invoice, "faktur_pajak", Helper::RemoveSpecialChar($request->nomor_tagihan));

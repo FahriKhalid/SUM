@@ -31,12 +31,12 @@ class SalesOrderPembelianService
 
 
     public function storeSOPO($request, $id_pre_order, $so)
-    {
+    {  
         try {
             $data_sopo = [];
             if ($request->is_pengajuan_so == 1) {
                 $id_pengajuan_so = Helper::decodex($request->id_pengajuan_so);
-                $barang_pengajuan_so = BarangPengajuanSo::where("id_pengajuan_so", $id_pengajuan_so)->get();
+                $barang_pengajuan_so = BarangPengajuanSo::where("id_pengajuan_so", $id_pengajuan_so)->get(); 
 
                 foreach ($barang_pengajuan_so as $value) 
                 {
@@ -47,26 +47,27 @@ class SalesOrderPembelianService
                     $data_sopo[] = [
                         "id_barang" => $value->id_barang,
                         "id_so" => $so->id_so,
-                        "kuantitas" => $value->kuantitas,
+                        "kuantitas" => Helper::decimal($value->kuantitas),
                         "created_by" => Auth::user()->id_user
                     ];
                 }
             } else {
                 for ($i=0; $i < count($request->id_barang) ; $i++) 
                 { 
-                    if($request->kuantitas[$i] != 0)
+                    if(Helper::decimal($request->kuantitas[0]) > 0)
                     { 
                         $id_barang = Helper::decodex($request->id_barang[$i]);
                         $id_produk = Helper::decodex($request->id_produk[$i]);
+                        $kuantitas = Helper::decimal($request->kuantitas[$i]);
 
-                        $this->SoService->validateMaxKuantitasPO($id_barang, $request->kuantitas[$i]);
-                        $this->StokService->add(Helper::decodex($request->id_produk[$i]), $request->kuantitas[$i]);
-                        $this->LogTransaksiService->storePembelian($id_pre_order, $id_produk, $id_barang, $request->kuantitas[$i]);
+                        $this->SoService->validateMaxKuantitasPO($id_barang, $kuantitas);
+                        $this->StokService->add(Helper::decodex($request->id_produk[$i]), $kuantitas);
+                        $this->LogTransaksiService->storePembelian($id_pre_order, $id_produk, $id_barang, $kuantitas);
 
                         $data_sopo[] = [
                             "id_barang" => $id_barang,
                             "id_so" => $so->id_so,
-                            "kuantitas" => $request->kuantitas[$i],
+                            "kuantitas" => $kuantitas,
                             "created_by" => Auth::user()->id_user
                         ];
                     } 

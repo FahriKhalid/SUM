@@ -9,30 +9,23 @@ use Validator;
 use Auth;
 use Helper;
 
-class PembayaranService 
+class PembayaranPembelianService 
 {  
 	public static function sisaHutang($kategori, $id)
 	{
-		$hutang = Pembayaran::when($kategori == "penjualan", function($query) use ($id){
-                                $query->where("id_skpp", $id);
-                            })
-                            ->when($kategori == "pembelian", function($query) use ($id){
-                                $query->where("id_pre_order", $id);
-                            })
-                            ->latest()
-                            ->first(); 	
+		$hutang = Pembayaran::where("id_pre_order", $id)->latest()->first(); 	
         
 		if($hutang){
 			return $hutang->sisa_hutang;
 		}else{ 
 			$barang = new BarangService();
-			return $barang->total_pembayaran($kategori, $id); 
+			return $barang->total_pembayaran('pembelian', $id); 
 		}
 	} 
 
 	public static function isLunas($kategori, $id)
     {
-		$sisa_hutang = self::sisaHutang($kategori, $id);
+		$sisa_hutang = self::sisaHutang('pembelian', $id);
 
 		if($sisa_hutang == "0.00"){
 			return false;
@@ -52,15 +45,9 @@ class PembayaranService
         } 
     }
 
-	public function lastRecord($kategori, $id)
+	public function lastRecord($id)
 	{
-		$data = Pembayaran::when($kategori == "penjualan", function($query) use ($id){
-                                $query->where("id_skpp", $id);
-                            })
-                            ->when($kategori == "pembelian", function($query) use ($id){
-                                $query->where("id_pre_order", $id);
-                            })
-                            ->orderBy("id_pembayaran", "desc")->first(); 
+		$data = Pembayaran::where("id_skpp", $id)->orderBy("id_pembayaran", "desc")->first(); 
 		
 		if($data){
 			return $data->id_pembayaran;
@@ -115,20 +102,16 @@ class PembayaranService
             return response()->json(['status' => 'error_validate', 'message' => $validator->errors()->all()]); 
         }  
     
+
         if(self::isLunas($kategori, $id_header))
         {
             try {
                 $store = new Pembayaran;   
                 $store->kode_booking = $request->kode_booking == null ? null : $request->kode_booking;
                 $store->file_bukti_pembayaran = Helper::fileUpload($request->file, 'bukti_pembayaran');
-                $store->keterangan = $request->keterangan; 
+                $store->keterangan = $request->keterangan;
+                $store->id_skpp = $id_header;
                 
-                if ($kategori == "penjualan") {
-                    $store->id_skpp = $id_header;
-                } elseif ($kategori == "pembelian") {
-                    $store->id_pre_order = $id_header;
-                }
-
                 if($request->has('is_parsial')){ 
                     $total = self::sisaHutang($kategori, $id_header);
                     $sisa_hutang = $total - Helper::decimal($request->jumlah_pembayaran); 
@@ -151,15 +134,15 @@ class PembayaranService
                         'data' => $sisa_hutang
                     ]); 
                 } else {
-                    $info["pembayaran"] = Pembayaran::where("id_pre_order", $id_header)->get(); 
-                    $info["last_record"] = self::lastRecord($kategori, $id_header);
-                    $info["piutang"] = self::sisaHutang($kategori, $id_header); 
-
+                    $info["pembayaran"] = Pembayaran::where("id_skpp", $id_header)->get(); 
+                    $info["last_record"] = self::lastRecord($id_header);
+                    $info["piutang"] = self::sisaHutang("pembelian", $id_header); 
+                    $info["skpp"] = SKPP::findOrFail($id_header); 
                     return response()->json([
                         'status' => 'success', 
                         'message' => 'Tambah pembayaran berhasil', 
                         'data' => $sisa_hutang, 
-                        'html' => view('booking.table_pembayaran', compact('info', 'id'))->render()
+                        'html' => view('skpp.pembelian.table_pembayaran', compact('info'))->render()
                     ]); 
                 }
 

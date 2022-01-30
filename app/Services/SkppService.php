@@ -66,10 +66,10 @@ class SkppService
 		}else if($id_pre_order != null){
 			$data = PreOrder::with("Barang")->findOrFail($id_pre_order);
 		}
-
+		
 		$total = 0;
 		foreach ($data->Barang as $value) {  
-			$harga = Helper::PPN($value->harga_jual) * $value->kuantitas;
+			$harga = Helper::PPN($value->harga_jual) * (float)$value->kuantitas;
 			$total += $harga;
 		}
 
@@ -78,8 +78,8 @@ class SkppService
 
 	public function minusStok($id_skpp)
 	{
-		$barang = Barang::where("id_skpp", $id_skpp)->get();
-
+		$barang = Barang::where("id_skpp", $id_skpp)->get(); 
+ 
 		foreach ($barang as $value) {
 			$this->StokService->minusStok($value->id_produk, $value->kuantitas);
 		}

@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables;
 use App\Services\PembayaranService;
 use App\Services\BookingService;
+use App\Services\SkppService;
 use App\Pembayaran;
 use App\PreOrder;
 use App\Booking;
@@ -21,26 +22,28 @@ class BookingController extends Controller
 {
     protected $PembayaranService, $BookingService;
 
-    public function __construct(PembayaranService $PembayaranService, BookingService $BookingService){  
+    public function __construct(
+        PembayaranService $PembayaranService, 
+        BookingService $BookingService,
+        SkppService $SkppService
+    ){  
         $this->PembayaranService = $PembayaranService;
         $this->BookingService = $BookingService;
+        $this->SkppService = $SkppService;
     }
 
     public function show($id)
     {
     	$id_pre_order = Helper::decodex($id); 
 
-        $info["booking"] = Booking::with('PreOrder')->where("id_pre_order", $id_pre_order)->first();
+        $info["pembayaran"] = Pembayaran::where("id_pre_order", $id_pre_order)->get();
 
-        if($info["booking"])
-        {
-            $info["pembayaran"] = Pembayaran::with('CreatedBy')->where("id_booking", $info["booking"]->id_booking)->get(); 
+        $info["total_pembayaran"] = $this->SkppService->totalPembayaranSkppPembelianIncludePPN(null, $id_pre_order);
 
-            $info["last_record"] = $this->PembayaranService->lastRecord("pembelian", $info["booking"]->id_booking);
+        $info["last_record"] = $this->PembayaranService->lastRecord("pembelian", $id_pre_order);
 
-            $info["piutang"] = $this->PembayaranService->sisaHutang("pembelian", $info["booking"]->id_booking);  
-        }
-
+        $info["piutang"] = $this->PembayaranService->sisaHutang("pembelian", $id_pre_order);   
+        
     	return view("booking.show", compact("info", "id"));
     }
 
@@ -233,7 +236,7 @@ class BookingController extends Controller
 
     public function sisa_pembayaran($id)
     {
-        $id = Helper::decodex($id); 
+        $id = Helper::decodex($id);  
         $info["sisa_pembayaran"] = $this->PembayaranService->sisaHutang("pembelian", $id); 
         return response()->json($info["sisa_pembayaran"]);
     }

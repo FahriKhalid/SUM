@@ -9,7 +9,7 @@
 	    <div class="row">
 	        <div class="col-md-12 d-flex justify-content-between">
 	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-edit"></i> FORM EDIT SALES ORDER </h6>
-	            <a href="{{ url("pembelian/salesorder/show/".Helper::encodex($info['so']->SKPP->PreOrder->id_pre_order)) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>
+	            <a href="{{ url("pembelian/salesorder/show/".Helper::encodex($info['so']->id_pre_order)) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>
 	        </div>  
 	    </div>  
 	    <div class="alert alert-warning mt-3">
@@ -28,12 +28,12 @@
 	                            <input type="text" class="form-control datepicker" value="{{ Helper::dateFormat($info["so"]->tanggal, false, 'd/m/Y') }}" name="tanggal" placeholder="Wajib di isi"> 
 	                        </div>
 	                    </div>
-						<div class="form-group col-md-6">
+						{{-- <div class="form-group col-md-6">
 	                        <label>Nomor SKPP <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
-	                            <input class="form-control" disabled value="{{ $info["so"]->SKPP->no_skpp }}" placeholder="Wajib di isi"> 
+	                            <input class="form-control" value="{{ $info["so"]->SKPP->no_skpp }}" placeholder="Wajib di isi"> 
 	                        </div>
-	                    </div> 
+	                    </div> --}} 
 						<div class="form-group col-md-6">
 	                        <label>Nomor Sales Order <span class="text-danger">*</span></label>
 	                        <div class="form-group"> 
@@ -82,7 +82,7 @@
 									<td>{{ $so_po->Barang->Produk->spesifikasi }}</td>
 									<td>{{ $so_po->kuantitas }}</td> 
 									<td>{{ $so_po->Barang->incoterm }}</td>
-									<td>{{ $info["skpp"]->no_dokumen }}</td> 
+									<td>{{ $info["skpp"] != null ? $info["skpp"]->no_dokumen : '' }}</td> 
 								</tr> 
 								@endforeach
 							</tbody>
@@ -142,7 +142,7 @@
 					toastr.error(resp.message,{ "closeButton": true });
 				} else {
 					toastr.success(resp.message, { "closeButton": true });  
-               		location.href = '{{ url('pembelian/salesorder/show') }}/' + '{{ Helper::encodex($info["skpp"]->PreOrder->id_pre_order) }}';
+               		location.href = '{{ url("pembelian/salesorder/show/".Helper::encodex($info['so']->id_pre_order)) }}';
 				}
 
 				loader(".card", false);

@@ -39,6 +39,7 @@ Route::group(['middleware' => ['auth']], function ()
             Route::post('update/{id}', 'SKPP\SkppPenjualanController@update');
             Route::get('confirm/{id}', 'SKPP\SkppPenjualanController@confirm');
             Route::post('revisi/{id}', 'SKPP\SkppPenjualanController@revisi');
+            Route::post('cancel/{id}', 'SKPP\SkppPenjualanController@cancel');
             Route::post('approve/{id}', 'SKPP\SkppPenjualanController@approve');
             Route::post('unapprove/{id}', 'SKPP\SkppPenjualanController@unapprove');
             Route::delete('destroy/{id}', 'SKPP\SkppPenjualanController@destroy');
@@ -69,6 +70,7 @@ Route::group(['middleware' => ['auth']], function ()
             Route::get('surat_so/{id}', 'SalesOrder\SalesOrderPenjualanController@surat_so'); 
             Route::get('sopo/{id}', 'SalesOrder\SalesOrderPenjualanController@sopo');
             Route::post('send_email/{id}', 'SalesOrder\SalesOrderPenjualanController@send_email'); 
+            Route::get('check_invoice/{id}', 'SalesOrder\SalesOrderPenjualanController@check_invoice');
         });
 
         Route::group(['prefix' => 'invoice'], function() {  
@@ -115,7 +117,7 @@ Route::group(['middleware' => ['auth']], function ()
         Route::group(['prefix' => 'pembayaran'], function() {   
             Route::post('store/{id}', 'Pembayaran\PembayaranPembelianController@store');
             Route::get('data/{id}', 'Pembayaran\PembayaranPembelianController@data');
-            Route::delete('destroy/{id}/{id_header}', 'Pembayaran\PembayaranPembelianController@destroy');
+            Route::delete('{id_pre_order}/destroy/{id}', 'Pembayaran\PembayaranPembelianController@destroy');
         });
 
         Route::group(['prefix' => 'salesorder'], function() { 
@@ -131,6 +133,7 @@ Route::group(['middleware' => ['auth']], function ()
         });
 
         Route::group(['prefix' => 'pengajuan_so'], function(){
+            Route::get('show/{id}', 'PengajuanSoController@show');
             Route::get('data/{id}', 'PengajuanSoController@data');
             Route::get('create/{id}', 'PengajuanSoController@create');
             Route::post('store/{id}', 'PengajuanSoController@store');
@@ -155,6 +158,18 @@ Route::group(['middleware' => ['auth']], function ()
             Route::delete('destroy/{id}', 'Invoice\InvoicePembelianController@destroy'); 
             Route::get('surat/{id}', 'Invoice\InvoicePembelianController@surat');
         }); 
+
+        Route::group(['prefix' => 'booking'], function() {   
+            Route::get('show/{id}', 'BookingController@show'); 
+            Route::get('data/{id}', 'BookingController@data'); 
+            Route::post('store/{id}', 'BookingController@store'); 
+            Route::get('edit/{id}', 'BookingController@edit'); 
+            Route::post('update/{id}', 'BookingController@update'); 
+            Route::get('detail/{id}', 'BookingController@detail');
+            Route::delete('destroy/{id}', 'BookingController@destroy');
+            Route::get('sisa_pembayaran/{id}', 'BookingController@sisa_pembayaran');
+            Route::get('sisa_jumlah_barang/{id}', 'BookingController@sisa_barang');
+        }); 
     });
   
     Route::group(['prefix' => 'surat_kuasa'], function() { 
@@ -172,17 +187,17 @@ Route::group(['middleware' => ['auth']], function ()
         Route::post('send_email/{id}', 'SuratKuasaController@send_email'); 
     });
  
-    Route::group(['prefix' => 'booking'], function() {   
-        Route::get('show/{id}', 'BookingController@show'); 
-        Route::get('data/{id}', 'BookingController@data'); 
-        Route::post('store/{id}', 'BookingController@store'); 
-        Route::get('edit/{id}', 'BookingController@edit'); 
-        Route::post('update/{id}', 'BookingController@update'); 
-        Route::get('detail/{id}', 'BookingController@detail');
-        Route::delete('destroy/{id}', 'BookingController@destroy');
-        Route::get('sisa_pembayaran/{id}', 'BookingController@sisa_pembayaran');
-        Route::get('sisa_jumlah_barang/{id}', 'BookingController@sisa_barang');
-    }); 
+    // Route::group(['prefix' => 'booking'], function() {   
+    //     Route::get('show/{id}', 'BookingController@show'); 
+    //     Route::get('data/{id}', 'BookingController@data'); 
+    //     Route::post('store/{id}', 'BookingController@store'); 
+    //     Route::get('edit/{id}', 'BookingController@edit'); 
+    //     Route::post('update/{id}', 'BookingController@update'); 
+    //     Route::get('detail/{id}', 'BookingController@detail');
+    //     Route::delete('destroy/{id}', 'BookingController@destroy');
+    //     Route::get('sisa_pembayaran/{id}', 'BookingController@sisa_pembayaran');
+    //     Route::get('sisa_jumlah_barang/{id}', 'BookingController@sisa_barang');
+    // }); 
 
     Route::group(['prefix' => 'stok'], function() {   
         Route::get('/', 'StokController@index'); 

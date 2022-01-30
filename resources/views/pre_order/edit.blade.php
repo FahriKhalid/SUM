@@ -80,7 +80,7 @@
 @endsection
 
 @section('footer')
- 
+<script type="text/javascript" src="{{ asset('js/lampiran.js') }}"></script>
 <script type="text/javascript">
 	$("body").delegate("#show-form-lampiran", "click", function(){
 		if($(this).is(":checked")){
@@ -125,7 +125,7 @@
 		});
 
 		input_numeric();
-		input_number();
+		input_float();
 		total_harga();
 	}
 
@@ -168,18 +168,16 @@
 	});
 
 
-	$("body").delegate(".harga-beli", "keyup", function(){
-
-		var harga_jual = $(this).val();
-
-		var closest = $(this).closest("tr");
-		
-		var kuantitas = closest.find(".kuantitas").val(); 
-
+	$("body").delegate(".harga-beli", "keyup", function(){ 
+		var harga_jual = $(this).val(); 
+		var closest = $(this).closest("tr"); 
+		var kuantitas = closest.find(".kuantitas").val();  
 		if (harga_jual != "" && harga_jual != "0,00") {
-			var hasil = convertNumeric(harga_jual) * parseInt(kuantitas);
+			var hasil = convertNumeric(harga_jual) * convertNumeric(kuantitas);
+
 			// let ppn = hasil * 0.1;
-			// hasil = hasil + ppn;
+			// hasil = hasil + ppn; 
+
 			closest.find(".nilai").val(formatNumber(hasil.toFixed(2), 2));
 		} else {
 			closest.find(".nilai").val("0,00");
@@ -188,25 +186,23 @@
  		total_harga();
 	});  
 
-	$("body").delegate(".kuantitas", "keyup", function(){
-
-		var kuantitas = $(this).val();
-
-		var closest = $(this).closest("tr");
-		
-		var harga_jual = closest.find(".harga-beli").val();
-
+	$("body").delegate(".kuantitas", "keyup", function(){ 
+		var kuantitas = $(this).val(); 
+		var closest = $(this).closest("tr"); 
+		var harga_jual = closest.find(".harga-beli").val(); 
 		if (harga_jual != "" && harga_jual != "0,00") {
-			var hasil = convertNumeric(harga_jual) * parseInt(kuantitas);
+			var hasil = convertNumeric(harga_jual) * convertNumeric(kuantitas);
+
 			// let ppn = hasil * 0.1;
-			// hasil = hasil + ppn;
+			// hasil = hasil + ppn; 
 			closest.find(".nilai").val(formatNumber(hasil.toFixed(2), 2));
 		} else {
 			closest.find(".nilai").val("0,00");
 		} 
 
 		total_harga();
-	});
+	}); 
+
 
 	$("body").delegate(".checkbox-ppn", "click", function(){
  	
@@ -215,7 +211,7 @@
 		var kuantitas = closest.find(".kuantitas").val(); 
 
 		if (harga_jual != "" && harga_jual != "0,00") {
-			var hasil = convertNumeric(harga_jual) * parseInt(kuantitas);
+			var hasil = convertNumeric(harga_jual) * convertNumeric(kuantitas);
 
 			let ppn = 0;
 			if(this.checked) {

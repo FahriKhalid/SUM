@@ -14,6 +14,7 @@
 @include("skpp.modal_approve_skpp")
 @include("skpp.modal_unapprove_skpp")
 @include("skpp.modal_revisi_skpp")
+@include("skpp.modal_cancel_skpp")
 @include("skpp.modal_view_lampiran")
 
 <div class="container-fluid mb-4 mt-4">
@@ -25,9 +26,9 @@
         </div>  
     </div> 
 
-    @if($info["skpp"]->catatan_revisi != null && $info["skpp"]->id_status == 1)
+    @if($info["skpp"]->catatan_revisi != null && in_array($info["skpp"]->id_status, [DRAFT, CANCEL]))
 	    <div class="alert alert-danger mt-3">
-	    	<h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> Catatan Revisi!</h4>
+	    	<h4 class="alert-heading"><i class="fa fa-exclamation-circle"></i> {{ $info["skpp"]->id_status == DRAFT ? 'Catatan revisi' : 'Catatan pembatalan penjualan' }}</h4>
 	    	<span>{{ $info["skpp"]->catatan_revisi }}</span>
 	    </div>
     @endif
@@ -35,26 +36,26 @@
 	<div class="card mt-3 ">
 		<div class="card-header bg-white d-flex justify-content-between"> 
 			<div>
-				<a target="_blank" href="{{ url('penjualan/skpp/preview/'.Helper::encodex($info["skpp"]->id_skpp)) }}" class="btn btn-warning"><i class="fa fa-download"></i> SKPP</a>
+				<a target="_blank" href="{{ url('penjualan/skpp/preview/'.Helper::encodex($info["skpp"]->id_skpp)) }}" class="btn btn-success"><i class="fa fa-download"></i> SKPP</a>
 
 				@if($info["skpp"]->id_status == 1)
 					<a href="{{ url('penjualan/skpp/edit/'.Helper::encodex($info["skpp"]->id_skpp)) }}" class="btn btn-primary"><i class="fa fa-edit"></i> Edit</a>
 					<button onclick="confirm('{{ url('penjualan/skpp/confirm/'.Helper::encodex($info["skpp"]->id_skpp)) }}')" class="btn btn-success"><i class="fa fa-check"></i> Confirm</button>
 				@elseif($info["skpp"]->id_status == 2)
+					<button class="btn btn-success" onclick="show_form_email('dokumen SKPP', '{{ url('penjualan/skpp/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email ({{ isset($info["riwayat_email"]) ? $info["riwayat_email"]->jumlah : '0' }})</button>  
 					<button onclick="revisi('{{ url('penjualan/skpp/revisi/'.Helper::encodex($info["skpp"]->id_skpp)) }}')" class="btn btn-warning"><i class="fa fa-edit"></i> Revisi</button>
-					<button onclick="approve('{{ url('penjualan/skpp/approve/'.Helper::encodex($info["skpp"]->id_skpp)) }}')" class="btn btn-success"><i class="fa fa-check-double"></i> Approve</button>
-				@elseif($info["skpp"]->id_status == 3) 
-					<button onclick="revisi('{{ url('penjualan/skpp/revisi/'.Helper::encodex($info["skpp"]->id_skpp)) }}')" class="btn btn-warning"><i class="fa fa-edit"></i> Revisi</button>
-					<button class="btn btn-warning" onclick="show_form_email('dokumen SKPP', '{{ url('penjualan/skpp/send_email/'.$id) }}')"><i class="fas fa-paper-plane"></i> Kirim email ({{ isset($info["riwayat_email"]) ? $info["riwayat_email"]->jumlah : '0' }})</button>  
+					<button onclick="cancel('{{ url('penjualan/skpp/cancel/'.Helper::encodex($info["skpp"]->id_skpp)) }}')" class="btn btn-danger"><i class="fa fa-times"></i> Batalkan penjualan</button>
+				@elseif($info["skpp"]->id_status == CANCEL)
+					<button onclick="destroy('{{ url('penjualan/skpp/destroy/'.Helper::encodex($info["skpp"]->id_skpp)) }}')" class="btn btn-danger"><i class="fa fa-trash"></i> Hapus</button>
 				@endif
 			</div>
 			<div>
-				@if($info["skpp"]->id_status == 1)
+				@if($info["skpp"]->id_status == DRAFT)
 					<span class="badge badge-secondary">DRAFT</span>
-				@elseif($info["skpp"]->id_status == 2)
+				@elseif($info["skpp"]->id_status == CONFIRM)
 					<span class="badge badge-warning">CONFIRM</span>
-				@else
-					<span class="badge badge-success">APPROVE</span>
+				@elseif($info["skpp"]->id_status == CANCEL)
+					<span class="badge badge-danger">CANCEL</span>
 				@endif
 			</div>
 		</div> 
@@ -273,19 +274,20 @@
 
 	/*
 	|--------------------------------------------------------------------------
-	| Approve
+	| Cancel
 	|--------------------------------------------------------------------------
 	*/
 
-	function approve(url){
-		$("#form-approve-skpp").attr("action", url); 
-		$("#modal-approve-skpp").modal({"backdrop" : "static", "keyboard" : false});
+	function cancel(url)
+	{
+		$("#form-cancel-skpp").attr("action", url); 
+		$("#modal-cancel-skpp").modal({"backdrop" : "static", "keyboard" : false});
 	}
 
-	$(document).on("submit", "#form-approve-skpp", function(e){
-		e.preventDefault();
-		
-		$.ajax({
+	$(document).on("submit", "#form-cancel-skpp", function(e){
+	    e.preventDefault();
+
+	    $.ajax({
 	        url : $(this).attr("action"),
 	        type : 'POST',
 	        data : new FormData(this),
@@ -298,13 +300,11 @@
 	        success : function(resp){ 
 	            if (resp.status == 'success') {
 	                toastr.success(resp.message, { "closeButton": true });     
-	                $("#modal-approve-skpp").modal("hide");
+	                $("#modal-cancel-skpp").modal("hide"); 
 	                location.reload(); 
-
 	            } else {
 	                toastr.error(resp.message, { "closeButton": true });
 	            }
-
 	            loader(".modal-content", false);
 	        },
 	        error : function (jqXHR, exception) {
@@ -313,49 +313,49 @@
 	        }
 	    });
 	});
+ 
 
 	/*
 	|--------------------------------------------------------------------------
-	| Approve
+	| delete
 	|--------------------------------------------------------------------------
 	*/
 
-	function unapprove(url){
-		$("#form-unapprove-skpp").attr("action", url); 
-		$("#modal-unapprove-skpp").modal({"backdrop" : "static", "keyboard" : false});
+	function destroy(url)
+	{
+		$("#form-hapus").attr("action", url); 
+    	$("#modal-konfirmasi-hapus").modal("show");
 	}
 
-	$(document).on("submit", "#form-unapprove-skpp", function(e){
-		e.preventDefault();
-		
-		$.ajax({
+	$(document).on("submit", "#form-hapus", function(e){
+	    e.preventDefault();
+
+	    $.ajax({
 	        url : $(this).attr("action"),
-	        type : 'POST',
-	        data : new FormData(this),
-	        processData : false,
-	        contentType : false, 
+	        type : 'DELETE',
+	        data : { "_token" : $('meta[name="csrf-token"]').attr('content') },  
 			dataType : "json", 
 			beforeSend: function(resp){
 				loader(".modal-content", true);
 			},
-	        success : function(resp){ 
+	        success : function(resp)
+	        { 
 	            if (resp.status == 'success') {
-	                toastr.success(resp.message, { "closeButton": true });     
-	                $("#modal-unapprove-skpp").modal("hide");
-	                location.reload(); 
+	                toastr.success(resp.message, { "closeButton": true });  
+	                $("#modal-konfirmasi-hapus").modal("hide");
+	                location.href = '{{ url('penjualan/skpp') }}'
 
 	            } else {
 	                toastr.error(resp.message, { "closeButton": true });
 	            }
-
 	            loader(".modal-content", false);
 	        },
 	        error : function (jqXHR, exception) {
 	            errorHandling(jqXHR.status, exception); 
 	            loader(".modal-content", false);
 	        }
-	    });
-	});
+	    })
+	})
 
 	function view_lampiran(nama, url)
 	{

@@ -33,11 +33,11 @@ class BarangService
 	}
 
 	public function update($request){ 
+
 		try {
 			for ($i=0; $i < count($request->produk) ; $i++) 
             {    
-                $id_barang = Helper::decodex($request->id_po[$i]);
-              
+                $id_barang = Helper::decodex($request->id_po[$i]); 
                 $produk = [
                     "id_produk" => $request->produk[$i],
                     "incoterm" => $request->incoterm[$i],
@@ -55,26 +55,12 @@ class BarangService
 
 
     public function total_pembayaran($kategori, $id)
-    {
-        if ($kategori == "penjualan"){
-            $total = Barang::where("id_skpp", $id)->sum('nilai');
-        } else {
-            $total = SKPP::where("id_skpp", $id)->first();  
-            if($total){
-                $total = $total->total_pembayaran;
-            } else {
-                $total = 0;
-            }
-            
-        }
-
-        // $total = SKPP::where("id_skpp", $id)->first();   
-
-        // if($total){
-        //     $total = $total->total_pembayaran;
-        // } else {
-        //     $total = 0;
-        // } 
+    { 
+        $total = Barang::when($kategori == "penjualan", function($query) use ($id){
+                $query->where("id_skpp", $id);
+            })->when($kategori == "pembelian", function($query) use ($id){
+                $query->where("id_pre_order", $id);
+            })->sum('nilai');
         
         return $total;
     }

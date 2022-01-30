@@ -12,8 +12,9 @@ use App\Pembayaran;
 use App\Booking;
 use App\SKPP; 
 use Validator;
-use Auth;
 use Helper;
+use Auth;
+use DB;
 
 class PembayaranPembelianController extends Controller
 {
@@ -45,7 +46,7 @@ class PembayaranPembelianController extends Controller
     public function data(Pembayaran $pembayaran, Request $request, $id)
     {
         $id = Helper::decodex($id); 
-        $last_record = $this->PembayaranService->lastRecord($id);
+        $last_record = $this->PembayaranService->lastRecord("pembelian", $id);
         $data = $pembayaran->query()->where("id_skpp", $id)->with('CreatedBy', 'Status');
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data) use ($last_record){
             $option = $last_record != $data->id_pembayaran ? 'disabled' : '';
@@ -127,30 +128,30 @@ class PembayaranPembelianController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id, $id_skpp)
+    public function destroy($id_pre_order, $id_pembayaran)
     {
-        $id = Helper::decodex($id);
-        $id_skpp = Helper::decodex($id_skpp);
+        $id = $id_pre_order;
+        $id_pembayaran = Helper::decodex($id_pembayaran);
+        $id_pre_order = Helper::decodex($id_pre_order);
 
+        DB::beginTransaction();
         try {
-            $hapus = Pembayaran::findOrFail($id)->delete();
-
-            if($hapus){
-                $sisa_hutang = $this->PembayaranService->sisaHutang("penjualan", $id_skpp);
-                 
-                $info["pembayaran"] = Pembayaran::where("id_skpp", $id_skpp)->get(); 
-                $info["last_record"] = $this->PembayaranService->lastRecord($id_skpp);
-                $info["piutang"] = $this->PembayaranService->sisaHutang("pembelian", $id_skpp); 
-                $info["skpp"] = SKPP::findOrFail($id_skpp); 
-
-                return response()->json([
-                    'status' => 'success', 
-                    'message' => 'Hapus pembayaran berhasil', 
-                    'data' => $sisa_hutang, 
-                    'html' => view('skpp.pembelian.table_pembayaran', compact('info'))->render()
-                ]); 
-            }
+            
+            Pembayaran::findOrFail($id_pembayaran)->delete();
+            $sisa_hutang = $this->PembayaranService->sisaHutang("pembelian", $id_pre_order); 
+            $info["pembayaran"] = Pembayaran::where("id_pre_order", $id_pre_order)->get(); 
+            $info["last_record"] = $this->PembayaranService->lastRecord("pembelian", $id_pre_order);
+            $info["piutang"] = $this->PembayaranService->sisaHutang("pembelian", $id_pre_order); 
+            
+            DB::commit();
+            return response()->json([
+                'status' => 'success', 
+                'message' => 'Hapus pembayaran berhasil', 
+                'data' => $sisa_hutang, 
+                'html' => view('booking.table_pembayaran', compact('info', 'id'))->render()
+            ]); 
         } catch (\Exception $e) {
+            DB::rollback();
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]); 
         } 
     }

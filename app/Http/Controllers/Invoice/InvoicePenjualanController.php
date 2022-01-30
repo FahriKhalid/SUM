@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use App\Services\SalesOrderPenjualanService;
+use App\Services\InvoiceService;
 use App\Invoice;
 use App\Barang;
 use App\SKPP;
@@ -21,9 +22,13 @@ class InvoicePenjualanController extends Controller
     protected $status_delivered = 5;
     protected $SalesOrderPenjualanService;
 
-    public function __construct(SalesOrderPenjualanService $SalesOrderPenjualanService)
+    public function __construct(
+        SalesOrderPenjualanService $SalesOrderPenjualanService,
+        InvoiceService $InvoiceService
+    )
     {   
         $this->SalesOrderPenjualanService = $SalesOrderPenjualanService;
+        $this->InvoiceService = $InvoiceService;
     }
 
     /**
@@ -96,7 +101,7 @@ class InvoicePenjualanController extends Controller
         $info["skpp"] = SKPP::selectRaw("*, left(no_skpp, 4) as no_dokumen")->findOrFail($id_skpp);   
         $info["so"] = SO::where("id_skpp", $id_skpp)->get();
         $info["po"] = Barang::with('Produk')->where("id_skpp", $id_skpp)->get();
-
+        $info["no_tagihan"] = $this->InvoiceService->lastKodeTagihan();
         return view('invoice.penjualan.create', compact('info', 'id'));
     }
 
@@ -110,7 +115,7 @@ class InvoicePenjualanController extends Controller
     { 
         $rules = [
             'tanggal'               => 'required',
-            'nomor_tagihan'         => 'required|string|max:4|min:4',
+            'nomor_tagihan'         => 'required|string',
             'nomor_faktur_pajak'    => 'required|unique:tr_invoice,no_faktur_pajak',
             'so'                    => 'required',
             'nomor_resi'            => 'nullable',

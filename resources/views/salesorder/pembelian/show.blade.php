@@ -19,54 +19,16 @@
             <a href="{{ url("pembelian/pre_order") }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
         </div>  
     </div>    
-	
-
-    @if($info["skpp"] == null)
-    <div class="text-center">
-		<div>
-			<img src="{{asset('img/add_bg.png')}}" class="mt-4 mb-4" width="200px">
-
-			<p>SKPP masih kosong <br> Silahkan tambah SKPP terlebih dahulu</p>
-			<a href="{{ url('pembelian/skpp/show/'.$id) }}" class="btn btn-success">SKPP</a> 
-		</div> 
-	</div> 
-	@else
 	<div class="card mt-3 "> 
-		@if(!PembayaranService::isBayar($info["skpp"]->id_skpp))
-		<div class="card-body alert-info">
-			<table class="table table-borderless table-sm">
-				<thead>
-					<tr>
-						<th width="1px">No</th>
-						<th width="200px">Produk</th>
-						<th>Sisa Kuantitas</th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach($info["po"] as $po)
-						<tr>
-							<td>{{ $loop->iteration }}.</td>
-							<td>{{ $po->Produk->nama }}</td>
-							<td>{{ (int)$po->kuantitas - (int)$po->totalKuantitasPO() }} MT</td>
-							 
-						</tr>
-					@endforeach
-				</tbody>
-			</table>
-		</div>
-		@endif
-		<div class="card-body bg-white">   
-			@if($info["skpp"] != null)
+		<div class="card-body bg-white">    
 			<a class="btn btn-success" href="{{ url('pembelian/salesorder/'.$id.'/create') }}"><i class="fa fa-plus"></i> Tambah</a>
- 			@endif
 		</div> 
 		<div class="card-body"> 
 			<table class="table table-bordered" id="tabel-so" style="width: 100%">
 				<thead>
 					<tr>
 						<th width="1px">No</th>
-						<th>Nomor SO</th> 
-						<th>Nomor SKPP</th>
+						<th>Nomor SO</th>  
 						<th>Total Kuantitas</th> 
 						<th>Tanggal</th> 
 						<th>Created by</th> 
@@ -76,8 +38,7 @@
 				</thead> 
 			</table>
 		</div>
-	</div>
-    @endif  
+	</div> 
 </div>
 
 @endsection
@@ -98,20 +59,17 @@
 
 	var data_table = [
         {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false}, 
-        {data: 'no_so',       name: 'no_so'}, 
-        {data: 'no_skpp',  	  name: 'no_skpp'},   
+        {data: 'no_so',       name: 'no_so'},  
         {data: 'kuantitas',   name: 'kuantitas'},   
         {data: 'tanggal',     name: 'tanggal'}, 
         {data: 'created_by',  name: 'created_by'}, 
         {data: 'created_at',  name: 'created_at'}, 
         {data: 'action',      name: 'action', orderable: false,},
     ];
-    
-    @if($info["skpp"] != null)
-    var table_so = table('#tabel-so', '{{url('pembelian/salesorder/data')}}/'+'{{Helper::encodex($info["skpp"]->id_skpp)}}', data_table);
-     
-    @endif
-	
+
+
+    var table_so = table('#tabel-so', '{{url('pembelian/salesorder/data')}}/'+'{{ $id }}', data_table);
+      
 
 	/*
 	|--------------------------------------------------------------------------

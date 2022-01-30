@@ -25,85 +25,70 @@
 	</div>  
 
 	<div id="layout-booking">
-		@if($info["skpp"] == null)
-		<div class="text-center">
-			<div>
-				<img src="{{ asset('img/add_bg.png') }}" class="mt-4 mb-4" width="200px">
-
-				<p>SKPP masih kosong <br> Klik tombol tambah untuk menambahkan data SKPP</p>
-				<button class="btn btn-success" onclick="showModalBooking()"><i class="fa fa-plus"></i> Tambah</button> 
-			</div> 
-		</div>
-		@else
-
-		
-
+		 
 		<div class="card mt-3">
 			<div class="card-header bg-white">
+				@if($info["skpp"])
 				<button class="btn btn-primary" onclick="showEditSkpp('{{ url('pembelian/skpp/edit/'.Helper::encodex($info["skpp"]->id_skpp)) }}')">
 					<i class="fa fa-edit"></i> Edit
 				</button> 
+				@else
+				<button class="btn btn-primary" onclick="showModalBooking()">
+					<i class="fa fa-plus"></i> Tambah
+				</button> 
+				@endif
 			</div>
 			<div class="card-body">
 				<table class="table table-borderless" style="margin-left: -10px">  
-				<tr>
-					<th width="220px">Nomor SKPP</th>
-					<th width="1px">:</th>
-					<td>{{ $info["skpp"]->no_skpp }}</td>
-				</tr>
-				<tr>
-					<th>Total pembayaran</th>
-					<th>:</th>
-					<td>Rp {{ Helper::currency($info["skpp"]->total_pembayaran) }}</td>
-				</tr>
-				<tr>
-					<th>Terakhir pembayaran</th>
-					<th>:</th>
-					<td>{{ Helper::dateIndo($info["skpp"]->terakhir_pembayaran) }}</td>
-				</tr> 
-			</table> 
+					<tr>
+						<th width="220px">Nomor SKPP</th>
+						<th width="1px">:</th>
+						<td>{{ $info["skpp"] != null ? $info["skpp"]->no_skpp : '-' }}</td>
+					</tr>
+					<tr>
+						<th>Total pembayaran</th>
+						<th>:</th>
+						<td>{{ $info["skpp"] != null ? 'Rp '. Helper::currency($info["skpp"]->total_pembayaran) : '-' }}</td>
+					</tr>
+					<tr>
+						<th>Terakhir pembayaran</th>
+						<th>:</th>
+						<td>{{ $info["skpp"] != null ? Helper::dateIndo($info["skpp"]->terakhir_pembayaran) : '-' }}</td>
+					</tr> 
+					<tr>
+						<th>Dokumen SKPP</th>
+						<th>:</th>
+						<td>
+							@if($info["skpp"])
+							<a href="{{ asset('file_skpp/'.$info["skpp"]->file_skpp) }}" target="_blank">{{ $info["skpp"]->file_skpp }}</a>
+							@else
+								-
+							@endif
+						</td>
+					</tr> 
+				</table> 
 			</div>
 		</div>
 
-		<div class="card mt-3 ">  
-			<nav class="alert-primary">
-				<div class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
-					<a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-1" role="tab" aria-controls="nav-home" aria-selected="true">Pengajuan SO</a>
-					<a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-2" role="tab" aria-controls="nav-home" aria-selected="true">Booking & pembayaran</a>
-					<a class="nav-item nav-link" id="nav-agt-keluarga-tab" data-toggle="tab" href="#nav-3" role="tab" aria-controls="nav-agt-keluarga" aria-selected="true">SKPP</a> 
-				</div>
-			</nav>
-			<div class="tab-content">
-				<div class="tab-pane fade show active" id="nav-1">
-					<div class="card-body">
-						<a href="{{ url('pembelian/pengajuan_so/create/'.$id) }}" class="btn btn-success">
-							<i class="fa fa-plus"></i> Tambah 
-						</a>
-						<div>
-							@include('pengajuan_so.table_pengajuan_so')
-						</div>
+		<div class="row mt-5">
+			<div class="col-md-12 d-flex justify-content-between">
+				<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-wallet"></i> Kode Booking & Pembayaran</h6>   
+			</div>  
+		</div>  
 
-					</div> 
-				</div>
-				<div class="tab-pane fade" id="nav-2">
-					<div class="card-body">
-						<button class="btn btn-success" onclick="showFormPembayaran('{{ Helper::encodex($info["skpp"]->id_skpp) }}')">
-							<i class="fa fa-plus"></i> Tambah 
-						</button>
-						<div id="layout-table-pembayaran">
-							@include('skpp.pembelian.table_pembayaran')
-						</div>
-
-					</div> 
-				</div>
-				<div class="tab-pane fade" id="nav-3">
-					<object data="{{ asset('file_skpp/'.$info["skpp"]->file_skpp) }}#view=FitH" type="application/pdf" width="100%" height="800px">
-						@include('layout.not_found', ['message' => 'File tidak ditemukan'])
-					</object>
-				</div>
+		<div class="card mt-3 ">
+			<div class="card-header bg-white">
+				<button class="btn btn-success" onclick="showFormPembayaran('{{ $id }}')">
+					<i class="fa fa-plus"></i> Tambah 
+				</button>
 			</div>
+			<div class="card-body"> 
+				<div id="layout-table-pembayaran">
+					@include('booking.table_pembayaran')
+				</div>
+			</div> 
 		</div>
-		@endif
+ 
 	</div> 
 
 </div>
@@ -151,33 +136,6 @@
     
     table('#tabel-booking', '{{url('booking/data')}}/'+'{{ $id }}', kolom_booking);
 
-    
-    var kolom_pso = [
-    {data: 'DT_RowIndex', 			name: 'DT_RowIndex', orderable: false, searchable: false},  
-    {data: 'no_pengajuan_so', 		name: 'no_pengajuan_so'}, 
-    {data: 'kuantitas',             name: 'kuantitas'}, 
-    {data: 'created_by',  			name: 'created_by'},
-    {data: 'created_at',  			name: 'created_at'}, 
-    {data: 'action',      			name: 'action', orderable: false}
-    ];
-
-    table('#tabel-pengajuan-so', '{{url('pembelian/pengajuan_so/data')}}/'+'{{ $id }}', kolom_pso);
-
-
-    var kolom_pembayaran = [
-        {data: 'DT_RowIndex',       name: 'DT_RowIndex', orderable: false, searchable: false},  
-        {data: 'kode_booking', name: 'kode_booking'}, 
-        {data: 'jumlah_pembayaran', name: 'jumlah_pembayaran'}, 
-        {data: 'sisa_hutang',       name: 'sisa_hutang'}, 
-        {data: 'keterangan',        name: 'keterangan'}, 
-        {data: 'created_by',        name: 'created_by'},
-        {data: 'created_at',        name: 'created_at'}, 
-        {data: 'action',            name: 'action', orderable: false,},
-    ];
-
-    @if($info["skpp"] != null)
-    table('#tabel-pembayaran', '{{url('pembelian/pembayaran/data')}}/'+'{{ Helper::encodex($info["skpp"]->id_skpp) }}', kolom_pembayaran);
-    @endif
 
     /*
     |--------------------------------------------------------------------------
@@ -404,6 +362,8 @@
     		var jumlah_pembayaran = $("input[name=jumlah_pembayaran]").val();
     		var piutang = $("#form-parsial").find("input[name=total_pembayaran]").val();
 
+    		console.log(convertNumeric(jumlah_pembayaran), convertNumeric(piutang));
+
     		if(convertNumeric(piutang) <= convertNumeric(jumlah_pembayaran)){
     			alert('Jumlah pembayaran harus lebih kecil dari total yang harus dibayar');
     			validate = true;
@@ -432,7 +392,7 @@
     				} else {
     					$("input[name=total_pembayaran]").val(formatNumber(resp.data,2));
     					$("#modal-form-pembayaran").modal("hide");
-                        refresh_table("#tabel-pembayaran");
+    					$("#layout-table-pembayaran").html(resp.html); 
     					toastr.success(resp.message, { "closeButton": true });  	
     				}
 

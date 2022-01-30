@@ -35,14 +35,16 @@ class PengajuanSoController extends Controller
         $this->AppService = $AppService;
     }
 
+    
     /**
-     * Display a listing of the resource.
+     * Display the specified resource.
      *
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function show($id)
     {
-        //
+        return view('pengajuan_so.show', compact('id'));
     }
 
     /**
@@ -107,7 +109,7 @@ class PengajuanSoController extends Controller
         $rules = [  
             'id_produk.*'           => 'required|distinct',
             'id_barang.*'           => 'required', 
-            'kuantitas.*'           => 'required|numeric|min:1',
+            'kuantitas.*'           => 'required|min:1',
             'harga_beli.*'          => 'required',
             'nilai.*'               => 'required', 
         ]; 
@@ -161,7 +163,8 @@ class PengajuanSoController extends Controller
                     "id_pengajuan_so" => $pso->id_pengajuan_so,
                     "id_produk" => Helper::decodex($request->id_produk[$i]), 
                     "id_barang" => Helper::decodex($request->id_barang[$i]),
-                    "kuantitas" => $request->kuantitas[$i],
+                    "kuantitas" => Helper::decimal($request->kuantitas[$i]),
+                    "incoterm" => $request->incoterm[$i],
                     "harga_jual" => Helper::decimal($request->harga_beli[$i]),
                     "nilai" => Helper::decimal($request->nilai[$i]),
                     "created_by" => Auth::user()->id_user
@@ -181,16 +184,6 @@ class PengajuanSoController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
      /**
      * Display the specified resource.
@@ -293,16 +286,15 @@ class PengajuanSoController extends Controller
         try {
             for($i=0; $i < count($request->id_produk); $i++)
             {
-                $id_barang_pengajuan_so = Helper::decodex($request->id_barang_pengajuan_so[$i]);
-
+                $id_barang_pengajuan_so = Helper::decodex($request->id_barang_pengajuan_so[$i]); 
                 $barang = [ 
-                    "id_produk" => Helper::decodex($request->id_produk[$i]), 
-                    "id_barang" => Helper::decodex($request->id_barang[$i]),
-                    "kuantitas" => $request->kuantitas[$i],
-                    "harga_jual" => Helper::decimal($request->harga_beli[$i]),
-                    "nilai" => Helper::decimal($request->nilai[$i]),
-                    "updated_by" => Auth::user()->id_user
-                ];
+                    "id_produk"     => Helper::decodex($request->id_produk[$i]), 
+                    "id_barang"     => Helper::decodex($request->id_barang[$i]),
+                    "kuantitas"     => Helper::decimal($request->kuantitas[$i]),
+                    "harga_jual"    => Helper::decimal($request->harga_beli[$i]),
+                    "nilai"         => Helper::decimal($request->nilai[$i]),
+                    "updated_by"    => Auth::user()->id_user
+                ]; 
 
                 BarangPengajuanSo::findOrFail($id_barang_pengajuan_so)->update($barang);
             }

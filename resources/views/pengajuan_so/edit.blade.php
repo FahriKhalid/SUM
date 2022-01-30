@@ -7,7 +7,7 @@
 	    <div class="row">
 	        <div class="col-md-12 d-flex justify-content-between">
 	        	<h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-edit"></i> FORM EDIT PENGAJUAN SALES ORDER </h6>
-	            <a href="{{ url("pembelian/skpp/show/".Helper::encodex($info["pengajuan_so"]->PreOrder->id_pre_order)) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
+	            <a href="{{ url("pembelian/pengajuan_so/show/".Helper::encodex($info["pengajuan_so"]->PreOrder->id_pre_order)) }}" class="text-muted"><i class="fa fa-arrow-left"></i> Kembali</a>   
 	        </div>  
 	    </div>  
 
@@ -49,7 +49,7 @@
 
 @section('footer')
 
-
+<script type="text/javascript" src="{{ asset('js/lampiran.js') }}"></script>
 <script type="text/javascript"> 
 
 	/*
@@ -223,11 +223,11 @@
 
 	$("body").delegate("input[name='kuantitas[]']", "keyup", function(){
 		totalKuantitas();
- 		let kuantitas = $(this).val();
- 		let sisa = parseInt($(this).closest("td").find(".sisa_kuantitas").val());
+ 		let kuantitas = convertNumeric($(this).val());
+ 		let sisa = convertNumeric($(this).closest("td").find(".sisa_kuantitas").val());
 
  		if(kuantitas > sisa){
- 			$(this).val(sisa);
+ 			$(this).val(convertDecimal(sisa));
  			totalKuantitas();
  			alert("Jumlah kuantitas tidak boleh lebih dari sisa kuantitas");
  		}
@@ -238,9 +238,9 @@
 		if (harga_beli != "" && harga_beli != "0,00") {
 			let hasil = 0;
 			if(kuantitas > sisa) {
-				hasil = convertNumeric(harga_beli) * parseInt(sisa);
+				hasil = convertNumeric(harga_beli) * sisa;
 			} else {
-				hasil = convertNumeric(harga_beli) * parseInt(kuantitas);
+				hasil = convertNumeric(harga_beli) * kuantitas;
 			}
 			
 			// let ppn = hasil * 0.1;

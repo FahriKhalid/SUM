@@ -10,7 +10,7 @@
             <div class="form-group col-md-6">
                 <div class="form-group"> 
                 	<label>Nomor Tagihan <span class="text-danger">*</span></label>
-                    <input class="form-control" name="nomor_tagihan" value="{{ $info["skpp"]->no_dokumen }}" placeholder="Wajib diisi"> 
+                    <input class="form-control" name="nomor_tagihan" value="{{ $info["no_tagihan"]  }}" placeholder="Wajib diisi"> 
                 </div>
             </div> 
             <div class="form-group col-md-6">

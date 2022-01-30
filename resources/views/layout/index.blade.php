@@ -354,12 +354,11 @@
 
             function input_float(){
                 $("input.float:text").inputmask('numeric', {
-                     
                     radixPoint : ',',
                     autoGroup: true,
-                    digits: 1,
+                    digits: 2,
                     digitsOptional: false,
-                    placeholder: '0,0',
+                    placeholder: '0,00',
                 });
             }
         }
@@ -446,6 +445,10 @@
         function convertNumeric(number){
             var string = number.split('.').join("");
             return parseFloat(string.split(',').join("."));
+        }
+
+        function convertDecimal(number){ 
+            return number.toFixed(2).toString().replace(".", ",");
         }
 
         function formatNumber(n, p, ts, dp) {

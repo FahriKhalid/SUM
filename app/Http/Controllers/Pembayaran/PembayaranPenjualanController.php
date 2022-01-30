@@ -39,7 +39,7 @@ class PembayaranPenjualanController extends Controller
     {
         $id = Helper::decodex($id);
         $kategori = "penjualan";
-        $last_record = $this->PembayaranService->lastRecord($id);
+        $last_record = $this->PembayaranService->lastRecord("penjualan", $id);
         $data = $pembayaran->query()->where("id_skpp", $id)->with('CreatedBy', 'Status');
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data) use ($last_record, $kategori){
             $option = $last_record != $data->id_pembayaran ? 'disabled' : '';

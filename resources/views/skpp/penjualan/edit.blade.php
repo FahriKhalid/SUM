@@ -95,7 +95,7 @@
 					</div> 
 					<div>
 						<button class="btn btn-secondary" type="button" onclick="save(1)"><i class="fa fa-save"></i> Draft</button>
-						<button class="btn btn-primary" type="button" onclick="save(2)" ><i class="fa fa-check"></i> Submit</button>
+						<button class="btn btn-primary" type="button" onclick="save(2)" ><i class="fa fa-check"></i> Confirm</button>
 					</div> 
 				</div>
 			</form>

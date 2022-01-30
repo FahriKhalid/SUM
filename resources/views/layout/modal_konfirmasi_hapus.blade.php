@@ -10,6 +10,7 @@
             <form id="form-hapus">
                 @csrf 
                 <div class="modal-body">
+                    <div id="alert-delete"></div>
                     <p>Apakah anda yakin ingin menghapus data ini? <br> data akan di hapus secara permanen</b></p>
                 </div>
                 <div class="modal-footer">

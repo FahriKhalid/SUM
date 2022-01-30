@@ -107,7 +107,7 @@
 							<tr>
 								<td>{{ $loop->iteration }}.</td>
 								<td>{{ $sopo->Barang->Produk->nama }}</td>
-								<td>{{ $sopo->kuantitas }} MT</td>
+								<td>{{ Helper::comma($sopo->kuantitas) }} MT</td>
 								<td>{{ $sopo->Barang->incoterm }}</td>
 								<td> 
 									<div class="d-flex justify-content-between">

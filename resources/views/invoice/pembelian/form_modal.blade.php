@@ -13,6 +13,8 @@
                 @if($info["skpp"] != null)
                 <input type="hidden" name="id_skpp" value="{{ Helper::encodex($info["skpp"]->id_skpp) }}">
                 @endif
+
+                <input type="hidden" name="id_pre_order" value="{{ $id }}">
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Nomor tagihan <span class="text-danger">*</span></label>

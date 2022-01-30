@@ -28,7 +28,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Total pembayaran + PPN <span class="text-danger">*</span></label>
+                                <label>Total pembayaran <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control numeric" value="{{ $info["total_pembayaran"] }}" name="total_pembayaran">
                             </div> 
                         </div>

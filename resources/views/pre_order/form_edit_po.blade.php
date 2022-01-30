@@ -34,7 +34,7 @@
 			</td>
 			<td>
 				<div class="input-group"> 
-					<input type="text" value="{{ $barang->kuantitas }}" {{ $info["pre_order"]->SKPP->id_skpp != null ? 'disabled' : '' }} min="1" class="form-control kuantitas number" name="kuantitas[]">
+					<input type="text" value="{{ Helper::currency($barang->kuantitas) }}" {{ $info["pre_order"]->SKPP->id_skpp != null ? 'disabled' : '' }} min="1" class="form-control kuantitas float" name="kuantitas[]">
 					<div class="input-group-append">
 						<span class="input-group-text">MT</span>
 					</div>

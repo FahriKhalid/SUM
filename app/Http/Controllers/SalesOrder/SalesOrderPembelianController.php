@@ -68,8 +68,8 @@ class SalesOrderPembelianController extends Controller
 
     public function data(SO $SO, Request $request, $id)
     {
-        $id_skpp = Helper::decodex($id);
-        $data = $SO->query()->where("id_skpp", $id_skpp)->with('CreatedBy', 'Status', 'SupirAktif');
+        $id_pre_order = Helper::decodex($id);
+        $data = $SO->query()->where("id_pre_order", $id_pre_order)->with('CreatedBy', 'Status', 'SupirAktif');
         return Datatables::of($data)->addIndexColumn()->addColumn('action', function ($data){ 
             $aksi = '';
             if(true)
@@ -93,9 +93,7 @@ class SalesOrderPembelianController extends Controller
         })->addColumn('no_so', function($data){ 
             return $data->no_so;
         })->addColumn('kuantitas', function($data){ 
-            return $data->totalKuantitasPO().' MT';
-        })->addColumn('no_skpp', function($data){ 
-            return $data->SKPP->no_skpp;
+            return Helper::comma($data->totalKuantitasPO()).' MT';
         })->addColumn('created_by', function($data){ 
             return $data->CreatedBy->nama;
         })->rawColumns(['action','check'])->make(true);
@@ -110,15 +108,15 @@ class SalesOrderPembelianController extends Controller
     public function create($id)
     {
         $id_pre_order = Helper::decodex($id);  
-        $info["skpp"] = SKPP::selectRaw("*, left(no_skpp, 4) as no_dokumen")->where("id_pre_order", $id_pre_order)->first(); 
-        $info["piutang"] = $this->PembayaranService->sisaHutang("pembelian", $info["skpp"]->id_skpp); 
+        //$info["skpp"] = SKPP::selectRaw("*, left(no_skpp, 4) as no_dokumen")->where("id_pre_order", $id_pre_order)->first(); 
+        $info["piutang"] = $this->PembayaranService->sisaHutang("pembelian", $id_pre_order); 
         $info["no_so"] = $this->SoService->lastKodeSo();
         $info["customer"] = Customer::where("is_aktif", 1)->get();
         $info["po"] = Barang::with('Produk')->where("id_pre_order", $id_pre_order)->get(); 
         $info["supir"] = Supir::where("is_aktif", 1)->get(); 
         $info["status"] = Status::whereIn("status", ["Draft", "Final"])->orderBy("id_status")->get();  
         $info["pengajuan_so"] = PengajuanSo::where("id_pre_order", $id_pre_order)->doesnthave("SO")->get();  
-        
+         
         return view('salesorder.pembelian.create', compact('id','info'));
     }
 
@@ -134,7 +132,7 @@ class SalesOrderPembelianController extends Controller
 
         $rules = [
             'tanggal'               => 'required',
-            'id_skpp'               => 'required',
+            // 'id_skpp'               => 'required',
             'nomor_so'              => 'required|unique:tr_so,no_so,NULL,id_so,deleted_at,NULL', 
             'id_barang'             => 'required|array',
             'id_barang.*'           => 'required|distinct',  
@@ -179,7 +177,8 @@ class SalesOrderPembelianController extends Controller
         DB::beginTransaction();
         try { 
             $so = new SO();
-            $so->id_skpp = Helper::decodex($request->id_skpp);
+            // $so->id_skpp = Helper::decodex($request->id_skpp);
+            $so->id_pre_order = $id_pre_order;
             $so->tanggal = Helper::dateFormat($request->tanggal, true, 'Y-m-d');
             $so->no_so = $request->nomor_so;  
             $so->id_status = $request->status;
@@ -248,9 +247,9 @@ class SalesOrderPembelianController extends Controller
     public function edit($id)
     {
         $id_so = Helper::decodex($id);
-        $info["so"] = SO::with("SupirAktif", "SKPP")->findOrFail($id_so); 
+        $info["so"] = SO::with("SupirAktif")->findOrFail($id_so); 
         $info["so_po"] = SOPO::with("Barang")->where("id_so", $id_so)->get(); 
-        $info["skpp"] = SKPP::selectRaw("*, left(no_skpp, 4) as no_dokumen")->findOrFail($info["so"]->SKPP->id_skpp);  
+        $info["skpp"] = SKPP::selectRaw("*, left(no_skpp, 4) as no_dokumen")->find($info["so"]->SKPP->id_skpp);  
         $info["status"] = Status::whereIn("status", ["Draft", "Final"])->orderBy("id_status")->get();  
 
         return view('salesorder.pembelian.edit', compact('info', 'id'));

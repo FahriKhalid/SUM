@@ -21,7 +21,7 @@
                     </div>  
                     <div class="form-group">
                         <label>Plat nomor <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="plat_nomor" maxlength="9" placeholder="Wajib di isi">
+                        <input type="text" class="form-control" name="plat_nomor" placeholder="Wajib di isi">
                     </div> 
                     <div class="form-group">
                         <label>Kendaraan <span class="text-danger">*</span></label>
