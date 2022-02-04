@@ -277,7 +277,7 @@ class SkppPenjualanController extends Controller
 
             // minus stok if confirm
             if ($request->status == 2) {
-                $this->SkppService->minusStok($id_skpp);
+                $this->SkppService->minusStok($skpp->id_skpp);
             }
 
             if($request->is_lampiran == 1){
