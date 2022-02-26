@@ -342,12 +342,12 @@ class DashboardService
 
 	public function topCustomers()
 	{
-		return DB::table("vw_top_customers")->get();
+		return DB::table("vw_top_customers")->take(5)->get();
 	}
 
 	public function topProducts()
 	{
-		return DB::table("vw_top_products")->get();
+		return DB::table("vw_top_products")->take(5)->get();
 	}
 
 	public function stokProduk()
