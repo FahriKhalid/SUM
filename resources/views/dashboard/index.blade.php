@@ -290,7 +290,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="{{ asset('vendor/daterangepicker/daterangepicker.min.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ asset('vendor/daterangepicker/daterangepicker.css') }}" />
-<script type="text/javascript" src="{{ asset('vendor/apexchart/apexcharts.js') }}"></script>
+<script type="text/javascript" src="{{ asset('vendor/apexchart/apexchart.min.js') }}"></script>
 
 <script>
 
